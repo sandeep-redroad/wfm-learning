@@ -45,7 +45,7 @@ const SidebarMenu = {
                     items: [],
                 },
                 {
-                    title: 'Billings',
+                    title: 'Billing Types',
                     url: '/master-settings/billing',
                     items: [],
                 },

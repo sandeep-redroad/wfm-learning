@@ -11,8 +11,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useAuth } from '@/Context/AuthContext'
 
 const Navbar = () => {
+    const { logout } = useAuth()
     return (
         <header className="flex h-16 shrink-0 items-center gap-2 border-b text-white px-4 bg-primary-red justify-between">
             <div className="flex items-center">
@@ -23,12 +25,14 @@ const Navbar = () => {
 
             <DropdownMenu>
                 <DropdownMenuTrigger>
-                    <div className="flex items-center gap-3 cursor-pointer">
-                        <Avatar>
-                            <AvatarImage src="" className="bg-white" />
-                            <AvatarFallback className="text-black">SA</AvatarFallback>
+                    <div className="flex items-end flex-col gap-0 cursor-pointer">
+                        <Avatar className="text-sm h-7 w-7">
+                            <AvatarImage src="" className="bg-white " />
+                            <AvatarFallback className="text-black">
+                                SA
+                            </AvatarFallback>
                         </Avatar>
-                        <span>Sandeep</span>
+                        <span>Sandeepdsfasfdsafsdsd</span>
                     </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -37,7 +41,9 @@ const Navbar = () => {
                     <DropdownMenuItem>Profile</DropdownMenuItem>
                     <DropdownMenuItem>Billing</DropdownMenuItem>
                     <DropdownMenuItem>Team</DropdownMenuItem>
-                    <DropdownMenuItem>Subscription</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => logout()}>
+                        Logout
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </header>

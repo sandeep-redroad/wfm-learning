@@ -9,6 +9,8 @@ import { z } from 'zod'
 import { Eye, EyeClosed, LockIcon, Mail } from 'lucide-react'
 import assets from '@/assets/assets'
 import Header from '@/Components/Header/Header'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/Context/AuthContext'
 
 const formSchema = z.object({
     username: z.string().min(2, {
@@ -20,9 +22,11 @@ const formSchema = z.object({
 })
 
 const Login = () => {
+    const { login } = useAuth();
     const [isError, setIsError] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
+    const navigate = useNavigate();
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -40,6 +44,7 @@ const Login = () => {
         setIsLoading(true)
         setIsError(false)
         console.log(values)
+        login();
     }
 
     /**
@@ -50,6 +55,8 @@ const Login = () => {
         setIsLoading(true)
         console.log('Error found ')
         setIsError(true)
+        login();
+        navigate('/')
     }
 
     return (
