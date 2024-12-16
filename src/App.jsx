@@ -11,6 +11,7 @@ import ProjectMaster from '@/Pages/ProjectMaster/ProjectMaster'
 import Invoice from '@/Pages/Invoice/Listing/Invoice'
 import DailyWork from '@/Pages/DailyWork/DailyWork'
 import { AuthProvider } from '@/Context/AuthContext'
+import Project from './Components/Project/Project'
 
 let router = createBrowserRouter([
     {
@@ -28,6 +29,10 @@ let router = createBrowserRouter([
             {
                 path: '/invoices',
                 Component: Invoice,
+            },
+            {
+                path: '/projects',
+                Component: Project,
             },
             {
                 path: '/daily-work',

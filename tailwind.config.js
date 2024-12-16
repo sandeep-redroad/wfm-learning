@@ -14,6 +14,7 @@ export default {
   			'primary-blue': '#2490ef',
   			'input-bg': '#f4f5f6',
   			'input-clr': '#d1d8dd',
+			'primary-grn':'#008000',
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',
