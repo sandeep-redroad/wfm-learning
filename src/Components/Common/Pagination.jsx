@@ -8,28 +8,13 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from '@/Components/ui/pagination'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/Components/ui/select'
-// import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { cn } from '@/lib/utils'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
-export function PaginationWithLinks({
-    pageSizeSelectOptions,
-    pageSize,
-    totalCount,
-    page,
-    pageSearchParam,
-}) {
-    const navigate = useNavigate()
+export function PaginationWithLinks({ totalCount, pageSearchParam }) {
     const location = useLocation()
     const searchParams = new URLSearchParams(location.search)
-
+    const page = parseInt(searchParams.get('page') || 1)
+    const pageSize = 20
     const totalPageCount = Math.ceil(totalCount / pageSize)
 
     const buildLink = useCallback(
@@ -42,16 +27,6 @@ export function PaginationWithLinks({
         [searchParams, location.pathname, pageSearchParam]
     )
 
-    const navToPageSize = useCallback(
-        (newPageSize) => {
-            const key = pageSizeSelectOptions?.pageSizeSearchParam || 'pageSize'
-            const newSearchParams = new URLSearchParams(searchParams)
-            newSearchParams.set(key, String(newPageSize))
-            navigate(`${location.pathname}?${newSearchParams.toString()}`)
-        },
-        [searchParams, location.pathname, pageSizeSelectOptions, navigate]
-    )
-
     const renderPageNumbers = () => {
         const items = []
         const maxVisiblePages = 5
@@ -60,10 +35,7 @@ export function PaginationWithLinks({
             for (let i = 1; i <= totalPageCount; i++) {
                 items.push(
                     <PaginationItem key={i}>
-                        <PaginationLink
-                            to={buildLink(i)}
-                            isActive={page === i}
-                        >
+                        <PaginationLink to={buildLink(i)} isActive={page === i}>
                             {i}
                         </PaginationLink>
                     </PaginationItem>
@@ -92,10 +64,7 @@ export function PaginationWithLinks({
             for (let i = start; i <= end; i++) {
                 items.push(
                     <PaginationItem key={i}>
-                        <PaginationLink
-                            to={buildLink(i)}
-                            isActive={page === i}
-                        >
+                        <PaginationLink to={buildLink(i)} isActive={page === i}>
                             {i}
                         </PaginationLink>
                     </PaginationItem>
@@ -126,19 +95,8 @@ export function PaginationWithLinks({
     }
 
     return (
-        <div className="flex flex-row justify-end items-center gap-3 w-full mb-3 mt-4">
-            {pageSizeSelectOptions && (
-                <div className="flex flex-col gap-4 flex-1 justify-end">
-                    <SelectRowsPerPage 
-                        options={pageSizeSelectOptions.pageSizeOptions}
-                        setPageSize={navToPageSize}
-                        pageSize={pageSize}
-                    />
-                </div>
-            )}
-            <Pagination
-                className={cn({ 'justify-end': pageSizeSelectOptions })}
-            >
+        <div className="flex flex-row justify-end items-end gap-3 w-full mb-3 mt-4">
+            <Pagination className="justify-end">
                 <PaginationContent className="max-sm:gap-0">
                     <PaginationItem>
                         <PaginationPrevious
@@ -167,33 +125,6 @@ export function PaginationWithLinks({
                     </PaginationItem>
                 </PaginationContent>
             </Pagination>
-        </div>
-    )
-}
-
-function SelectRowsPerPage({ options, setPageSize, pageSize }) {
-    return (
-        <div className="flex items-center gap-4 justify-end">
-            <span className="whitespace-nowrap text-sm">Rows per page</span>
-
-            <Select
-                className="w-10"
-                value={String(pageSize)}
-                onValueChange={(value) => setPageSize(Number(value))}
-            >
-                <SelectTrigger>
-                    <SelectValue placeholder="Select page size">
-                        {String(pageSize)}
-                    </SelectValue>
-                </SelectTrigger>
-                <SelectContent className="w-10">
-                    {options.map((option) => (
-                        <SelectItem key={option} value={String(option)}>
-                            {option}
-                        </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
         </div>
     )
 }

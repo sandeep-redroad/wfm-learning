@@ -4,8 +4,8 @@ const BillingColumns = [
         header: 'Sl',
     },
     {
-        accessorKey: 'name',
-        header: 'Name',
+        accessorKey: 'billingType',
+        header: 'Billing Type',
     }
 ]
 
