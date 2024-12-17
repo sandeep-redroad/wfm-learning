@@ -12,6 +12,9 @@ export default {
   		colors: {
   			'primary-red': '#cd233a',
   			'primary-blue': '#2490ef',
+			'primary-ink' : '#191b38',
+			'primary-purpal': '#3e223c',
+  			'primary-blue-hover': '#60a9e9',
   			'input-bg': '#f4f5f6',
   			'input-clr': '#d1d8dd',
   			sidebar: {

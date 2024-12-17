@@ -4,8 +4,8 @@ const DepartmentColumns = [
         header: 'Sl',
     },
     {
-        accessorKey: 'name',
-        header: 'Name',
+        accessorKey: 'department',
+        header: 'Department',
     }
 ]
 

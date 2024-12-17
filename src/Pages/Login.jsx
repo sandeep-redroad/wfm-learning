@@ -22,11 +22,11 @@ const formSchema = z.object({
 })
 
 const Login = () => {
-    const { login } = useAuth();
+    const { login } = useAuth()
     const [isError, setIsError] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -44,7 +44,7 @@ const Login = () => {
         setIsLoading(true)
         setIsError(false)
         console.log(values)
-        login();
+        login()
     }
 
     /**
@@ -55,7 +55,7 @@ const Login = () => {
         setIsLoading(true)
         console.log('Error found ')
         setIsError(true)
-        login();
+        login()
         navigate('/')
     }
 
@@ -76,73 +76,72 @@ const Login = () => {
                             <div className="text-center my-8 font-semibold">
                                 <h4>Login to REDROAD</h4>
                             </div>
-                            <div>
-                                <Form {...form}>
-                                    <form className="space-y-4">
-                                        <FormField
-                                            control={form.control}
-                                            name="username"
-                                            render={({ field }) => (
-                                                <FormItem className="space-y-1">
-                                                    <div className="flex items-center border rounded-sm bg-input-bg px-2 ">
-                                                        <Mail className="text-gray-400" />
-                                                        <FormControl>
-                                                            <Input
-                                                                className="border-none shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                                placeholder="jane@example.com"
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                    </div>
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="password"
-                                            render={({ field }) => (
-                                                <FormItem className="space-y-1">
-                                                    <div className="flex items-center border rounded-sm bg-input-bg px-2 ">
-                                                        <LockIcon className="text-gray-400" />
-                                                        <FormControl>
-                                                            <Input
-                                                                className="border-none shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                                placeholder="•••••"
-                                                                type={
-                                                                    showPassword
-                                                                        ? 'text'
-                                                                        : 'password'
-                                                                }
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                        {showPassword ? (
-                                                            <EyeClosed
-                                                                className="text-gray-400"
-                                                                onClick={() =>
-                                                                    setShowPassword(
-                                                                        !showPassword
-                                                                    )
-                                                                }
-                                                            />
-                                                        ) : (
-                                                            <Eye
-                                                                className="text-gray-400"
-                                                                onClick={() =>
-                                                                    setShowPassword(
-                                                                        !showPassword
-                                                                    )
-                                                                }
-                                                            />
-                                                        )}
-                                                        {/* <span className='text-xs cursor-pointer text-gray-400' onClick={() => setShowPassword(!showPassword)}>show</span> */}
-                                                    </div>
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </form>
-                                </Form>
-                            </div>
+                            <Form {...form}>
+                                <form className="space-y-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="username"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-1">
+                                                <div className="flex items-center border rounded-sm bg-input-bg px-2 ">
+                                                    <Mail className="text-gray-400" />
+                                                    <FormControl>
+                                                        <Input
+                                                            type="email"
+                                                            className="border-none shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                            placeholder="jane@example.com"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="password"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-1">
+                                                <div className="flex items-center border rounded-sm bg-input-bg px-2 ">
+                                                    <LockIcon className="text-gray-400" />
+                                                    <FormControl>
+                                                        <Input
+                                                            className="border-none shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                            placeholder="•••••"
+                                                            type={
+                                                                showPassword
+                                                                    ? 'text'
+                                                                    : 'password'
+                                                            }
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    {showPassword ? (
+                                                        <EyeClosed
+                                                            className="text-gray-400"
+                                                            onClick={() =>
+                                                                setShowPassword(
+                                                                    !showPassword
+                                                                )
+                                                            }
+                                                        />
+                                                    ) : (
+                                                        <Eye
+                                                            className="text-gray-400"
+                                                            onClick={() =>
+                                                                setShowPassword(
+                                                                    !showPassword
+                                                                )
+                                                            }
+                                                        />
+                                                    )}
+                                                    {/* <span className='text-xs cursor-pointer text-gray-400' onClick={() => setShowPassword(!showPassword)}>show</span> */}
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </form>
+                            </Form>
                             <div className="flex justify-center mt-5 w-full">
                                 <Button
                                     className="w-full bg-primary-blue hover:bg-primary-blue"

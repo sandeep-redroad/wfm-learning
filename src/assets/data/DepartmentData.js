@@ -1,27 +1,23 @@
 const DepartmentData = [
     {
         id : 1,
-        name : "Coding",
+        department : "Coding",
     },
     {
         id : 2,
-        name : "RCM",
+        department : "RCM",
     },
     {
         id : 3,
-        name : "Non Clinical",
+        department : "Non Clinical",
     },
     {
         id : 4,
-        name : "Triage",
+        department : "Triage",
     },
     {
         id : 5,
-        name : "Clinical Compliance Review",
-    },
-    {
-        id : 6,
-        name : "Clinical Compliance Review",
+        department : "Clinical Compliance Review",
     },
 ]
 
