@@ -1,6 +1,6 @@
 import { Separator } from '@radix-ui/react-dropdown-menu'
 import React from 'react'
-import { SidebarTrigger } from '../ui/sidebar'
+import { SidebarTrigger, useSidebar } from '../ui/sidebar'
 import MainBreadcrumb from './MainBreadcrumb'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -15,8 +15,15 @@ import { useAuth } from '@/Context/AuthContext'
 
 const Navbar = () => {
     const { logout } = useAuth()
+    const { open } = useSidebar()
     return (
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b text-white px-4 bg-primary-red justify-between">
+        <header
+            className={`fixed top-0  right-0  flex h-16 shrink-0 items-center gap-2 border-b z-10 text-white px-4 section-grad-header justify-between ${
+                open
+                    ? ' transition-all left-[16rem] duration-[350ms]'
+                    : 'left-0'
+            }`}
+        >
             <div className="flex items-center">
                 <SidebarTrigger className="-ml-1" />
                 <Separator orientation="vertical" className="mr-2 h-4" />

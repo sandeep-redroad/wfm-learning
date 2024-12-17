@@ -14,14 +14,14 @@ import SidebarMenuData from '@/assets/data/SideBarMenu'
 
 const PageSidebar = (props) => {
     return (
-        <Sidebar {...props}>
-            <SidebarHeader className="bg-primary-red">
+        <Sidebar {...props} >
+            <SidebarHeader className="bg-primary-purpal">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" className="hover:bg-transparent active:bg-transparent" asChild>
                             <Link to="/" className="flex justify-center">
                                 <img
-                                    src={assets.redroadicon}
+                                    src={assets.redroadwhitelogo}
                                     alt="Logo"
                                     className="w-36"
                                 />
@@ -30,7 +30,7 @@ const PageSidebar = (props) => {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-            <SidebarContent>
+            <SidebarContent className="section-grad-sidebar">
                 <SidebarItems items={SidebarMenuData.navMain} />
             </SidebarContent>
         </Sidebar>
