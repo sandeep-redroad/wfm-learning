@@ -17,6 +17,7 @@ export default {
   			'primary-blue-hover': '#60a9e9',
   			'input-bg': '#f4f5f6',
   			'input-clr': '#d1d8dd',
+			'primary-grn':'#008000',
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',

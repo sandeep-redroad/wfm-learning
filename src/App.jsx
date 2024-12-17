@@ -14,6 +14,7 @@ import { AuthProvider } from '@/Context/AuthContext'
 import Login1 from './Pages/Login1'
 import Login2 from './Pages/Login2'
 
+import Project from './Components/Project/Project'
 
 let router = createBrowserRouter([
     {
@@ -39,6 +40,10 @@ let router = createBrowserRouter([
             {
                 path: '/invoices',
                 Component: Invoice,
+            },
+            {
+                path: '/projects',
+                Component: Project,
             },
             {
                 path: '/daily-work',
