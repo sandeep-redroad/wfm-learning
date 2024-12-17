@@ -1,4 +1,4 @@
-import {React,useState} from 'react'
+import { React, useState } from 'react'
 ;('use client')
 import { Check, ChevronsUpDown } from 'lucide-react'
 
@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Switch } from '@/components/ui/switch'
+import { Checkbox } from '@/components/ui/checkbox'
 import { z } from 'zod'
 import {
     Table,
@@ -59,10 +60,24 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover'
+import SearchableSelect from '../Common/SearchableSelect'
+import CustomSelect from '../Common/CustomSelect'
 
 const Project = () => {
-   
-    const frameworks = [
+    const [checkOne, setcheckOne] = useState(false)
+    const [checkAll, setcheckAll] = useState(false)
+
+    const lob_processes = [
+        {
+            value: 'next.js',
+            label: 'Next.js',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+    ]
+    const team_leads = [
         {
             value: 'next.js',
             label: 'Next.js',
@@ -72,21 +87,48 @@ const Project = () => {
             label: 'SvelteKit',
         },
         {
-            value: 'nuxt.js',
-            label: 'Nuxt.js',
+            value: 'sveltekit',
+            label: 'SvelteKit',
         },
         {
-            value: 'remix',
-            label: 'Remix',
+            value: 'sveltekit',
+            label: 'SvelteKit',
         },
         {
-            value: 'astro',
-            label: 'Astro',
+            value: 'sveltekit',
+            label: 'SvelteKit',
         },
-    ];
-    const [rows, setRows] = useState([]);
-    const [open, setOpen] = useState(false)
-    const [value, setValue] = useState('')
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+    ]
+    const clients = [
+        {
+            value: 'next.js',
+            label: 'Next.js',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+    ]
+    const departments = [
+        {
+            value: 'next.js',
+            label: 'Next.js',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+    ]
+    const [rows, setRows] = useState([])
+
     const form = useForm({
         resolver: zodResolver(),
         defaultValues: {
@@ -104,27 +146,77 @@ const Project = () => {
         setRows([
             ...rows,
             {
-              id: rows.length + 1,
-              checkbox: false,
-              select1: '',
-              select2: '',
-              input: '',
+                id: rows.length + 1,
+                checkbox: false,
+                switch: false,
+                select1: '',
+                select2: '',
+                input: '',
             },
-          ]);
-      };
-    
+        ])
+    }
+    const deleteone = (id) => {
+       
+        const updatedrows = rows.filter((row) => !row.checkbox)
+        let newdata = updatedrows.length > 0 ? updatedrows : []
 
+        setRows(() => newdata)
+    }
+    const deleteAll = () => {
+        setRows([])
+       
+    }
+    const changeOne = (row, i) => {
+       
+        setRows((prev) => {
+            let updatedData = []
+            console.log('prev', prev)
+            prev.map((item, i) => {
+                if (item.id == row.id) {
+                    prev[i]['checkbox'] = !prev[i]['checkbox']
+                }
+                updatedData.push(item)
+            })
+            return updatedData
+        })
+       
+    }
+    const changeAll = () => {
+        let isChecked = !checkAll;
+        setcheckAll((prev)=>isChecked);
+        console.log("changeall",checkAll)
+        setRows((prev) => {
+            let updatedData = []
+            console.log('prev', prev)
+            prev.map((item, i) => {
+                prev[i]['checkbox'] = isChecked;
+                updatedData.push(item)
+            })
+            console.log("updated data",updatedData)
+            return updatedData;
+        })
+       
+    }
     return (
-        <Card>
-            <CardHeader>
+        <>
+        <div className="flex px-8 items-end justify-end">
+                            <Button type="submit" className="bg-primary-blue">
+                                Save
+                            </Button>
+                        </div>
+        {/* <Card className="px-6">
+            <CardHeader className="px-6">
                 <CardTitle className="text-primary-red">
                     Add New Project
                 </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent> */}
                 <Form {...form} className="">
-                    <form onSubmit={form.handleSubmit(onSubmit)}>
-                        <div className="grid grid-cols-2 gap-4  ">
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="px-3"
+                    >
+                        <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                             <FormField
                                 control={form.control}
                                 name="username"
@@ -149,29 +241,13 @@ const Project = () => {
                                 name="lob_process"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>LOB_Process</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select LOB_Process" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="m@example.com">
-                                                    m@example.com
-                                                </SelectItem>
-                                                <SelectItem value="m@google.com">
-                                                    m@google.com
-                                                </SelectItem>
-                                                <SelectItem value="m@support.com">
-                                                    m@support.com
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-
+                                        <FormLabel>LOB Process</FormLabel>
+                                        <div className="w-full">
+                                            <CustomSelect
+                                                data={lob_processes}
+                                                name="LOB process"
+                                            />
+                                        </div>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -184,85 +260,10 @@ const Project = () => {
                                     <FormItem>
                                         <FormLabel>Client</FormLabel>
                                         <div className="w-full">
-                                            <Popover
-                                                open={open}
-                                                onOpenChange={setOpen}
-                                                className="w-full"
-                                            >
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        aria-expanded={open}
-                                                        className="w-full justify-between"
-                                                    >
-                                                        {value
-                                                            ? frameworks.find(
-                                                                  (framework) =>
-                                                                      framework.value ===
-                                                                      value
-                                                              )?.label
-                                                            : 'Select framework...'}
-                                                        <ChevronsUpDown className="opacity-50" />
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className=" w-full p-0">
-                                                    <Command className="w-full max-w-2xl min-w-full">
-                                                        <CommandInput
-                                                            placeholder="Search framework..."
-                                                            className=" w-full"
-                                                        />
-                                                        <CommandList>
-                                                            <CommandEmpty>
-                                                                No framework
-                                                                found.
-                                                            </CommandEmpty>
-                                                            <CommandGroup>
-                                                                {frameworks.map(
-                                                                    (
-                                                                        framework
-                                                                    ) => (
-                                                                        <CommandItem
-                                                                            key={
-                                                                                framework.value
-                                                                            }
-                                                                            value={
-                                                                                framework.value
-                                                                            }
-                                                                            onSelect={(
-                                                                                currentValue
-                                                                            ) => {
-                                                                                setValue(
-                                                                                    currentValue ===
-                                                                                        value
-                                                                                        ? ''
-                                                                                        : currentValue
-                                                                                )
-                                                                                setOpen(
-                                                                                    false
-                                                                                )
-                                                                            }}
-                                                                        >
-                                                                            {
-                                                                                framework.label
-                                                                            }
-                                                                            <Check
-                                                                                className={cn(
-                                                                                    'ml-auto',
-                                                                                    value ===
-                                                                                        framework.value
-                                                                                        ? 'opacity-100'
-                                                                                        : 'opacity-0'
-                                                                                )}
-                                                                            />
-                                                                        </CommandItem>
-                                                                    )
-                                                                )}
-                                                            </CommandGroup>
-                                                        </CommandList>
-                                                    </Command>
-                                                </PopoverContent>
-                                            </Popover>
+                                            <CustomSelect
+                                                data={clients}
+                                                name="Clients"
+                                            />
                                         </div>
                                         <FormMessage />
                                     </FormItem>
@@ -274,197 +275,239 @@ const Project = () => {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Department</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select Department" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="m@example.com">
-                                                    m@example.com
-                                                </SelectItem>
-                                                <SelectItem value="m@google.com">
-                                                    m@google.com
-                                                </SelectItem>
-                                                <SelectItem value="m@support.com">
-                                                    m@support.com
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                        <div className="full">
+                                            <CustomSelect
+                                                data={departments}
+                                                name="Department"
+                                            />
+                                        </div>
 
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
-                        <div className="mt-3.5 mb-3.5">
-                            <Card>
-                                <Table>
-                                    
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead className="w-[100px]">
-                                                Sr.No
-                                            </TableHead>
-                                            <TableHead>Enable</TableHead>
-                                            <TableHead>Process</TableHead>
-                                            <TableHead>Billing</TableHead>
-                                            <TableHead>Rate</TableHead>
-                                            <TableHead className="text-right">
-                                                <Button
-                                                    type="button"
-                                                    className="bg-primary-grn"
-                                                    onClick={addRow}
+                        <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem]">
+                            {/* <Card className="m-0"> */}
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[35px]">
+                                            <Checkbox
+                                                onClick={changeAll}
+                                                value={checkAll}
+                                                checked={checkAll}
+                                            />
+                                        </TableHead>
+                                        <TableHead className="w-[50px] ">
+                                            Sr.No
+                                        </TableHead>
+                                        <TableHead className="w-[50px]">
+                                            Enable
+                                        </TableHead>
+                                        <TableHead className="w-[300px]">
+                                            Process
+                                        </TableHead>
+                                        <TableHead className="w-[200px]">
+                                            Billing
+                                        </TableHead>
+                                        <TableHead className="w-[100px]">
+                                            Rate
+                                        </TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {console.log('rows L ', rows)}
+                                    {rows.length == 0 ? (
+                                        <tr>
+                                            <td colspan="6">
+                                                <h6
+                                                    className="text-center"
+                                                    style={{ margin: 0 }}
                                                 >
-                                                    Add Row
-                                                </Button>
-                                            </TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell>1</TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center space-x-2">
-                                                    <Switch
-                                                        className="bg-primary-grn"
+                                                    No Data
+                                                </h6>
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        rows.map((row, i) => (
+                                            <TableRow key={row.id}>
+                                                <TableCell>
+                                                    <Checkbox
+                                                        onClick={() =>
+                                                            changeOne(row, i)
+                                                        }
+                                                        checked={row.checkbox}
+                                                        value={row.checkbox}
                                                     />
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <FormField
-                                                    control={form.control}
-                                                    name="process"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <Select
-                                                                onValueChange={
-                                                                    field.onChange
-                                                                }
-                                                                defaultValue={
-                                                                    field.value
-                                                                }
-                                                            >
+                                                </TableCell>
+                                                <TableCell className="">
+                                                    {row.id}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center space-x-2 justify-center">
+                                                        <Switch className="bg-primary-grn" />
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="w-full">
+                                                        <FormField
+                                                            control={
+                                                                form.control
+                                                            }
+                                                            name="process"
+                                                            render={({
+                                                                field,
+                                                            }) => (
+                                                                <FormItem>
+                                                                    <Select
+                                                                        onValueChange={
+                                                                            field.onChange
+                                                                        }
+                                                                        defaultValue={
+                                                                            field.value
+                                                                        }
+                                                                        className="border-none"
+                                                                    >
+                                                                        <FormControl>
+                                                                            <SelectTrigger className="border-none shadow-none w-full">
+                                                                                <SelectValue placeholder="Select Process" />
+                                                                            </SelectTrigger>
+                                                                        </FormControl>
+                                                                        <SelectContent>
+                                                                            <SelectItem value="m@example.com">
+                                                                                m@example.com
+                                                                            </SelectItem>
+                                                                            <SelectItem value="m@google.com">
+                                                                                m@google.com
+                                                                            </SelectItem>
+                                                                            <SelectItem value="m@support.com">
+                                                                                m@support.com
+                                                                            </SelectItem>
+                                                                        </SelectContent>
+                                                                    </Select>
+
+                                                                    <FormMessage />
+                                                                </FormItem>
+                                                            )}
+                                                        />
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="billing"
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                                <Select
+                                                                    onValueChange={
+                                                                        field.onChange
+                                                                    }
+                                                                    defaultValue={
+                                                                        field.value
+                                                                    }
+                                                                    className="border-none w-full"
+                                                                >
+                                                                    <FormControl>
+                                                                        <SelectTrigger className="border-none shadow-none  w-full">
+                                                                            <SelectValue placeholder="Select Billing" />
+                                                                        </SelectTrigger>
+                                                                    </FormControl>
+                                                                    <SelectContent>
+                                                                        <SelectItem value="m@example.com">
+                                                                            m@example.com
+                                                                        </SelectItem>
+                                                                        <SelectItem value="m@google.com">
+                                                                            m@google.com
+                                                                        </SelectItem>
+                                                                        <SelectItem value="m@support.com">
+                                                                            m@support.com
+                                                                        </SelectItem>
+                                                                    </SelectContent>
+                                                                </Select>
+
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="rate"
+                                                        render={({ field }) => (
+                                                            <FormItem>
                                                                 <FormControl>
-                                                                    <SelectTrigger>
-                                                                        <SelectValue placeholder="Select Process" />
-                                                                    </SelectTrigger>
+                                                                    <Input
+                                                                        placeholder="rate"
+                                                                        {...field}
+                                                                        className="border-none shadow-none"
+                                                                    />
                                                                 </FormControl>
-                                                                <SelectContent>
-                                                                    <SelectItem value="m@example.com">
-                                                                        m@example.com
-                                                                    </SelectItem>
-                                                                    <SelectItem value="m@google.com">
-                                                                        m@google.com
-                                                                    </SelectItem>
-                                                                    <SelectItem value="m@support.com">
-                                                                        m@support.com
-                                                                    </SelectItem>
-                                                                </SelectContent>
-                                                            </Select>
 
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                               
-                                                <FormField
-                                                    control={form.control}
-                                                    name="billing"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <Select
-                                                                onValueChange={
-                                                                    field.onChange
-                                                                }
-                                                                defaultValue={
-                                                                    field.value
-                                                                }
-                                                            >
-                                                                <FormControl>
-                                                                    <SelectTrigger>
-                                                                        <SelectValue placeholder="Select Billing" />
-                                                                    </SelectTrigger>
-                                                                </FormControl>
-                                                                <SelectContent>
-                                                                    <SelectItem value="m@example.com">
-                                                                        m@example.com
-                                                                    </SelectItem>
-                                                                    <SelectItem value="m@google.com">
-                                                                        m@google.com
-                                                                    </SelectItem>
-                                                                    <SelectItem value="m@support.com">
-                                                                        m@support.com
-                                                                    </SelectItem>
-                                                                </SelectContent>
-                                                            </Select>
-
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                               
-                                                <FormField
-                                                    control={form.control}
-                                                    name="rate"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormControl>
-                                                                <Input
-                                                                    placeholder="rate"
-                                                                    {...field}
-                                                                />
-                                                            </FormControl>
-
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </TableCell>
-                                            <TableCell></TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
-                            </Card>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    )}
+                                </TableBody>
+                            </Table>
+                            <Button
+                                type="button"
+                                className=""
+                                onClick={addRow}
+                                style={{ padding: '0px 10px', height: '28px',backgroundColor:"#808080d6" }}
+                            >
+                                Add Row
+                            </Button>
+                          
+                          
+                            {!checkAll &&
+                            rows.filter((row) => {
+                              
+                                return row.checkbox
+                            }).length > 0 ? (
+                                <Button
+                                    type="button"
+                                    className="bg-primary-red ml-1"
+                                    onClick={() => deleteone()}
+                                    style={{ padding: '0px 10px', height: '28px'}}
+                                >
+                                    Delete
+                                </Button>
+                            ) : (
+                                ''
+                            )}
+                            
+                            {checkAll && rows.length > 0 && (
+                                <Button
+                                    type="button"
+                                    className="bg-primary-red ml-1"
+                                    onClick={deleteAll}
+                                    style={{ padding: '0px 10px', height: '28px'}}
+                                >
+                                    Delete All
+                                </Button>
+                            )}
+                            {/* </Card> */}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                             <FormField
                                 control={form.control}
                                 name="project_lead"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Project Lead</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select Project Lead" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="m@example.com">
-                                                    m@example.com
-                                                </SelectItem>
-                                                <SelectItem value="m@google.com">
-                                                    m@google.com
-                                                </SelectItem>
-                                                <SelectItem value="m@support.com">
-                                                    m@support.com
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-
+                                        <div className="w-full">
+                                            <CustomSelect
+                                                data={team_leads}
+                                                name="Team leads"
+                                            />
+                                        </div>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -478,7 +521,7 @@ const Project = () => {
                                         <FormLabel>Head Count</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder="head_count"
+                                                placeholder="Head count"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -519,15 +562,12 @@ const Project = () => {
                                 <FormMessage />
                             </FormItem>
                         </div>
-                        <div className="flex flex items-end justify-end mt-3.5">
-                            <Button type="submit" className="bg-primary-blue">
-                                Save
-                            </Button>
-                        </div>
+                        
                     </form>
                 </Form>
-            </CardContent>
-        </Card>
+            {/* </CardContent>
+        </Card> */}
+        </>
     )
 }
 

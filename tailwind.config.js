@@ -7,7 +7,8 @@ export default {
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
+  			sm: 'calc(var(--radius) - 4px)',
+			custom: '16px'
   		},
   		colors: {
   			'primary-red': '#cd233a',
@@ -18,6 +19,8 @@ export default {
   			'input-bg': '#f4f5f6',
   			'input-clr': '#d1d8dd',
 			'primary-grn':'#008000',
+			'primary-gray':"#808080d6",
+			
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',
