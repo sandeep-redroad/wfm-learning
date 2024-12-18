@@ -1,7 +1,7 @@
 const BillingColumns = [
     {
         accessorKey: 'sl',
-        header: 'Sl',
+        header: 'Sr. No.',
     },
     {
         accessorKey: 'billingType',

@@ -1,7 +1,7 @@
 const ProcessColumns = [
     {
         accessorKey: 'sl',
-        header: 'Sl',
+        header: 'Sr. No.',
     },
     {
         accessorKey: 'Process',

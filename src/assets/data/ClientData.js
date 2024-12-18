@@ -1,12 +1,10 @@
-const ClientData = [
- 
-]
+const ClientData = []
 
-for(let i = 1; i < 21; i++){
+for (let i = 1; i < 21; i++) {
     ClientData.push({
-        id:crypto.randomUUID(),
-        client:crypto.randomUUID()
+        id: crypto.randomUUID(),
+        client: crypto.randomUUID(),
     })
 }
 
-export default ClientData;
+export default ClientData

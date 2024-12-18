@@ -1,7 +1,7 @@
 const ClientColumns = [
     {
         accessorKey: 'sl',
-        header: 'Sl',
+        header: 'Sr. No.',
     },
     {
         accessorKey: 'client',
