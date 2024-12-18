@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
+import { FormControl } from '../ui/form'
 
-const CustomSelect = ({ data, name }) => {
+const CustomSelect = ({ data, placeholder, field }) => {
     const [searchTerm, setSearchTerm] = useState('')
     const [selectedOption, setSelectedOption] = useState('')
     const [isDropdownOpen, setDropdownOpen] = useState(false)
     const [focusedIndex, setFocusedIndex] = useState(null)
+    const [filteredOptions, setFilterOption] = useState(data)
 
     const dropdownRef = useRef(null)
 
@@ -29,37 +31,39 @@ const CustomSelect = ({ data, name }) => {
         }
     }, [])
 
-    const filteredOptions = data.filter((option) =>
-        option.label.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    // const filteredOptions = data.filter((option) =>
+    //     option.label.toLowerCase().includes(searchTerm.toLowerCase())
+    // )
 
     const handleChange = (e) => {
-        setSearchTerm(e.target.value)
+        console.log('field : ', field)
+        // setSearchTerm()
+        setFilterOption(
+            data.filter((option) =>
+                option.label
+                    .toLowerCase()
+                    .includes(e.target.value.toLowerCase())
+            )
+        )
         setDropdownOpen(true) // Open dropdown when user starts typing
     }
     const handleClick = () => {
-        
+        console.log('field : ', field)
         setDropdownOpen(true) // Open dropdown when user starts typing
     }
 
     const handleSelect = (option) => {
-        setSelectedOption(option.label)
+        field['value'] = option['label']
         setSearchTerm(option.label) // Optionally set the search term to the selected value
         setDropdownOpen(false) // Close the dropdown after selecting
     }
 
     const handleKeyDown = (e) => {
-        console.log('in handledydown')
         if (!isDropdownOpen) return
-        console.log(e.key)
 
         switch (e.key) {
             case 'ArrowDown':
                 setFocusedIndex((prevIndex) => {
-                    console.log(
-                        prevIndex === null ||
-                            prevIndex === filteredOptions.length - 1
-                    )
                     if (
                         prevIndex === null ||
                         prevIndex === filteredOptions.length - 1
@@ -89,15 +93,17 @@ const CustomSelect = ({ data, name }) => {
 
     return (
         <div className="w-full relative">
+            {/* <FormControl> */}
             <Input
                 type="text"
-                value={searchTerm}
                 onChange={handleChange}
-                placeholder={`${name}`}
+                placeholder={placeholder}
                 className="w-full"
                 onKeyDown={handleKeyDown}
                 onClick={handleClick}
+                {...field}
             />
+            {/* </FormControl> */}
             {isDropdownOpen && (
                 <ul
                     ref={dropdownRef}
@@ -107,6 +113,7 @@ const CustomSelect = ({ data, name }) => {
                         visibility: isDropdownOpen ? 'visible' : 'hidden',
                     }}
                 >
+                    {console.log('filteredOptions : ', filteredOptions)}
                     {filteredOptions.map((option, index) => (
                         <li
                             key={option.value}
@@ -117,7 +124,7 @@ const CustomSelect = ({ data, name }) => {
                                 backgroundColor:
                                     focusedIndex === index
                                         ? '#ddd'
-                                        : 'transparent', 
+                                        : 'transparent',
                             }}
                         >
                             {option.label}

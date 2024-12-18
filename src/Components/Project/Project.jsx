@@ -4,7 +4,7 @@ import { Check, ChevronsUpDown } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useFieldArray } from 'react-hook-form'
 import { Switch } from '@/components/ui/switch'
 import { Checkbox } from '@/components/ui/checkbox'
 import { z } from 'zod'
@@ -63,10 +63,73 @@ import {
 import SearchableSelect from '../Common/SearchableSelect'
 import CustomSelect from '../Common/CustomSelect'
 
+const formSchema = z.object({
+    projectname: z.string().min(2, {
+        required_error: 'Project name must be at least 2 characters.',
+    }),
+    lob_process: z.string().min(2, {
+        message: 'Please Select LOB process.',
+    }),
+    client: z.string().min(2, { required_error: 'Please select client' }),
+    department: z
+        .string()
+        .min(2, { required_error: 'Please select department' }),
+    process: z.array(
+        z.object({
+            enable: z.boolean(),
+            process: z.string({
+                required_error: 'Please select process',
+            }),
+            billing: z.string({
+                required_error: 'Please select billing',
+            }),
+            rate: z.number().multipleOf(0.01, {
+                required_error: 'rate is required',
+                invalid_type_error: 'rate must be a float',
+            }),
+        })
+    ),
+    projectlead: z
+        .string()
+        .min(2, { required_error: 'Please select lob process' }),
+    headcount: z.number({
+        required_error: 'headcount is required',
+        invalid_type_error: 'headcount must be a number',
+    }),
+    Ftedeployed: z.number({
+        required_error: 'fte deployed is required',
+        invalid_type_error: 'fte deployed must be a number',
+    }),
+})
+
 const Project = () => {
     const [checkOne, setcheckOne] = useState(false)
     const [checkAll, setcheckAll] = useState(false)
+    const [rows, setRows] = useState([])
 
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            projectname: '',
+            lob_process: '',
+            client: '',
+            department: '',
+            process: [
+                {
+                    enable: true,
+                    name: '',
+                    billing: '',
+                    rate: 0,
+                },
+            ],
+            projectlead: '',
+            headcount: '',
+            Ftedeployed: '',
+            comments: '',
+        },
+    })
+
+    // const [projectData]
     const lob_processes = [
         {
             value: 'next.js',
@@ -127,19 +190,18 @@ const Project = () => {
             label: 'SvelteKit',
         },
     ]
-    const [rows, setRows] = useState([])
-
-    const form = useForm({
-        resolver: zodResolver(),
-        defaultValues: {
-            username: '',
-        },
-    })
 
     function onSubmit(values) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
-        console.log(values)
+        console.log('values', values)
+    }
+    const onError = (errors, e) => {
+        // setIsLoading(true)
+        console.log('Error found ', errors, e)
+        // setIsError(true)
+        // login()
+        // navigate('/')
     }
 
     const addRow = () => {
@@ -156,7 +218,6 @@ const Project = () => {
         ])
     }
     const deleteone = (id) => {
-       
         const updatedrows = rows.filter((row) => !row.checkbox)
         let newdata = updatedrows.length > 0 ? updatedrows : []
 
@@ -164,13 +225,11 @@ const Project = () => {
     }
     const deleteAll = () => {
         setRows([])
-       
     }
     const changeOne = (row, i) => {
-       
         setRows((prev) => {
             let updatedData = []
-            console.log('prev', prev)
+
             prev.map((item, i) => {
                 if (item.id == row.id) {
                     prev[i]['checkbox'] = !prev[i]['checkbox']
@@ -179,224 +238,183 @@ const Project = () => {
             })
             return updatedData
         })
-       
     }
     const changeAll = () => {
-        let isChecked = !checkAll;
-        setcheckAll((prev)=>isChecked);
-        console.log("changeall",checkAll)
+        let isChecked = !checkAll
+        setcheckAll((prev) => isChecked)
+     
         setRows((prev) => {
             let updatedData = []
-            console.log('prev', prev)
+         
             prev.map((item, i) => {
-                prev[i]['checkbox'] = isChecked;
+                prev[i]['checkbox'] = isChecked
                 updatedData.push(item)
             })
-            console.log("updated data",updatedData)
-            return updatedData;
+        
+            return updatedData
         })
-       
     }
+    // const { fields, append, remove } = useFieldArray({
+    //     control,
+    //     name: 'process',
+    //   });
     return (
         <>
-        <div className="flex px-8 items-end justify-end">
-                            <Button type="submit" className="bg-primary-blue">
-                                Save
-                            </Button>
-                        </div>
-        {/* <Card className="px-6">
+            {/* <Card className="px-6">
             <CardHeader className="px-6">
                 <CardTitle className="text-primary-red">
                     Add New Project
                 </CardTitle>
             </CardHeader>
             <CardContent> */}
-                <Form {...form} className="">
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="px-3"
-                    >
-                        <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                            <FormField
-                                control={form.control}
-                                name="username"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Project Name</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Project Name"
-                                                {...field}
-                                                className="bg-white"
-                                            />
-                                        </FormControl>
+            <Form {...form} className="px-10">
+                <form
+                    onSubmit={form.handleSubmit(onSubmit, onError)}
+                    className="px-14"
+                >
+                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
+                        <FormField
+                            control={form.control}
+                            name="projectname"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Project Name</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="Project Name"
+                                            {...field}
+                                        />
+                                    </FormControl>
 
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                            <FormField
-                                control={form.control}
-                                name="lob_process"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>LOB Process</FormLabel>
-                                        <div className="w-full">
-                                            <CustomSelect
-                                                data={lob_processes}
-                                                name="LOB process"
-                                            />
-                                        </div>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                        <FormField
+                            control={form.control}
+                            name="lob_process"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>LOB Process</FormLabel>
+                                    <div className="w-full">
+                                        <CustomSelect
+                                            data={lob_processes}
+                                            name="LOB Process"
+                                            field={field}
+                                        />
+                                    </div>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                            <FormField
-                                control={form.control}
-                                name="client"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Client</FormLabel>
-                                        <div className="w-full">
-                                            <CustomSelect
-                                                data={clients}
-                                                name="Clients"
-                                            />
-                                        </div>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="department"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Department</FormLabel>
-                                        <div className="full">
-                                            <CustomSelect
-                                                data={departments}
-                                                name="Department"
-                                            />
-                                        </div>
+                        <FormField
+                            control={form.control}
+                            name="client"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Client</FormLabel>
+                                    <div className="w-full">
+                                        <CustomSelect
+                                            data={clients}
+                                            name="Client"
+                                            field={field}
+                                        />
+                                    </div>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="department"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Department</FormLabel>
+                                    <div className="full">
+                                        <CustomSelect
+                                            data={departments}
+                                            name="Department"
+                                            field={field}
+                                        />
+                                    </div>
 
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem]">
-                            {/* <Card className="m-0"> */}
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-[35px]">
-                                            <Checkbox
-                                                onClick={changeAll}
-                                                value={checkAll}
-                                                checked={checkAll}
-                                            />
-                                        </TableHead>
-                                        <TableHead className="w-[50px] ">
-                                            Sr.No
-                                        </TableHead>
-                                        <TableHead className="w-[50px]">
-                                            Enable
-                                        </TableHead>
-                                        <TableHead className="w-[300px]">
-                                            Process
-                                        </TableHead>
-                                        <TableHead className="w-[200px]">
-                                            Billing
-                                        </TableHead>
-                                        <TableHead className="w-[100px]">
-                                            Rate
-                                        </TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {console.log('rows L ', rows)}
-                                    {rows.length == 0 ? (
-                                        <tr>
-                                            <td colspan="6">
-                                                <h6
-                                                    className="text-center"
-                                                    style={{ margin: 0 }}
-                                                >
-                                                    No Data
-                                                </h6>
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        rows.map((row, i) => (
-                                            <TableRow key={row.id}>
-                                                <TableCell>
-                                                    <Checkbox
-                                                        onClick={() =>
-                                                            changeOne(row, i)
-                                                        }
-                                                        checked={row.checkbox}
-                                                        value={row.checkbox}
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem]">
+                        {/* <Card className="m-0"> */}
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-[35px]">
+                                        <Checkbox
+                                            onClick={changeAll}
+                                            value={checkAll}
+                                            checked={checkAll}
+                                        />
+                                    </TableHead>
+                                    <TableHead className="w-[50px] ">
+                                        Sr.No
+                                    </TableHead>
+                                    <TableHead className="w-[50px]">
+                                        Enable
+                                    </TableHead>
+                                    <TableHead className="w-[300px]">
+                                        Process
+                                    </TableHead>
+                                    <TableHead className="w-[200px]">
+                                        Billing
+                                    </TableHead>
+                                    <TableHead className="w-[100px]">
+                                        Rate
+                                    </TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              
+                                {rows.length == 0 ? (
+                                    <tr>
+                                        <td colspan="6">
+                                            <h6
+                                                className="text-center"
+                                                style={{ margin: 0 }}
+                                            >
+                                                No Data
+                                            </h6>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    rows.map((row, i) => (
+                                        <TableRow key={row.id} name="process">
+                                            <TableCell>
+                                                <Checkbox
+                                                    onClick={() =>
+                                                        changeOne(row, i)
+                                                    }
+                                                    checked={row.checkbox}
+                                                    value={row.checkbox}
+                                                />
+                                            </TableCell>
+                                            <TableCell className="">
+                                                {row.id}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center space-x-2 justify-center">
+                                                    <Switch
+                                                        className="bg-primary-grn"
+                                                        name={`switch${row.id}`}
                                                     />
-                                                </TableCell>
-                                                <TableCell className="">
-                                                    {row.id}
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="flex items-center space-x-2 justify-center">
-                                                        <Switch className="bg-primary-grn" />
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="w-full">
-                                                        <FormField
-                                                            control={
-                                                                form.control
-                                                            }
-                                                            name="process"
-                                                            render={({
-                                                                field,
-                                                            }) => (
-                                                                <FormItem>
-                                                                    <Select
-                                                                        onValueChange={
-                                                                            field.onChange
-                                                                        }
-                                                                        defaultValue={
-                                                                            field.value
-                                                                        }
-                                                                        className="border-none"
-                                                                    >
-                                                                        <FormControl>
-                                                                            <SelectTrigger className="border-none shadow-none w-full">
-                                                                                <SelectValue placeholder="Select Process" />
-                                                                            </SelectTrigger>
-                                                                        </FormControl>
-                                                                        <SelectContent>
-                                                                            <SelectItem value="m@example.com">
-                                                                                m@example.com
-                                                                            </SelectItem>
-                                                                            <SelectItem value="m@google.com">
-                                                                                m@google.com
-                                                                            </SelectItem>
-                                                                            <SelectItem value="m@support.com">
-                                                                                m@support.com
-                                                                            </SelectItem>
-                                                                        </SelectContent>
-                                                                    </Select>
-
-                                                                    <FormMessage />
-                                                                </FormItem>
-                                                            )}
-                                                        />
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="w-full">
                                                     <FormField
                                                         control={form.control}
-                                                        name="billing"
+                                                        name="processName"
                                                         render={({ field }) => (
                                                             <FormItem>
                                                                 <Select
@@ -406,11 +424,11 @@ const Project = () => {
                                                                     defaultValue={
                                                                         field.value
                                                                     }
-                                                                    className="border-none w-full"
+                                                                    className="border-none"
                                                                 >
                                                                     <FormControl>
-                                                                        <SelectTrigger className="border-none shadow-none  w-full">
-                                                                            <SelectValue placeholder="Select Billing" />
+                                                                        <SelectTrigger className="border-none shadow-none w-full">
+                                                                            <SelectValue placeholder="Select Process" />
                                                                         </SelectTrigger>
                                                                     </FormControl>
                                                                     <SelectContent>
@@ -430,141 +448,192 @@ const Project = () => {
                                                             </FormItem>
                                                         )}
                                                     />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="rate"
-                                                        render={({ field }) => (
-                                                            <FormItem>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <FormField
+                                                    control={form.control}
+                                                    name="billing"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <Select
+                                                                onValueChange={
+                                                                    field.onChange
+                                                                }
+                                                                defaultValue={
+                                                                    field.value
+                                                                }
+                                                                className="border-none w-full"
+                                                            >
                                                                 <FormControl>
-                                                                    <Input
-                                                                        placeholder="rate"
-                                                                        {...field}
-                                                                        className="border-none shadow-none"
-                                                                    />
+                                                                    <SelectTrigger className="border-none shadow-none  w-full">
+                                                                        <SelectValue placeholder="Select Billing" />
+                                                                    </SelectTrigger>
                                                                 </FormControl>
+                                                                <SelectContent>
+                                                                    <SelectItem value="m@example.com">
+                                                                        m@example.com
+                                                                    </SelectItem>
+                                                                    <SelectItem value="m@google.com">
+                                                                        m@google.com
+                                                                    </SelectItem>
+                                                                    <SelectItem value="m@support.com">
+                                                                        m@support.com
+                                                                    </SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
 
-                                                                <FormMessage />
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                    )}
-                                </TableBody>
-                            </Table>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`inputs${i}`}
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <Input
+                                                                    placeholder="rate"
+                                                                    {...field}
+                                                                    className="border-none shadow-none"
+                                                                />
+                                                            </FormControl>
+
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                        <Button
+                            type="button"
+                            className=""
+                            onClick={addRow}
+                            style={{
+                                padding: '0px 10px',
+                                height: '28px',
+                                backgroundColor: '#808080d6',
+                            }}
+                        >
+                            Add Row
+                        </Button>
+
+                        {!checkAll &&
+                        rows.filter((row) => {
+                            return row.checkbox
+                        }).length > 0 ? (
                             <Button
                                 type="button"
-                                className=""
-                                onClick={addRow}
-                                style={{ padding: '0px 10px', height: '28px',backgroundColor:"#808080d6" }}
+                                className="bg-primary-red ml-1"
+                                onClick={() => deleteone()}
+                                style={{ padding: '0px 10px', height: '28px' }}
                             >
-                                Add Row
+                                Delete
                             </Button>
-                          
-                          
-                            {!checkAll &&
-                            rows.filter((row) => {
-                              
-                                return row.checkbox
-                            }).length > 0 ? (
-                                <Button
-                                    type="button"
-                                    className="bg-primary-red ml-1"
-                                    onClick={() => deleteone()}
-                                    style={{ padding: '0px 10px', height: '28px'}}
-                                >
-                                    Delete
-                                </Button>
-                            ) : (
-                                ''
+                        ) : (
+                            ''
+                        )}
+
+                        {checkAll && rows.length > 0 && (
+                            <Button
+                                type="button"
+                                className="bg-primary-red ml-1"
+                                onClick={deleteAll}
+                                style={{ padding: '0px 10px', height: '28px' }}
+                            >
+                                Delete All
+                            </Button>
+                        )}
+                        {/* </Card> */}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
+                        <FormField
+                            control={form.control}
+                            name="projectlead"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Project Lead</FormLabel>
+                                    <div className="w-full">
+                                        <CustomSelect
+                                            data={team_leads}
+                                            name="Team leads"
+                                            field={field}
+                                        />
+                                    </div>
+                                    <FormMessage />
+                                </FormItem>
                             )}
-                            
-                            {checkAll && rows.length > 0 && (
-                                <Button
-                                    type="button"
-                                    className="bg-primary-red ml-1"
-                                    onClick={deleteAll}
-                                    style={{ padding: '0px 10px', height: '28px'}}
-                                >
-                                    Delete All
-                                </Button>
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="headcount"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Head Count</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="Head count"
+                                            {...field}
+                                        />
+                                    </FormControl>
+
+                                    <FormMessage />
+                                </FormItem>
                             )}
-                            {/* </Card> */}
-                        </div>
+                        />
 
-                        <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                            <FormField
-                                control={form.control}
-                                name="project_lead"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Project Lead</FormLabel>
-                                        <div className="w-full">
-                                            <CustomSelect
-                                                data={team_leads}
-                                                name="Team leads"
-                                            />
-                                        </div>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                        <FormField
+                            control={form.control}
+                            name="Ftedeployed"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>FTE Deployed</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="fte_deployed"
+                                            {...field}
+                                        />
+                                    </FormControl>
 
-                            <FormField
-                                control={form.control}
-                                name="head_count"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Head Count</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Head count"
-                                                {...field}
-                                            />
-                                        </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="comments"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Comments</FormLabel>
+                                    <FormControl>
+                                        <Textarea
+                                            placeholder="You can write your comments here"
+                                            className="resize-none"
+                                            row="1"
+                                        />
+                                    </FormControl>
 
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="fte_deployed"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>FTE Deployed</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="fte_deployed"
-                                                {...field}
-                                            />
-                                        </FormControl>
-
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormItem>
-                                <FormLabel>Comments</FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        placeholder="You can write your comments here"
-                                        className="resize-none"
-                                        row="1"
-                                    />
-                                </FormControl>
-
-                                <FormMessage />
-                            </FormItem>
-                        </div>
-                        
-                    </form>
-                </Form>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    <div className="flex px-10 items-end justify-end">
+                        <Button type="submit" className="bg-primary-blue">
+                            Save
+                        </Button>
+                    </div>
+                </form>
+            </Form>
             {/* </CardContent>
         </Card> */}
         </>
