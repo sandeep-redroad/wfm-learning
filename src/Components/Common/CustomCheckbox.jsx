@@ -5,7 +5,6 @@ const CustomCheckbox = () => {
     const [rone,setRone]=useState(false);
     const changeOne=()=>{
         setRone(!rone);
-        console.log(rone)
     }
   return (
     <div>
