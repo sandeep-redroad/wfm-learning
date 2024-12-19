@@ -20,6 +20,7 @@ export default {
   			'input-clr': '#d1d8dd',
 			'primary-grn':'#008000',
 			'primary-gray':"#808080d6",
+			'light-gray' : "#f5f5f5",
 			
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',

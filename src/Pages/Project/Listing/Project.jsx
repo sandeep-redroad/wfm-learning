@@ -8,8 +8,8 @@ import { Link } from 'react-router-dom'
 import DataTableEnumType from '@/Enums/DataTableTypeEnum'
 
 const Project = () => {
-    const handleSearch = (e) => {
-        console.log('e : ', e)
+    const handleSearch = (field, e) => {
+        console.log('e : ',field , e)
     }
     return (
         <div className="container mx-auto">
@@ -21,15 +21,21 @@ const Project = () => {
                     </Button>
                 </Link>
             </div>
-            <div className="w-full my-2 grid grid-cols-4 mt-5">
+            <div className="w-full my-2 grid grid-cols-5 gap-3 mt-5">
                 <Input
                     type="text"
-                    onChange={handleSearch}
-                    placeholder="Project"
+                    onChange={(e) => handleSearch('id', e)}
+                    placeholder="ID"
+
+                />
+                <Input
+                    type="text"
+                    onChange={(e) => handleSearch('client', e)}
+                    placeholder="Project Client"
                 />
             </div>
             <Datatable
-                columns={ProjectColumns}
+                columns={ProjectColumns()}
                 data={assets.ProjectData}
                 totalDataCount={10}
                 type={DataTableEnumType.PROJECT}
