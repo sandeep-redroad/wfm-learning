@@ -14,7 +14,7 @@ import { AuthProvider } from '@/Context/AuthContext'
 import Login1 from './Pages/Login1'
 import Login2 from './Pages/Login2'
 
-import CreateProject from './Components/Project/Project'
+import CreateProject from './Components/Project/CreateProject'
 import Project from './Pages/Project/Listing/Project'
 
 let router = createBrowserRouter([

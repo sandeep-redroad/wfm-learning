@@ -62,36 +62,12 @@ import {
 } from '@/components/ui/popover'
 import SearchableSelect from '../Common/SearchableSelect'
 import CustomSelect from '../Common/CustomSelect'
+import SearchableDropdown from '../Common/SearchableDropdown'
 
 const formSchema = z.object({
     projectname: z.string().min(2, {
         required_error: 'Project name must be at least 2 characters.',
     }),
-    lob_process: z.string().min(2, {
-        message: 'Please Select LOB process.',
-    }),
-    client: z.string().min(2, { required_error: 'Please select client' }),
-    department: z
-        .string()
-        .min(2, { required_error: 'Please select department' }),
-    process: z.array(
-        z.object({
-            enable: z.boolean(),
-            process: z.string({
-                required_error: 'Please select process',
-            }),
-            billing: z.string({
-                required_error: 'Please select billing',
-            }),
-            rate: z.number().multipleOf(0.01, {
-                required_error: 'rate is required',
-                invalid_type_error: 'rate must be a float',
-            }),
-        })
-    ),
-    projectlead: z
-        .string()
-        .min(2, { required_error: 'Please select lob process' }),
     headcount: z.number({
         required_error: 'headcount is required',
         invalid_type_error: 'headcount must be a number',
@@ -102,10 +78,16 @@ const formSchema = z.object({
     }),
 })
 
-const Project = () => {
+const CreateProject = () => {
     const [checkOne, setcheckOne] = useState(false)
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
+    const [noneValidatedValue, setNoneValidatedValue] = useState({
+        lob_process : "",
+        client : "",
+        department : "",
+        projectlead :""
+    })
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -128,6 +110,7 @@ const Project = () => {
             comments: '',
         },
     })
+
 
     // const [projectData]
     const lob_processes = [
@@ -192,16 +175,10 @@ const Project = () => {
     ]
 
     function onSubmit(values) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
         console.log('values', values)
     }
     const onError = (errors, e) => {
-        // setIsLoading(true)
         console.log('Error found ', errors, e)
-        // setIsError(true)
-        // login()
-        // navigate('/')
     }
 
     const addRow = () => {
@@ -242,15 +219,15 @@ const Project = () => {
     const changeAll = () => {
         let isChecked = !checkAll
         setcheckAll((prev) => isChecked)
-     
+
         setRows((prev) => {
             let updatedData = []
-         
+
             prev.map((item, i) => {
                 prev[i]['checkbox'] = isChecked
                 updatedData.push(item)
             })
-        
+
             return updatedData
         })
     }
@@ -298,10 +275,18 @@ const Project = () => {
                                 <FormItem>
                                     <FormLabel>LOB Process</FormLabel>
                                     <div className="w-full">
-                                        <CustomSelect
-                                            data={lob_processes}
-                                            name="LOB Process"
-                                            field={field}
+                                        <SearchableDropdown 
+                                            options={lob_processes}
+                                            selectedVal={noneValidatedValue.lob_process}
+                                            handleChange={(val) => {
+                                                setNoneValidatedValue((prev) => {
+                                                    return {
+                                                        ...prev,
+                                                        lob_process : val
+                                                    }
+                                                })
+                                            }}
+                                            placeholder="LOB Process"
                                         />
                                     </div>
                                     <FormMessage />
@@ -375,7 +360,6 @@ const Project = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                              
                                 {rows.length == 0 ? (
                                     <tr>
                                         <td colspan="6">
@@ -634,10 +618,8 @@ const Project = () => {
                     </div>
                 </form>
             </Form>
-            {/* </CardContent>
-        </Card> */}
         </>
     )
 }
 
-export default Project
+export default CreateProject

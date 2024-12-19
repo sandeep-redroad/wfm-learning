@@ -1,61 +1,44 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Input } from '@/components/ui/input'
-import { FormControl } from '../ui/form'
 
 const CustomSelect = ({ data, placeholder, field }) => {
-    const [searchTerm, setSearchTerm] = useState('')
-    const [selectedOption, setSelectedOption] = useState('')
-    const [isDropdownOpen, setDropdownOpen] = useState(false)
-    const [focusedIndex, setFocusedIndex] = useState(null)
-    const [filteredOptions, setFilterOption] = useState(data)
+    const [searchTerm, setSearchTerm] = useState('')  // Store the search term
+    const [filteredOptions, setFilteredOptions] = useState(data)  // Store filtered options
+    const [isDropdownOpen, setDropdownOpen] = useState(false)  // State to manage dropdown visibility
+    const [focusedIndex, setFocusedIndex] = useState(null)  // Manage keyboard navigation (up/down)
+    
+    const dropdownRef = useRef(null)  // To detect clicks outside the dropdown and close it
 
-    const dropdownRef = useRef(null)
-
-    // Close the dropdown if a click outside of it is detected
+    // Close dropdown when clicking outside
     useEffect(() => {
+        console.log(filteredOptions, data)
         const handleClickOutside = (event) => {
-            if (
-                dropdownRef.current &&
-                !dropdownRef.current.contains(event.target)
-            ) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setDropdownOpen(false)
             }
         }
-
-        // Attach event listener
         document.addEventListener('mousedown', handleClickOutside)
-
-        // Clean up the event listener when component is unmounted
         return () => {
             document.removeEventListener('mousedown', handleClickOutside)
         }
     }, [])
 
-    // const filteredOptions = data.filter((option) =>
-    //     option.label.toLowerCase().includes(searchTerm.toLowerCase())
-    // )
-
-    const handleChange = (e) => {
-        console.log('field : ', field)
-        // setSearchTerm()
-        setFilterOption(
-            data.filter((option) =>
-                option.label
-                    .toLowerCase()
-                    .includes(e.target.value.toLowerCase())
+    // Filter the options based on the search term
+    const handleSearchChange = (e) => {
+        const value = e.target.value
+        setSearchTerm(value)  // Update the search term
+        // Filter the options based on the search term
+        setFilteredOptions(
+            data.filter(option =>
+                option.label.toLowerCase().includes(value.toLowerCase()) // Case-insensitive match
             )
         )
-        setDropdownOpen(true) // Open dropdown when user starts typing
-    }
-    const handleClick = () => {
-        console.log('field : ', field)
-        setDropdownOpen(true) // Open dropdown when user starts typing
+        setDropdownOpen(true)  // Open the dropdown when the user starts typing
     }
 
     const handleSelect = (option) => {
-        field['value'] = option['label']
-        setSearchTerm(option.label) // Optionally set the search term to the selected value
-        setDropdownOpen(false) // Close the dropdown after selecting
+        field.onChange(option.label)  // Set the value of the input field
+        setSearchTerm(option.label)  // Set the search term to the selected option
+        setDropdownOpen(false)  // Close the dropdown after selection
     }
 
     const handleKeyDown = (e) => {
@@ -64,11 +47,8 @@ const CustomSelect = ({ data, placeholder, field }) => {
         switch (e.key) {
             case 'ArrowDown':
                 setFocusedIndex((prevIndex) => {
-                    if (
-                        prevIndex === null ||
-                        prevIndex === filteredOptions.length - 1
-                    ) {
-                        return 0 // Go to the first item if we're at the end
+                    if (prevIndex === null || prevIndex === filteredOptions.length - 1) {
+                        return 0  // Move to the first item if we're at the end
                     }
                     return prevIndex + 1
                 })
@@ -76,14 +56,14 @@ const CustomSelect = ({ data, placeholder, field }) => {
             case 'ArrowUp':
                 setFocusedIndex((prevIndex) => {
                     if (prevIndex === null || prevIndex === 0) {
-                        return filteredOptions.length - 1 // Go to the last item if we're at the beginning
+                        return filteredOptions.length - 1  // Move to the last item if we're at the beginning
                     }
                     return prevIndex - 1
                 })
                 break
             case 'Enter':
                 if (focusedIndex !== null) {
-                    handleSelect(filteredOptions[focusedIndex])
+                    handleSelect(filteredOptions[focusedIndex])  // Select the option on Enter
                 }
                 break
             default:
@@ -92,39 +72,33 @@ const CustomSelect = ({ data, placeholder, field }) => {
     }
 
     return (
-        <div className="w-full relative">
-            {/* <FormControl> */}
-            <Input
+        <div className="relative w-full">
+            <input
                 type="text"
-                onChange={handleChange}
-                placeholder={placeholder}
-                className="w-full"
+                value={searchTerm}
+                onChange={handleSearchChange}
                 onKeyDown={handleKeyDown}
-                onClick={handleClick}
-                {...field}
+                placeholder={placeholder}
+                className="w-full p-2 border border-gray-300 rounded"
+                {...field}  // This ensures the input is controlled by React Hook Form
             />
-            {/* </FormControl> */}
-            {isDropdownOpen && (
+            
+            {isDropdownOpen && filteredOptions.length > 0 && (
                 <ul
                     ref={dropdownRef}
-                    className="ulcls w-full"
-                    style={{
-                        opacity: isDropdownOpen ? 1 : 0, // Smooth fade in/out
-                        visibility: isDropdownOpen ? 'visible' : 'hidden',
-                    }}
+                    className="absolute w-full bg-white shadow-lg mt-1 max-h-60 overflow-auto z-10"
+                    style={{ top: '100%' }}
                 >
-                    {console.log('filteredOptions : ', filteredOptions)}
                     {filteredOptions.map((option, index) => (
                         <li
                             key={option.value}
                             onClick={() => handleSelect(option)}
+                            onMouseEnter={() => setFocusedIndex(index)}
+                            onMouseLeave={() => setFocusedIndex(null)}
                             style={{
-                                padding: '5px',
+                                padding: '8px',
                                 cursor: 'pointer',
-                                backgroundColor:
-                                    focusedIndex === index
-                                        ? '#ddd'
-                                        : 'transparent',
+                                backgroundColor: focusedIndex === index ? '#e0e0e0' : 'transparent',
                             }}
                         >
                             {option.label}
@@ -132,7 +106,13 @@ const CustomSelect = ({ data, placeholder, field }) => {
                     ))}
                 </ul>
             )}
-            {/* {selectedOption && <p>Selected: {selectedOption}</p>} */}
+
+            {/* If there are no results, show "No results found" */}
+            {isDropdownOpen && filteredOptions.length === 0 && (
+                <div className="absolute w-full bg-white shadow-lg mt-1 z-10">
+                    <p className="p-2 text-center text-gray-500">No results found</p>
+                </div>
+            )}
         </div>
     )
 }
