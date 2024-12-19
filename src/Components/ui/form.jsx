@@ -63,7 +63,7 @@ const FormLabel = React.forwardRef(({ className, ...props }, ref) => {
   return (
     (<Label
       ref={ref}
-      className={cn(error && "text-red-500 dark:text-red-900", className)}
+      className={cn(error, className)}
       htmlFor={formItemId}
       {...props} />)
   );
@@ -89,7 +89,7 @@ const FormControl = React.forwardRef(({ ...props }, ref) => {
 FormControl.displayName = "FormControl"
 
 const FormDescription = React.forwardRef(({ className, ...props }, ref) => {
-  const { formDescriptionId } = useFormField()
+const { formDescriptionId } = useFormField()
 
   return (
     (<p
