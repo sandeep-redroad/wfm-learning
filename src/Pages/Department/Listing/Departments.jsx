@@ -33,7 +33,7 @@ const Departments = () => {
                 />
             </div>
             <Datatable
-                columns={DepartmentColumns}
+                columns={DepartmentColumns()}
                 data={assets.DepartmentData}
                 totalDataCount={10}
             />

@@ -1,12 +1,20 @@
-const DepartmentColumns = [
-    {
-        accessorKey: 'sl',
-        header: 'Sr. No.',
-    },
-    {
-        accessorKey: 'department',
-        header: 'Department',
+let memoizedColumns = []
+const DepartmentColumns = () => {
+    if (memoizedColumns.length > 0) {
+        return memoizedColumns
     }
-]
 
-export default DepartmentColumns;
+    memoizedColumns = [
+        {
+            accessorKey: 'sl',
+            header: 'Sr. No.',
+        },
+        {
+            accessorKey: 'department',
+            header: 'Department',
+        }
+    ]
+    return memoizedColumns
+}
+
+export default DepartmentColumns

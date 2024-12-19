@@ -1,4 +1,4 @@
-import { React, useState } from 'react'
+import { React, useRef, useState } from 'react'
 ;('use client')
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useForm, useFieldArray } from 'react-hook-form'
@@ -61,11 +61,13 @@ import {
 import SearchableSelect from '../Common/SearchableSelect'
 import CustomSelect from '../Common/CustomSelect'
 import SearchableDropdown from '../Common/SearchableDropdown'
+import { Link } from 'react-router-dom';
 
 const CreateProject = () => {
     const [checkOne, setcheckOne] = useState(false)
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
+    const formRef = useRef(null);
     const [noneValidatedValue, setNoneValidatedValue] = useState({
         lob_process: '',
         client: '',
@@ -306,12 +308,30 @@ const CreateProject = () => {
         })
     }
 
+    const handleSaveClick = () => {
+        // Manually trigger form submission
+        if (formRef.current) {
+            formRef.current.requestSubmit(); // This triggers the form's onSubmit
+        }
+    };
+
     return (
         <>
-            <Form {...form} className="px-10">
+            <div className="flex justify-end items-center mb-3">
+                <div className="flex items-center justify-end gap-2">
+                    <Link className="button" to="/projects">
+                        <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">  
+                            Back
+                        </Button>
+                    </Link>
+                    <Button className="" onClick={handleSaveClick}>Save</Button>
+                </div>
+            </div>
+            <Form {...form} className="">
                 <form
+                    ref={formRef} 
                     onSubmit={form.handleSubmit(onSubmit, onError)}
-                    className="px-14"
+                    className=""
                 >
                     <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                         {/* <FormField
@@ -454,27 +474,27 @@ const CreateProject = () => {
                         {/* <Card className="m-0"> */}
                         <Table>
                             <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-[35px]">
+                                <TableRow className="border">
+                                    <TableHead className="w-[35px] border">
                                         <Checkbox
                                             onClick={changeAll}
                                             value={checkAll}
                                             checked={checkAll}
                                         />
                                     </TableHead>
-                                    <TableHead className="w-[50px] ">
+                                    <TableHead className="w-[50px] border">
                                         Sr.No
                                     </TableHead>
-                                    <TableHead className="w-[50px]">
+                                    <TableHead className="w-[50px] border">
                                         Enable
                                     </TableHead>
-                                    <TableHead className="w-[300px]">
+                                    <TableHead className="w-[300px] border">
                                         Process
                                     </TableHead>
-                                    <TableHead className="w-[200px]">
+                                    <TableHead className="w-[200px] border">
                                         Billing
                                     </TableHead>
-                                    <TableHead className="w-[100px]">
+                                    <TableHead className="w-[100px] border">
                                         Rate
                                     </TableHead>
                                 </TableRow>
@@ -493,8 +513,12 @@ const CreateProject = () => {
                                     </tr>
                                 ) : (
                                     rows.map((row, i) => (
-                                        <TableRow key={row.id}>
-                                            <TableCell>
+                                        <TableRow
+                                            key={row.id}
+                                            name="process"
+                                            className="border"
+                                        >
+                                            <TableCell className="border">
                                                 <Checkbox
                                                     onClick={() =>
                                                         changeOne(row, i)
@@ -503,10 +527,10 @@ const CreateProject = () => {
                                                     value={row.checkbox}
                                                 />
                                             </TableCell>
-                                            <TableCell className="">
+                                            <TableCell className="border">
                                                 {row.id}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="border">
                                                 <div className="flex items-center space-x-2 justify-center">
                                                     <Switch
                                                         className="bg-primary-grn"
@@ -514,7 +538,7 @@ const CreateProject = () => {
                                                     />
                                                 </div>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="border">
                                                 <div className="w-full">
                                                     <FormField
                                                         control={form.control}
@@ -551,7 +575,7 @@ const CreateProject = () => {
                                                     />
                                                 </div>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="border">
                                                 <FormField
                                                     control={form.control}
                                                     name="billing"
@@ -706,11 +730,6 @@ const CreateProject = () => {
                                 </FormItem>
                             )}
                         />
-                    </div>
-                    <div className="flex px-10 items-end justify-end">
-                        <Button type="submit" className="bg-primary-blue">
-                            Save
-                        </Button>
                     </div>
                 </form>
             </Form>

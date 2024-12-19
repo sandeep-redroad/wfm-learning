@@ -30,22 +30,51 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
         rowCount: pageSize,
     })
     return (
-        <div className="rounded-md border">
-            <Table>
-                <TableHeader className="bg-gray-200">
+        <div className="rounded-md">
+            <Table
+                style={{
+                    borderCollapse: 'separate',
+                    borderSpacing: '0 3px',
+                }}
+            >
+                <TableHeader className="bg-black hover:bg-black">
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
+                        <TableRow
+                            key={headerGroup.id}
+                            className="shadow-md border border-black "
+                        >
                             {headerGroup.headers.map((header) => {
                                 return (
-                                    <TableHead key={header.id}>
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                  header.column.columnDef
-                                                      .header,
-                                                  header.getContext()
-                                              )}
-                                    </TableHead>
+                                    <>
+                                        {header.id == 'sl' ? (
+                                            <TableHead
+                                                key={header.id}
+                                                className="text-white"
+                                                style={{width : "20px", whiteSpace: "nowrap"}}
+                                            >
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                          header.column
+                                                              .columnDef.header,
+                                                          header.getContext()
+                                                      )}
+                                            </TableHead>
+                                        ) : (
+                                            <TableHead
+                                                key={header.id}
+                                                className="text-white"
+                                            >
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                          header.column
+                                                              .columnDef.header,
+                                                          header.getContext()
+                                                      )}
+                                            </TableHead>
+                                        )}
+                                    </>
                                 )
                             })}
                         </TableRow>
@@ -54,50 +83,44 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
                 <TableBody>
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row, pI) => (
-                            <TableRow key={row.id}>
-                                {row.getVisibleCells().map((cell, cI) => {
-                                    return DataTableEnumType.PROJECT == type ? (
-                                        <>
-                                            {cell.column.id == 'sl' ? (
-                                                <TableCell key={cell.column.id}>
-                                                    {pageSerialStart + pI}
-                                                </TableCell>
-                                            ) : cell.column.id == 'status' ? (
-                                                <TableCell key={cell.column.id}>
+                            <TableRow
+                                key={row.id}
+                                className="border-b shadow-md"
+                            >
+                                {row.getVisibleCells().map((cell) => (
+                                    <TableCell key={cell.column.id}>
+                                        {DataTableEnumType.PROJECT == type ? (
+                                            cell.column.id === 'sl' ? (
+                                                <>{pageSerialStart + pI}</>
+                                            ) : cell.column.id === 'status' ? (
+                                                <>
                                                     {flexRender(
                                                         cell.column.columnDef
                                                             .cell,
                                                         cell.getContext()
                                                     )}
-                                                </TableCell>
+                                                </>
                                             ) : (
-                                                <TableCell key={cell.column.id}>
+                                                <>
                                                     {flexRender(
                                                         cell.column.columnDef
                                                             .cell,
                                                         cell.getContext()
                                                     )}
-                                                </TableCell>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <>
-                                            {cell.column.id == 'sl' ? (
-                                                <TableCell key={cell.column.id}>
-                                                    {pageSerialStart + pI}
-                                                </TableCell>
-                                            ) : (
-                                                <TableCell key={cell.column.id}>
-                                                    {flexRender(
-                                                        cell.column.columnDef
-                                                            .cell,
-                                                        cell.getContext()
-                                                    )}
-                                                </TableCell>
-                                            )}
-                                        </>
-                                    )
-                                })}
+                                                </>
+                                            )
+                                        ) : cell.column.id === 'sl' ? (
+                                            <>{pageSerialStart + pI}</>
+                                        ) : (
+                                            <>
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
+                                                )}
+                                            </>
+                                        )}
+                                    </TableCell>
+                                ))}
                             </TableRow>
                         ))
                     ) : (

@@ -32,7 +32,7 @@ const Clients = () => {
                 />
             </div>
             <Datatable
-                columns={ClientColumns}
+                columns={ClientColumns()}
                 data={assets.ClientData}
                 totalDataCount={100}
             />

@@ -5,7 +5,8 @@ for (let i = 1; i < 21; i++) {
         id: crypto.randomUUID().slice(0, 3),
         client: crypto.randomUUID().slice(3, 10),
         status: randomIntFromInterval(1,3),
-        department : "RCM"
+        department : "RCM",
+        lob_process : crypto.randomUUID().slice(10, 15)
     })
 }
 
