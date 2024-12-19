@@ -16,6 +16,8 @@ import Login2 from './Pages/Login2'
 
 import CreateProject from './Components/Project/CreateProject'
 import Project from './Pages/Project/Listing/Project'
+import { ToastContainer } from 'react-toastify'
+import EmployeeMapped from './Pages/EmployeeMapped/EmployeeMapped'
 
 let router = createBrowserRouter([
     {
@@ -74,6 +76,10 @@ let router = createBrowserRouter([
                 path: '/master-settings/project-master',
                 Component: ProjectMaster,
             },
+            {
+                path: '/master-settings/employee-mapped',
+                Component: EmployeeMapped,
+            },
         ],
     },
 ])
@@ -81,6 +87,18 @@ let router = createBrowserRouter([
 function App() {
     return (
         <AuthProvider>
+            <ToastContainer
+                position="top-center"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
             <RouterProvider router={router} />
         </AuthProvider>
     )

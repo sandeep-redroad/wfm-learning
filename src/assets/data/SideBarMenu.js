@@ -49,6 +49,11 @@ const SidebarMenu = {
                     url: '/master-settings/billing',
                     items: [],
                 },
+                {
+                    title: 'Employee Mapped',
+                    url: '/master-settings/employee-mapped',
+                    items: [],
+                },
             ],
         },
     ],
