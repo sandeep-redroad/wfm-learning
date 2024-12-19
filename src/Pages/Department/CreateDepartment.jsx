@@ -65,7 +65,7 @@ const CreateDepartment = () => {
                         <div className='flex justify-end'>
                             <Button
                                 type="submit"
-                                className="bg-primary-blue hover:bg-primary-blue-hover "
+                                className=" "
                             >
                                 Submit
                             </Button>

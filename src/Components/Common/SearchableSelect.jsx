@@ -25,69 +25,66 @@ import {
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const SearchableSelect = ({ data, name }) => {
-    const [open, setOpen] = useState(false)
-    const [value, setValue] = useState('')
+const SearchableSelect = ({ frameworks, name, field }) => {
+    const [open, setOpen] = React.useState(false)
+    const [value, setValue] = React.useState('')
 
     return (
-        <div>
-            <Popover open={open} onOpenChange={setOpen} className="w-full">
-                <PopoverTrigger asChild>
-                    <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open}
-                        className="w-full justify-between"
-                    >
-                        {value
-                            ? data.find((val) => val.value === value)?.label
-                            : `Select ${name}`}
-                        <ChevronsUpDown className="opacity-50" />
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent className=" w-full p-0">
-                    <Command className="w-full max-w-2xl min-w-full">
-                        <CommandInput
-                            placeholder={`Search ${name} `}
-                            className=" w-full"
-                        />
-                        <CommandList>
-                            <CommandEmpty>
-                                No {name}
-                                found.
-                            </CommandEmpty>
-                            <CommandGroup>
-                                {data.map((val) => (
-                                    <CommandItem
-                                        key={val.value}
-                                        value={val.value}
-                                        onSelect={(currentValue) => {
-                                            setValue(
-                                                currentValue === value
-                                                    ? ''
-                                                    : currentValue
-                                            )
-                                            setOpen(false)
-                                        }}
-                                    >
-                                        {val.label}
-                                        <Check
-                                            className={cn(
-                                                'ml-auto',
-                                                value === val.value
-                                                    ? 'opacity-100'
-                                                    : 'opacity-0'
-                                            )}
-                                        />
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
-                        </CommandList>
-                    </Command>
-                </PopoverContent>
-            </Popover>
-        </div>
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-[200px] justify-between"
+                >
+                    {value
+                        ? frameworks.find(
+                              (framework) => framework.value === value
+                          )?.label
+                        : 'Select framework...'}
+                    <ChevronsUpDown className="opacity-50" />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0 dsdsds">
+                <Command>
+                    <CommandInput
+                        placeholder="Search framework..."
+                        className="h-9"
+                    />
+                    <CommandList>
+                        <CommandEmpty>No framework found.</CommandEmpty>
+                        <CommandGroup>
+                            {frameworks.map((framework) => (
+                                <CommandItem
+                                    key={framework.value}
+                                    value={framework.value}
+                                    onSelect={(currentValue) => {
+                                        setValue(
+                                            currentValue === value
+                                                ? ''
+                                                : currentValue
+                                        )
+                                        setOpen(false)
+                                    }}
+                                >
+                                    {framework.label}
+                                    <Check
+                                        className={cn(
+                                            'ml-auto',
+                                            value === framework.value
+                                                ? 'opacity-100'
+                                                : 'opacity-0'
+                                        )}
+                                    />
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
+                    </CommandList>
+                </Command>
+            </PopoverContent>
+        </Popover>
     )
 }
 
-export default React.memo(SearchableSelect)
+export default SearchableSelect

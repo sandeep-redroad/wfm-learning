@@ -66,7 +66,7 @@ const CreateProcess = () => {
                         <div className="flex justify-end">
                             <Button
                                 type="submit"
-                                className="bg-primary-blue hover:bg-primary-blue-hover "
+                                className="bg-primary-purpal hover:bg-primary-purpal "
                             >
                                 Submit
                             </Button>

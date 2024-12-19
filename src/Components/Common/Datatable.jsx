@@ -14,8 +14,10 @@ import {
     TableRow,
 } from '@/components/ui/table'
 import { PaginationWithLinks } from './Pagination'
+import DataTableEnumType from '@/Enums/DataTableTypeEnum'
+import { Badge } from '../ui/badge'
 
-const Datatable = ({ columns, data, totalDataCount }) => {
+const Datatable = ({ columns, data, totalDataCount, type }) => {
     const location = useLocation()
     const searchParams = new URLSearchParams(location.search)
     const pageSize = parseInt(searchParams.get('pageSize') || 10)
@@ -52,26 +54,50 @@ const Datatable = ({ columns, data, totalDataCount }) => {
                 <TableBody>
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row, pI) => (
-                            <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && 'selected'}
-                            >
-                                {row.getVisibleCells().map((cell, cI) => (
-                                    <>
-                                        {cell.column.id == 'sl' ? (
-                                            <TableCell key={cell.id}>
-                                                {pageSerialStart + pI}
-                                            </TableCell>
-                                        ) : (
-                                            <TableCell key={cell.id}>
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext()
-                                                )}
-                                            </TableCell>
-                                        )}
-                                    </>
-                                ))}
+                            <TableRow key={row.id}>
+                                {row.getVisibleCells().map((cell, cI) => {
+                                    return DataTableEnumType.PROJECT == type ? (
+                                        <>
+                                            {cell.column.id == 'sl' ? (
+                                                <TableCell key={cell.column.id}>
+                                                    {pageSerialStart + pI}
+                                                </TableCell>
+                                            ) : cell.column.id == 'status' ? (
+                                                <TableCell key={cell.column.id}>
+                                                    {flexRender(
+                                                        cell.column.columnDef
+                                                            .cell,
+                                                        cell.getContext()
+                                                    )}
+                                                </TableCell>
+                                            ) : (
+                                                <TableCell key={cell.column.id}>
+                                                    {flexRender(
+                                                        cell.column.columnDef
+                                                            .cell,
+                                                        cell.getContext()
+                                                    )}
+                                                </TableCell>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <>
+                                            {cell.column.id == 'sl' ? (
+                                                <TableCell key={cell.column.id}>
+                                                    {pageSerialStart + pI}
+                                                </TableCell>
+                                            ) : (
+                                                <TableCell key={cell.column.id}>
+                                                    {flexRender(
+                                                        cell.column.columnDef
+                                                            .cell,
+                                                        cell.getContext()
+                                                    )}
+                                                </TableCell>
+                                            )}
+                                        </>
+                                    )
+                                })}
                             </TableRow>
                         ))
                     ) : (
@@ -86,7 +112,7 @@ const Datatable = ({ columns, data, totalDataCount }) => {
                     )}
                 </TableBody>
             </Table>
-            <div className='flex justify-end items-end'>
+            <div className="flex justify-end items-end">
                 <PaginationWithLinks totalCount={totalDataCount} />
             </div>
         </div>

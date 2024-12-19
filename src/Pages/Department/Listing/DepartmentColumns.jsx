@@ -1,7 +1,7 @@
 const DepartmentColumns = [
     {
         accessorKey: 'sl',
-        header: 'Sl',
+        header: 'Sr. No.',
     },
     {
         accessorKey: 'department',
