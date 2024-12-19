@@ -31,7 +31,7 @@ const Process = () => {
                     placeholder="Process"
                 />
             </div>
-            <Datatable columns={ProcessColumns} data={[]} totalDataCount={10} />
+            <Datatable columns={ProcessColumns()} data={[]} totalDataCount={10} />
         </div>
     )
 }

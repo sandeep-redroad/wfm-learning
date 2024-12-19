@@ -80,10 +80,10 @@ input {
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
- th, td {
+ /* th, td {
   border:1px solid #0000001a;
   
-}
+} */
 thead{
   background: #e5e7eb61;
 }
@@ -188,4 +188,8 @@ thead{
 .dropdownx .option:hover {
   background-color: #f2f9fc;
   color: #333;
+}
+
+table{
+  table-layout: unset;
 }
