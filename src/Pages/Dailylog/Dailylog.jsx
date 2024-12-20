@@ -47,6 +47,8 @@ const Dailylog = () => {
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
+      const date = new Date();
+//   const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`
     
     const [noneValidatedValue, setNoneValidatedValue] = useState({
         lob_process: '',
@@ -58,6 +60,7 @@ const Dailylog = () => {
     const form = useForm({
         defaultValues: {
             comments: '',
+            date:date
         },
     })
 
@@ -132,6 +135,7 @@ const Dailylog = () => {
             label: 'SvelteKit',
         },
     ]
+   
 
     function onSubmit(data) {
         Object.assign(data, noneValidatedValue)
@@ -254,9 +258,7 @@ const Dailylog = () => {
                     onSubmit={form.handleSubmit(onSubmit)}
                     className=""
                 >
-
-
-<div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
+                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                         <FormField
                             control={form.control}
                             name="lob_process"
@@ -379,13 +381,14 @@ const Dailylog = () => {
                     onSelect={field.onChange}
                   
                     initialFocus
+                   
                   />
                 </PopoverContent>
               </Popover>
              
               <FormMessage />
             </FormItem>
-          )}
+          )} 
         />
 
                         <FormField
