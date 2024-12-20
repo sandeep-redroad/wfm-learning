@@ -138,7 +138,7 @@ const CreateProject = () => {
             label: 'SvelteKit',
         },
     ]
-    const team_leads = [
+    const projectleads = [
         {
             value: 'next.js',
             label: 'Next.js',
@@ -200,16 +200,13 @@ const CreateProject = () => {
     ]
 
     function onSubmit(data) { 
-       
         Object.assign(data,noneValidatedValue)
-       
-        // console.log(rows, data)
         const filteredObj = Object.fromEntries(
             Object.entries(data).filter(
                 ([key, value]) =>
                     key !=="comments" && value == '' 
                   
-            ) // Filter based on value
+            ) 
         )
         console.log("filteredObj : ",filteredObj)
         let key = Object.keys(filteredObj)[0]
@@ -226,11 +223,16 @@ const CreateProject = () => {
             toast.error('Please select department')
             return;
         }
+        if (key == 'projectlead') {
+            toast.error('Please select Project lead')
+            return;
+        }
 
       let isSelect1Empty =rows.some(
             (item) => item.select1 === '' || item.select2 === ''
         );
-        if (isSelect1Empty) {
+        console.log("in is select",isSelect1Empty);
+        if (!isSelect1Empty) {
            
             rows.forEach((process, index) => {
               if (process.processtype === '') {
@@ -247,15 +249,13 @@ const CreateProject = () => {
 
         console.log('abc : ', filteredObj)
     }
-    let msg
+   
 
     const onError = (errors, e) => {
-        // let keys = Object.keys(errors)
-        // msg = errors[keys[0]]['message']
-        // toast(msg)
+        
         console.log('Error found 1 ', errors, e)
     }
-    // const notify = () => toast(msg);
+   
 
     const addRow = () => {
         setRows([
@@ -448,16 +448,16 @@ const CreateProject = () => {
                                     <FormLabel>Project Lead</FormLabel>
                                     <div className="w-full">
                                         <SearchableDropdown
-                                            options={team_leads}
+                                            options={projectleads}
                                             selectedVal={
-                                                noneValidatedValue.team_lead
+                                                noneValidatedValue.projectlead
                                             }
                                             handleChange={(val) => {
                                                 setNoneValidatedValue(
                                                     (prev) => {
                                                         return {
                                                             ...prev,
-                                                            team_lead: val,
+                                                            projectlead: val,
                                                         }
                                                     }
                                                 )
