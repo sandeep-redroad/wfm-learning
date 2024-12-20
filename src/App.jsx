@@ -14,14 +14,14 @@ import Clients from '@/Pages/Clients/Listing/Clients'
 import Process from '@/Pages/Process/Listing/Process'
 import ProjectMaster from '@/Pages/ProjectMaster/ProjectMaster'
 import Invoice from '@/Pages/Invoice/Listing/Invoice'
-import DailyWork from '@/Pages/DailyWork/DailyWork'
 import CreateProject from '@/Pages/Project/CreateProject'
 import Project from '@/Pages/Project/Listing/Project'
 import EmployeeMapped from '@/Pages/EmployeeMapped/EmployeeMapped'
 import BulkUpload from '@/Pages/UploadPage/Listing/BulkUpload'
 import CreateBulkUpload from './Pages/UploadPage/CreateBulkUpload'
-import Dailylog from './Pages/Dailylog/Dailylog'
 import CreateInoice from './Pages/Invoice/CreateInvoice'
+import CreateDailyWorkLog from './Pages/DailyWorkLog/CreateDailyWorkLog'
+import DailyWorkLog from './Pages/DailyWorkLog/Listing/DailyWorkLog'
 
 let router = createBrowserRouter([
     {
@@ -56,10 +56,7 @@ let router = createBrowserRouter([
                 path: 'invoices/new',
                 Component: CreateInoice,
             },
-            {
-                path: '/daily-work/new',
-                Component: Dailylog,
-            },
+            
             {
                 path: '/projects/new',
                 Component: CreateProject,
@@ -69,8 +66,12 @@ let router = createBrowserRouter([
                 Component: CreateProject,
             },
             {
-                path: '/daily-work',
-                Component: DailyWork,
+                path: '/daily-work-log',
+                Component: DailyWorkLog,
+            },
+            {
+                path: '/daily-work-log/new',
+                Component: CreateDailyWorkLog,
             },
             {
                 path: '/bulk-upload',

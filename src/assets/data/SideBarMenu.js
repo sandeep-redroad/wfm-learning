@@ -11,8 +11,8 @@ const SidebarMenu = {
             items: [],
         },
         {
-            title: 'Daily Work',
-            url: '/daily-work',
+            title: 'Daily Work Log',
+            url: '/daily-work-log',
             items: [],
         },
         {

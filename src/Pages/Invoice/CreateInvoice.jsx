@@ -246,7 +246,7 @@ const Invoicef = () => {
         <>
             <div className="flex justify-end items-center mb-3">
                 <div className="flex items-center justify-end gap-2">
-                    <Link className="button" to="/projects">
+                    <Link className="button" to="/invoices">
                         <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">
                             Back
                         </Button>
