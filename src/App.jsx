@@ -1,7 +1,12 @@
 import './App.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { AuthProvider } from '@/Context/AuthContext'
+import { ToastContainer } from 'react-toastify'
+
 import Billing from '@/Pages/Billing/Listing/Billing'
 import Login from '@/Pages/Login'
+import Login1 from '@/Pages/Login1'
+import Login2 from '@/Pages/Login2'
 import Dashboard from '@/Pages/Dashboard/Dashboard'
 import AuthLayout from '@/Components/AuthLayout'
 import Departments from '@/Pages/Department/Listing/Departments'
@@ -10,14 +15,11 @@ import Process from '@/Pages/Process/Listing/Process'
 import ProjectMaster from '@/Pages/ProjectMaster/ProjectMaster'
 import Invoice from '@/Pages/Invoice/Listing/Invoice'
 import DailyWork from '@/Pages/DailyWork/DailyWork'
-import { AuthProvider } from '@/Context/AuthContext'
-import Login1 from './Pages/Login1'
-import Login2 from './Pages/Login2'
-
-import CreateProject from './Pages/Project/CreateProject'
-import Project from './Pages/Project/Listing/Project'
-import { ToastContainer } from 'react-toastify'
-import EmployeeMapped from './Pages/EmployeeMapped/EmployeeMapped'
+import CreateProject from '@/Pages/Project/CreateProject'
+import Project from '@/Pages/Project/Listing/Project'
+import EmployeeMapped from '@/Pages/EmployeeMapped/EmployeeMapped'
+import BulkUpload from '@/Pages/UploadPage/Listing/BulkUpload'
+import CreateBulkUpload from './Pages/UploadPage/CreateBulkUpload'
 
 let router = createBrowserRouter([
     {
@@ -30,7 +32,7 @@ let router = createBrowserRouter([
     },
     {
         path: '/login2',
-        Component: Login2,
+        Component: Login,
     },
     {
         path: '/',
@@ -53,8 +55,20 @@ let router = createBrowserRouter([
                 Component: CreateProject,
             },
             {
+                path: '/projects/:id',
+                Component: CreateProject,
+            },
+            {
                 path: '/daily-work',
                 Component: DailyWork,
+            },
+            {
+                path: '/bulk-upload',
+                Component: BulkUpload,
+            },
+            {
+                path: '/bulk-upload/new',
+                Component: CreateBulkUpload,
             },
             {
                 path: '/master-settings/billing',

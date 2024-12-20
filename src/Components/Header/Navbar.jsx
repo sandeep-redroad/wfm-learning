@@ -39,7 +39,7 @@ const Navbar = () => {
                                 SA
                             </AvatarFallback>
                         </Avatar>
-                        <span>Sandeepdsfasfdsafsdsd</span>
+                        <span>Sandeep</span>
                     </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>

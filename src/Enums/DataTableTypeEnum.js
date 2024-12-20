@@ -1,6 +1,7 @@
 
 const DataTableEnumType = {
-    PROJECT : 'PROJECT'
+    PROJECT : 'PROJECT',
+    UPLOAD : 'UPLOAD'
 }
 
 Object.freeze(DataTableEnumType);
