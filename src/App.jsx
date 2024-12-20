@@ -20,6 +20,8 @@ import Project from '@/Pages/Project/Listing/Project'
 import EmployeeMapped from '@/Pages/EmployeeMapped/EmployeeMapped'
 import BulkUpload from '@/Pages/UploadPage/Listing/BulkUpload'
 import CreateBulkUpload from './Pages/UploadPage/CreateBulkUpload'
+import Dailylog from './Pages/Dailylog/Dailylog'
+import Invoicef from './Pages/Invoicef/Invoicef'
 
 let router = createBrowserRouter([
     {
@@ -49,6 +51,14 @@ let router = createBrowserRouter([
             {
                 path: '/projects',
                 Component: Project,
+            },
+            {
+                path: 'invoices/new',
+                Component: Invoicef,
+            },
+            {
+                path: '/daily-work/new',
+                Component: Dailylog,
             },
             {
                 path: '/projects/new',
@@ -94,6 +104,7 @@ let router = createBrowserRouter([
                 path: '/master-settings/employee-mapped',
                 Component: EmployeeMapped,
             },
+           
         ],
     },
 ])

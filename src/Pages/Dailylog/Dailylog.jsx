@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form'
 import { Switch } from '@/components/ui/switch'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'react-toastify'
+import { CalendarIcon } from "lucide-react"
+import { addDays, format } from "date-fns"
 import {
     Table,
     TableBody,
@@ -11,6 +13,13 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
+
+import { Calendar } from '@/components/ui/calendar'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -31,13 +40,14 @@ import {
 } from '@/components/ui/select'
 import BillingData from '@/assets/data/BillingData'
 import { Textarea } from '@/components/ui/textarea'
-import SearchableDropdown from '../Common/SearchableDropdown'
+import SearchableDropdown from '../../Components/Common/SearchableDropdown'
 import { Link } from 'react-router-dom'
 
-const CreateProject = () => {
+const Dailylog = () => {
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
+    
     const [noneValidatedValue, setNoneValidatedValue] = useState({
         lob_process: '',
         client: '',
@@ -123,13 +133,11 @@ const CreateProject = () => {
         },
     ]
 
-    function onSubmit(data) { 
-        Object.assign(data,noneValidatedValue)
+    function onSubmit(data) {
+        Object.assign(data, noneValidatedValue)
         const filteredObj = Object.fromEntries(
             Object.entries(data).filter(
-                ([key, value]) =>
-                    key !=="comments" && value == '' 
-                  
+                ([key, value]) => key !== 'comments' && value == ''
             ) // Filter based on value
         )
         let key = Object.keys(filteredObj)[0]
@@ -147,11 +155,11 @@ const CreateProject = () => {
         }
         if (key == 'projectlead') {
             toast.error('Please select Project lead')
-            return;
+            return
         }
         if (key == 'projectlead') {
             toast.error('Please select Project lead')
-            return;
+            return
         }
 
         for (let i = 0; i < rows.length; i++) {
@@ -169,7 +177,7 @@ const CreateProject = () => {
     }
     const addRow = () => {
         setRows((prev) => {
-            const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1; 
+            const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
             return [
                 ...prev,
                 {
@@ -220,7 +228,6 @@ const CreateProject = () => {
             return updatedData
         })
     }
-
     const handleSaveClick = () => {
         if (formRef.current) {
             formRef.current.requestSubmit()
@@ -247,13 +254,15 @@ const CreateProject = () => {
                     onSubmit={form.handleSubmit(onSubmit)}
                     className=""
                 >
-                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
+
+
+<div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                         <FormField
                             control={form.control}
                             name="lob_process"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>LOB Process</FormLabel>
+                                    <FormLabel>Project ID</FormLabel>
                                     <div className="w-full">
                                         <SearchableDropdown
                                             options={lob_processes}
@@ -270,7 +279,7 @@ const CreateProject = () => {
                                                     }
                                                 )
                                             }}
-                                            placeholder="LOB Process"
+                                            placeholder="Project ID"
                                         />
                                     </div>
                                     <FormMessage />
@@ -307,12 +316,13 @@ const CreateProject = () => {
                                 </FormItem>
                             )}
                         />
+                        
                         <FormField
                             control={form.control}
                             name="department"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Department</FormLabel>
+                                    <FormLabel>Employee ID</FormLabel>
                                     <div className="full">
                                         <SearchableDropdown
                                             options={departments}
@@ -329,7 +339,7 @@ const CreateProject = () => {
                                                     }
                                                 )
                                             }}
-                                            placeholder="Department"
+                                            placeholder="Employee ID"
                                         />
                                     </div>
 
@@ -338,12 +348,52 @@ const CreateProject = () => {
                             )}
                         />
 
+                          <FormField
+          control={form.control}
+          name="date"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Date</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className="w-full pl-3 text-left font-normal"
+                       
+                    
+                    >
+                      {field.value ? (
+                        format(field.value, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                  
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+             
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
                         <FormField
                             control={form.control}
                             name="projectlead"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Project Lead</FormLabel>
+                                    <FormLabel>Employee Name</FormLabel>
                                     <div className="w-full">
                                         <SearchableDropdown
                                             options={projectleads}
@@ -360,7 +410,7 @@ const CreateProject = () => {
                                                     }
                                                 )
                                             }}
-                                            placeholder="Project Lead"
+                                            placeholder="Employee Name"
                                         />
                                     </div>
                                 </FormItem>
@@ -381,17 +431,18 @@ const CreateProject = () => {
                                     <TableHead className="w-[50px] border">
                                         Sr.No
                                     </TableHead>
-                                    <TableHead className="w-[50px] border">
-                                        Enable
-                                    </TableHead>
+                                    
                                     <TableHead className="w-[300px] border">
                                         Process
                                     </TableHead>
                                     <TableHead className="w-[200px] border">
                                         Billing
                                     </TableHead>
-                                    <TableHead className="w-[100px] border">
-                                        Rate
+                                    <TableHead className="w-[200px] border">
+                                        Work Items
+                                    </TableHead>
+                                    <TableHead className="w-[200px] border">
+                                        Hours Worked
                                     </TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -426,46 +477,7 @@ const CreateProject = () => {
                                             <TableCell className="border">
                                                 {row.id}
                                             </TableCell>
-                                            <TableCell className="border">
-                                                <div className="flex items-center space-x-2 justify-center">
-                                                    <Switch
-                                                        checked={row.enable}
-                                                        onCheckedChange={(
-                                                            e
-                                                        ) => {
-                                                            setRows((prev) => {
-                                                                let updatedData =
-                                                                    []
-
-                                                                prev.map(
-                                                                    (
-                                                                        item,
-                                                                        i
-                                                                    ) => {
-                                                                        if (
-                                                                            item.id ==
-                                                                            row.id
-                                                                        ) {
-                                                                            prev[
-                                                                                i
-                                                                            ][
-                                                                                'enable'
-                                                                            ] =
-                                                                                e
-                                                                        }
-                                                                        updatedData.push(
-                                                                            item
-                                                                        )
-                                                                    }
-                                                                )
-                                                                return updatedData
-                                                            })
-                                                        }}
-                                                        className="bg-primary-grn"
-                                                        name={`enabled${row.id}`}
-                                                    />
-                                                </div>
-                                            </TableCell>
+                                          
                                             <TableCell className="border">
                                                 <div className="w-full">
                                                     <SearchableDropdown
@@ -473,7 +485,6 @@ const CreateProject = () => {
                                                         selectedVal={
                                                             row.process
                                                         }
-                                                        className="border-none w-full outline-none ring-0 focus-visible:ring-0"
                                                         handleChange={(val) => {
                                                             setRows((prev) => {
                                                                 let updatedData =
@@ -562,9 +573,10 @@ const CreateProject = () => {
                                                     </SelectContent>
                                                 </Select>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="border">
+                                                <div className="flex items-center space-x-2 justify-center">
                                                 <Input
-                                                    placeholder="rate"
+                                                    placeholder="Work Items"
                                                     onChange={(e) => {
                                                         setRows((prev) => {
                                                             let updatedData = []
@@ -576,7 +588,37 @@ const CreateProject = () => {
                                                                         row.id
                                                                     ) {
                                                                         prev[i][
-                                                                            'rate'
+                                                                            'work_item'
+                                                                        ] =
+                                                                            e.target.value
+                                                                    }
+                                                                    updatedData.push(
+                                                                        item
+                                                                    )
+                                                                }
+                                                            )
+                                                            return updatedData
+                                                        })
+                                                    }}
+                                                    className="border-none shadow-none"
+                                                />
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Input
+                                                    placeholder="Hours Worked"
+                                                    onChange={(e) => {
+                                                        setRows((prev) => {
+                                                            let updatedData = []
+
+                                                            prev.map(
+                                                                (item, i) => {
+                                                                    if (
+                                                                        item.id ==
+                                                                        row.id
+                                                                    ) {
+                                                                        prev[i][
+                                                                            'hours'
                                                                         ] =
                                                                             e.target.value
                                                                     }
@@ -637,63 +679,10 @@ const CreateProject = () => {
                         )}
                         {/* </Card> */}
                     </div>
-
-                    <div className="grid  gap-x-[3rem] gap-y-[1.75rem]">
-                        {/* 
-                        <FormField
-                            control={form.control}
-                            name="headcount"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Head Count</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Head count"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        /> */}
-
-                        {/* <FormField
-                            control={form.control}
-                            name="Ftedeployed"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>FTE Deployed</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="fte_deployed"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        /> */}
-                        <FormField
-                            control={form.control}
-                            name="comments"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Comments</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder="You can write your comments here"
-                                            className="resize-none"
-                                            row="1"
-                                        />
-                                    </FormControl>
-
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
                 </form>
             </Form>
         </>
     )
 }
 
-export default CreateProject
+export default Dailylog

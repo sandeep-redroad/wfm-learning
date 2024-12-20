@@ -1,4 +1,5 @@
-import React,{useState} from 'react';
+import React, { useState,useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { useForm, useFieldArray } from 'react-hook-form'
 import {
     Table,
@@ -31,168 +32,236 @@ import {
 import SearchableDropdown from '../../Components/Common/SearchableDropdown'
 import { Switch } from '@/components/ui/switch'
 import { Checkbox } from '@/components/ui/checkbox'
+import { ToastContainer, toast } from 'react-toastify'
 
 const EmployeeMapped = () => {
-     const [checkAll, setcheckAll] = useState(false)
-     const [rows, setRows] = useState([])
-        const [noneValidatedValue, setNoneValidatedValue] = useState({
-            lob_process: '',
-            client: '',
-            project: '',
-          
+     const formRef = useRef(null)
+    const [checkAll, setcheckAll] = useState(false)
+    const [rows, setRows] = useState([])
+    const [noneValidatedValue, setNoneValidatedValue] = useState({
+        lob_process: '',
+        client: '',
+        project: '',
+    })
+
+    const form = useForm({
+        defaultValues: {},
+    })
+    const deleteone = (id) => {
+        const updatedrows = rows.filter((row) => !row.checkbox)
+        let newdata = updatedrows.length > 0 ? updatedrows : []
+
+        setRows(() => newdata)
+    }
+    const deleteAll = () => {
+        setRows([])
+    }
+    const changeOne = (row, i) => {
+        setRows((prev) => {
+            let updatedData = [];
+
+            prev.map((item, i) => {
+                if (item.id == row.id) {
+                    prev[i]['checkbox'] = !prev[i]['checkbox']
+                }
+                updatedData.push(item)
+            })
+            return updatedData
         })
-    
-        const form = useForm({
-            defaultValues: {
-               
-            },
+    }
+    const changeAll = () => {
+        let isChecked = !checkAll
+        setcheckAll((prev) => isChecked)
+
+        setRows((prev) => {
+            let updatedData = []
+
+            prev.map((item, i) => {
+                prev[i]['checkbox'] = isChecked
+                updatedData.push(item)
+            })
+
+            return updatedData
         })
-        const deleteone = (id) => {
-            const updatedrows = rows.filter((row) => !row.checkbox)
-            let newdata = updatedrows.length > 0 ? updatedrows : []
-    
-            setRows(() => newdata)
+    }
+    function onSubmit(data) {
+        Object.assign(data, noneValidatedValue)
+        const filteredObj = Object.fromEntries(
+            Object.entries(data).filter(
+                ([key, value]) => key !== 'comments' && value == ''
+            )
+        )
+        console.log('filteredObj : ', filteredObj)
+        let key = Object.keys(filteredObj)[0]
+        console.log('key ', key)
+        if (key == 'project') {
+            toast.error('Please select Project ID')
+            return
         }
-        const deleteAll = () => {
-            setRows([])
+
+        if (key == 'lob_process') {
+            toast.error('Please select line of buisness')
+            return
         }
-        const changeOne = (row, i) => {
-            setRows((prev) => {
-                let updatedData = []
-    
-                prev.map((item, i) => {
-                    if (item.id == row.id) {
-                        prev[i]['checkbox'] = !prev[i]['checkbox']
-                    }
-                    updatedData.push(item)
-                })
-                return updatedData
+        if (key == 'client') {
+            toast.error('Please select client')
+            return
+        }
+
+        let isSelect1Empty = rows.some(
+            (item) => item.processtype === '' || item.billingtype === ''|| item.employeeID==''||item.employeeName==''
+        )
+        console.log('in is select', isSelect1Empty)
+        if (isSelect1Empty) {
+            rows.forEach((process, index) => {
+                if (process.processtype === '') {
+                    toast.error('Please select process name')
+                    return
+                } else if (process.billingtype == '') {
+                    toast.error('Please select billing type')
+                    return
+                }
+                else if (process.employeeID == '') {
+                    toast.error('Please select employeeID')
+                    return
+                }
+                else if (process.employeeName == '') {
+                    toast.error('Please select employeeName')
+                    return
+                }
             })
         }
-        const changeAll = () => {
-            let isChecked = !checkAll
-            setcheckAll((prev) => isChecked)
-    
-            setRows((prev) => {
-                let updatedData = []
-    
-                prev.map((item, i) => {
-                    prev[i]['checkbox'] = isChecked
-                    updatedData.push(item)
-                })
-    
-                return updatedData
-            })
+
+        data['process'] = rows
+
+        console.log('abc : ', data)
+    }
+    const addRow = () => {
+        setRows([
+            ...rows,
+            {
+                id: rows.length + 1,
+                process: '',
+                billing: '',
+                employeeID: '',
+                employeeName: '',
+
+            },
+        ])
+    }
+    const lob_processes = [
+        {
+            value: 'next.js',
+            label: 'Next.js',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+    ]
+    const projects = [
+        {
+            value: 'next.js',
+            label: 'Next.js',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+    ]
+    const clients = [
+        {
+            value: 'next.js',
+            label: 'Next.js',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+    ]
+    const departments = [
+        {
+            value: 'next.js',
+            label: 'Next.js',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+    ]
+    const process_names = [
+        {
+            value: 'next.js',
+            label: 'Next.js',
+        },
+        {
+            value: 'sveltekit',
+            label: 'SvelteKit',
+        },
+    ]
+
+    const handleSaveClick = () => {
+        if (formRef.current) {
+            formRef.current.requestSubmit()
         }
-        function onSubmit(data) {}
-        const addRow = () => {
-            setRows([
-                ...rows,
-                {
-                    id: rows.length + 1,
-                    process:'',
-                    billing:'',
-                    employeeID: '',
-                    employeeName: '',
-                    input: '',
-                },
-            ])
-        }
-        const lob_processes = [
-            {
-                value: 'next.js',
-                label: 'Next.js',
-            },
-            {
-                value: 'sveltekit',
-                label: 'SvelteKit',
-            },
-        ]
-        const team_leads = [
-            {
-                value: 'next.js',
-                label: 'Next.js',
-            },
-            {
-                value: 'sveltekit',
-                label: 'SvelteKit',
-            },
-            {
-                value: 'sveltekit',
-                label: 'SvelteKit',
-            },
-            {
-                value: 'sveltekit',
-                label: 'SvelteKit',
-            },
-            {
-                value: 'sveltekit',
-                label: 'SvelteKit',
-            },
-            {
-                value: 'sveltekit',
-                label: 'SvelteKit',
-            },
-            {
-                value: 'sveltekit',
-                label: 'SvelteKit',
-            },
-        ]
-        const clients = [
-            {
-                value: 'next.js',
-                label: 'Next.js',
-            },
-            {
-                value: 'sveltekit',
-                label: 'SvelteKit',
-            },
-        ]
-        const departments = [
-            {
-                value: 'next.js',
-                label: 'Next.js',
-            },
-            {
-                value: 'sveltekit',
-                label: 'SvelteKit',
-            },
-        ]
-        const process_names = [
-            {
-                value: 'next.js',
-                label: 'Next.js',
-            },
-            {
-                value: 'sveltekit',
-                label: 'SvelteKit',
-            },
-        ]
-  return (
-    <>      <Form {...form} className="px-10">
-    <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="px-14"
-    >
-        <div className="grid grid-cols-3 gap-x-[3rem] gap-y-[1.75rem]">
-        <FormField
+    }
+    return (
+        <>
+            <div className="flex justify-end items-center mb-3">
+                <div className="flex items-center justify-end gap-2">
+                    <Link className="button" to="/projects">
+                        <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">
+                            Back
+                        </Button>
+                    </Link>
+                    <Button className="" onClick={handleSaveClick}>
+                        Save
+                    </Button>
+                </div>
+            </div>
+            <Form {...form} className="px-10">
+                <form ref={formRef}
+                    onSubmit={form.handleSubmit(onSubmit)}
+                     className="px-14">
+                    <div className="grid grid-cols-3 gap-x-[3rem] gap-y-[1.75rem]">
+                        <FormField
                             control={form.control}
-                            name="department"
+                            name="project"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Project ID</FormLabel>
                                     <div className="full">
                                         <SearchableDropdown
-                                            options={departments}
+                                            options={projects}
                                             selectedVal={
-                                                noneValidatedValue.department
+                                                noneValidatedValue.project
                                             }
                                             handleChange={(val) => {
                                                 setNoneValidatedValue(
                                                     (prev) => {
                                                         return {
                                                             ...prev,
-                                                            department: val,
+                                                            project: val,
                                                         }
                                                     }
                                                 )
@@ -205,7 +274,7 @@ const EmployeeMapped = () => {
                                 </FormItem>
                             )}
                         />
-        <FormField
+                        <FormField
                             control={form.control}
                             name="lob_process"
                             render={({ field }) => (
@@ -264,7 +333,6 @@ const EmployeeMapped = () => {
                                 </FormItem>
                             )}
                         />
-                    
 
                         {/* <FormField
                             control={form.control}
@@ -314,16 +382,12 @@ const EmployeeMapped = () => {
                                     <TableHead className="w-[50px]">
                                         Enable
                                     </TableHead>
-                                    <TableHead className="w-[300px]">
-                                        Process
-                                    </TableHead>
-                                    <TableHead className="w-[200px]">
-                                        Billing
-                                    </TableHead>
-                                    <TableHead className="w-[100px]">
+                                    <TableHead className="">Process</TableHead>
+                                    <TableHead className="">Billing</TableHead>
+                                    <TableHead className="">
                                         Employee ID
                                     </TableHead>
-                                    <TableHead className="w-[100px]">
+                                    <TableHead className="">
                                         Employee Name
                                     </TableHead>
                                 </TableRow>
@@ -367,7 +431,7 @@ const EmployeeMapped = () => {
                                                 <div className="w-full">
                                                     <FormField
                                                         control={form.control}
-                                                        name="processName"
+                                                        name="processtype"
                                                         render={({ field }) => (
                                                             <FormItem>
                                                                 <SearchableDropdown
@@ -403,7 +467,7 @@ const EmployeeMapped = () => {
                                             <TableCell>
                                                 <FormField
                                                     control={form.control}
-                                                    name="billing"
+                                                    name="billingtype"
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <Select
@@ -441,11 +505,11 @@ const EmployeeMapped = () => {
                                             <TableCell>
                                                 <FormField
                                                     control={form.control}
-                                                    name={`inputs${i}`}
+                                                    name={`employeeID${i}`}
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormControl>
-                                                            <SearchableDropdown
+                                                                <SearchableDropdown
                                                                     options={
                                                                         process_names
                                                                     }
@@ -479,7 +543,7 @@ const EmployeeMapped = () => {
                                             <TableCell>
                                                 <FormField
                                                     control={form.control}
-                                                    name={`inputs${i}`}
+                                                    name={`employeeName${i}`}
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormControl>
@@ -560,15 +624,11 @@ const EmployeeMapped = () => {
                         )}
                         {/* </Card> */}
                     </div>
-                    <div className="flex px-10 items-end justify-end">
-                        <Button type="submit" className="bg-primary-blue">
-                            Save
-                        </Button>
-                    </div>
+                   
                 </form>
             </Form>
         </>
-  )
+    )
 }
 
 export default EmployeeMapped

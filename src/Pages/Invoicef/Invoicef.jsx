@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form'
 import { Switch } from '@/components/ui/switch'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'react-toastify'
+import { addDays, format } from 'date-fns'
+import { CalendarIcon } from "lucide-react"
 import {
     Table,
     TableBody,
@@ -11,6 +13,13 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
+
+import { Calendar } from '@/components/ui/calendar'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -31,10 +40,10 @@ import {
 } from '@/components/ui/select'
 import BillingData from '@/assets/data/BillingData'
 import { Textarea } from '@/components/ui/textarea'
-import SearchableDropdown from '../Common/SearchableDropdown'
+import SearchableDropdown from '../../Components/Common/SearchableDropdown'
 import { Link } from 'react-router-dom'
 
-const CreateProject = () => {
+const Invoicef = () => {
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
@@ -62,6 +71,16 @@ const CreateProject = () => {
             label: 'SvelteKit',
         },
     ]
+    const status = [
+      {
+          value: 'Hold',
+          label: 'Hold',
+      },
+      {
+          value: 'Active',
+          label: 'Active',
+      },
+  ]
     const projectleads = [
         {
             value: 'next.js',
@@ -123,13 +142,11 @@ const CreateProject = () => {
         },
     ]
 
-    function onSubmit(data) { 
-        Object.assign(data,noneValidatedValue)
+    function onSubmit(data) {
+        Object.assign(data, noneValidatedValue)
         const filteredObj = Object.fromEntries(
             Object.entries(data).filter(
-                ([key, value]) =>
-                    key !=="comments" && value == '' 
-                  
+                ([key, value]) => key !== 'comments' && value == ''
             ) // Filter based on value
         )
         let key = Object.keys(filteredObj)[0]
@@ -147,11 +164,11 @@ const CreateProject = () => {
         }
         if (key == 'projectlead') {
             toast.error('Please select Project lead')
-            return;
+            return
         }
         if (key == 'projectlead') {
             toast.error('Please select Project lead')
-            return;
+            return
         }
 
         for (let i = 0; i < rows.length; i++) {
@@ -169,7 +186,7 @@ const CreateProject = () => {
     }
     const addRow = () => {
         setRows((prev) => {
-            const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1; 
+            const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
             return [
                 ...prev,
                 {
@@ -220,13 +237,11 @@ const CreateProject = () => {
             return updatedData
         })
     }
-
     const handleSaveClick = () => {
         if (formRef.current) {
             formRef.current.requestSubmit()
         }
     }
-
     return (
         <>
             <div className="flex justify-end items-center mb-3">
@@ -253,7 +268,7 @@ const CreateProject = () => {
                             name="lob_process"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>LOB Process</FormLabel>
+                                    <FormLabel>Invoice ID</FormLabel>
                                     <div className="w-full">
                                         <SearchableDropdown
                                             options={lob_processes}
@@ -270,7 +285,7 @@ const CreateProject = () => {
                                                     }
                                                 )
                                             }}
-                                            placeholder="LOB Process"
+                                            placeholder="Invoice ID"
                                         />
                                     </div>
                                     <FormMessage />
@@ -280,39 +295,52 @@ const CreateProject = () => {
 
                         <FormField
                             control={form.control}
-                            name="client"
+                            name="invoice_date"
                             render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Client</FormLabel>
-                                    <div className="w-full">
-                                        <SearchableDropdown
-                                            options={clients}
-                                            selectedVal={
-                                                noneValidatedValue.client
-                                            }
-                                            handleChange={(val) => {
-                                                setNoneValidatedValue(
-                                                    (prev) => {
-                                                        return {
-                                                            ...prev,
-                                                            client: val,
-                                                        }
-                                                    }
-                                                )
-                                            }}
-                                            placeholder="Client"
-                                        />
-                                    </div>
+                                <FormItem className="flex flex-col">
+                                    <FormLabel>Invoice Date</FormLabel>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant={'outline'}
+                                                    className="w-full pl-3 text-left font-normal"
+                                                >
+                                                    {field.value ? (
+                                                        format(
+                                                            field.value,
+                                                            'PPP'
+                                                        )
+                                                    ) : (
+                                                        <span>Pick a date</span>
+                                                    )}
+                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent
+                                            className="w-auto p-0"
+                                            align="start"
+                                        >
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                initialFocus
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        <FormField
+   <FormField
                             control={form.control}
                             name="department"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Department</FormLabel>
+                                    <FormLabel>Project ID</FormLabel>
                                     <div className="full">
                                         <SearchableDropdown
                                             options={departments}
@@ -329,7 +357,7 @@ const CreateProject = () => {
                                                     }
                                                 )
                                             }}
-                                            placeholder="Department"
+                                            placeholder="Project ID"
                                         />
                                     </div>
 
@@ -337,13 +365,44 @@ const CreateProject = () => {
                                 </FormItem>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name="client"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>LOF Buisness</FormLabel>
+                                    <div className="w-full">
+                                        <SearchableDropdown
+                                            options={clients}
+                                            selectedVal={
+                                                noneValidatedValue.client
+                                            }
+                                            handleChange={(val) => {
+                                                setNoneValidatedValue(
+                                                    (prev) => {
+                                                        return {
+                                                            ...prev,
+                                                            client: val,
+                                                        }
+                                                    }
+                                                )
+                                            }}
+                                            placeholder="LOF Buisness"
+                                        />
+                                    </div>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                     
 
                         <FormField
                             control={form.control}
                             name="projectlead"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Project Lead</FormLabel>
+                                    <FormLabel>Billing From</FormLabel>
                                     <div className="w-full">
                                         <SearchableDropdown
                                             options={projectleads}
@@ -360,9 +419,125 @@ const CreateProject = () => {
                                                     }
                                                 )
                                             }}
-                                            placeholder="Project Lead"
+                                            placeholder="Billing From"
                                         />
                                     </div>
+                                </FormItem>
+                            )}
+                        />
+
+<FormField
+                            control={form.control}
+                            name="projectlead"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Billing To</FormLabel>
+                                    <div className="w-full">
+                                        <SearchableDropdown
+                                            options={projectleads}
+                                            selectedVal={
+                                                noneValidatedValue.projectlead
+                                            }
+                                            handleChange={(val) => {
+                                                setNoneValidatedValue(
+                                                    (prev) => {
+                                                        return {
+                                                            ...prev,
+                                                            projectlead: val,
+                                                        }
+                                                    }
+                                                )
+                                            }}
+                                            placeholder="Billing To"
+                                        />
+                                    </div>
+                                </FormItem>
+                            )}
+                        />
+
+
+<FormField
+                            control={form.control}
+                            name="start_date"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                    <FormLabel>Start Date</FormLabel>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant={'outline'}
+                                                    className="w-full pl-3 text-left font-normal"
+                                                >
+                                                    {field.value ? (
+                                                        format(
+                                                            field.value,
+                                                            'PPP'
+                                                        )
+                                                    ) : (
+                                                        <span>Pick a date</span>
+                                                    )}
+                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent
+                                            className="w-auto p-0"
+                                            align="start"
+                                        >
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                initialFocus
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+<FormField
+                            control={form.control}
+                            name="end_date"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                    <FormLabel>End Date</FormLabel>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant={'outline'}
+                                                    className="w-full pl-3 text-left font-normal"
+                                                >
+                                                    {field.value ? (
+                                                        format(
+                                                            field.value,
+                                                            'PPP'
+                                                        )
+                                                    ) : (
+                                                        <span>Pick a date</span>
+                                                    )}
+                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent
+                                            className="w-auto p-0"
+                                            align="start"
+                                        >
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                initialFocus
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -381,9 +556,7 @@ const CreateProject = () => {
                                     <TableHead className="w-[50px] border">
                                         Sr.No
                                     </TableHead>
-                                    <TableHead className="w-[50px] border">
-                                        Enable
-                                    </TableHead>
+
                                     <TableHead className="w-[300px] border">
                                         Process
                                     </TableHead>
@@ -391,7 +564,13 @@ const CreateProject = () => {
                                         Billing
                                     </TableHead>
                                     <TableHead className="w-[100px] border">
-                                        Rate
+                                        Hours
+                                    </TableHead>
+                                    <TableHead className="w-[100px] border">
+                                       Rate
+                                    </TableHead>
+                                    <TableHead className="w-[100px] border">
+                                       Amount
                                     </TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -426,46 +605,7 @@ const CreateProject = () => {
                                             <TableCell className="border">
                                                 {row.id}
                                             </TableCell>
-                                            <TableCell className="border">
-                                                <div className="flex items-center space-x-2 justify-center">
-                                                    <Switch
-                                                        checked={row.enable}
-                                                        onCheckedChange={(
-                                                            e
-                                                        ) => {
-                                                            setRows((prev) => {
-                                                                let updatedData =
-                                                                    []
 
-                                                                prev.map(
-                                                                    (
-                                                                        item,
-                                                                        i
-                                                                    ) => {
-                                                                        if (
-                                                                            item.id ==
-                                                                            row.id
-                                                                        ) {
-                                                                            prev[
-                                                                                i
-                                                                            ][
-                                                                                'enable'
-                                                                            ] =
-                                                                                e
-                                                                        }
-                                                                        updatedData.push(
-                                                                            item
-                                                                        )
-                                                                    }
-                                                                )
-                                                                return updatedData
-                                                            })
-                                                        }}
-                                                        className="bg-primary-grn"
-                                                        name={`enabled${row.id}`}
-                                                    />
-                                                </div>
-                                            </TableCell>
                                             <TableCell className="border">
                                                 <div className="w-full">
                                                     <SearchableDropdown
@@ -473,7 +613,6 @@ const CreateProject = () => {
                                                         selectedVal={
                                                             row.process
                                                         }
-                                                        className="border-none w-full outline-none ring-0 focus-visible:ring-0"
                                                         handleChange={(val) => {
                                                             setRows((prev) => {
                                                                 let updatedData =
@@ -562,9 +701,46 @@ const CreateProject = () => {
                                                     </SelectContent>
                                                 </Select>
                                             </TableCell>
+                                            <TableCell className="border">
+                                                <div className="flex items-center space-x-2 justify-center">
+                                                    <Input
+                                                        placeholder="Hours"
+                                                        onChange={(e) => {
+                                                            setRows((prev) => {
+                                                                let updatedData =
+                                                                    []
+
+                                                                prev.map(
+                                                                    (
+                                                                        item,
+                                                                        i
+                                                                    ) => {
+                                                                        if (
+                                                                            item.id ==
+                                                                            row.id
+                                                                        ) {
+                                                                            prev[
+                                                                                i
+                                                                            ][
+                                                                                'work_item'
+                                                                            ] =
+                                                                                e.target.value
+                                                                        }
+                                                                        updatedData.push(
+                                                                            item
+                                                                        )
+                                                                    }
+                                                                )
+                                                                return updatedData
+                                                            })
+                                                        }}
+                                                        className="border-none shadow-none"
+                                                    />
+                                                </div>
+                                            </TableCell>
                                             <TableCell>
                                                 <Input
-                                                    placeholder="rate"
+                                                    placeholder="Rate"
                                                     onChange={(e) => {
                                                         setRows((prev) => {
                                                             let updatedData = []
@@ -576,7 +752,7 @@ const CreateProject = () => {
                                                                         row.id
                                                                     ) {
                                                                         prev[i][
-                                                                            'rate'
+                                                                            'hours'
                                                                         ] =
                                                                             e.target.value
                                                                     }
@@ -590,6 +766,41 @@ const CreateProject = () => {
                                                     }}
                                                     className="border-none shadow-none"
                                                 />
+                                            </TableCell>
+                                            <TableCell>
+                                            <Input
+                                                        placeholder="Amount"
+                                                        onChange={(e) => {
+                                                            setRows((prev) => {
+                                                                let updatedData =
+                                                                    []
+
+                                                                prev.map(
+                                                                    (
+                                                                        item,
+                                                                        i
+                                                                    ) => {
+                                                                        if (
+                                                                            item.id ==
+                                                                            row.id
+                                                                        ) {
+                                                                            prev[
+                                                                                i
+                                                                            ][
+                                                                                'work_item'
+                                                                            ] =
+                                                                                e.target.value
+                                                                        }
+                                                                        updatedData.push(
+                                                                            item
+                                                                        )
+                                                                    }
+                                                                )
+                                                                return updatedData
+                                                            })
+                                                        }}
+                                                        className="border-none shadow-none"
+                                                    />
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -638,57 +849,87 @@ const CreateProject = () => {
                         {/* </Card> */}
                     </div>
 
-                    <div className="grid  gap-x-[3rem] gap-y-[1.75rem]">
-                        {/* 
+                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
+                        <FormField
+                            control={form.control}
+                            name="note"
+                            render={({ field }) => (
+                                <FormItem>
+                                                                   <FormLabel>Note</FormLabel>
+                                                                   <FormControl>
+                                                                       <Textarea
+                                                                           placeholder="You can write your note here"
+                                                                           className="resize-none"
+                                                                           row="1"
+                                                                       />
+                                                                   </FormControl>
+                               
+                                                                   <FormMessage />
+                                                               </FormItem>
+                            )}
+                        />
+
+<FormField
+                            control={form.control}
+                            name="headcount"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Total Amount</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="Total Amount"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="status"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Status</FormLabel>
+                                    <div className="w-full">
+                                        <SearchableDropdown
+                                            options={status}
+                                            selectedVal={
+                                                noneValidatedValue.status
+                                            }
+                                            handleChange={(val) => {
+                                                setNoneValidatedValue(
+                                                    (prev) => {
+                                                        return {
+                                                            ...prev,
+                                                            status: val,
+                                                        }
+                                                    }
+                                                )
+                                            }}
+                                            placeholder="Status"
+                                        />
+                                    </div>
+                                </FormItem>
+                            )}
+                        />
+                     
                         <FormField
                             control={form.control}
                             name="headcount"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Head Count</FormLabel>
+                                    <FormLabel>Amount Paid</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Head count"
+                                            placeholder="Amount Paid"
                                             {...field}
                                         />
                                     </FormControl>
-                                </FormItem>
-                            )}
-                        /> */}
-
-                        {/* <FormField
-                            control={form.control}
-                            name="Ftedeployed"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>FTE Deployed</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="fte_deployed"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        /> */}
-                        <FormField
-                            control={form.control}
-                            name="comments"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Comments</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder="You can write your comments here"
-                                            className="resize-none"
-                                            row="1"
-                                        />
-                                    </FormControl>
-
-                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
+
+                      
                     </div>
                 </form>
             </Form>
@@ -696,4 +937,4 @@ const CreateProject = () => {
     )
 }
 
-export default CreateProject
+export default Invoicef
