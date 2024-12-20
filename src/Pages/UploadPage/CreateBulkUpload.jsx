@@ -37,9 +37,9 @@ const CreateBulkUpload = () => {
                                 <SelectValue placeholder="Document Type" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="light">Light</SelectItem>
-                                <SelectItem value="dark">Dark</SelectItem>
-                                <SelectItem value="system">System</SelectItem>
+                                <SelectItem value="DocumentA">DocumentA</SelectItem>
+                                <SelectItem value="DocumentB">DocumentB</SelectItem>
+                                <SelectItem value="DocumentC">DocumentC</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

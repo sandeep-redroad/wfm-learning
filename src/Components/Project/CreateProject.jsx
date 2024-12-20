@@ -463,6 +463,7 @@ const CreateProject = () => {
                                                         selectedVal={
                                                             row.process
                                                         }
+                                                        className="border-none w-full outline-none ring-0 focus-visible:ring-0"
                                                         handleChange={(val) => {
                                                             setRows((prev) => {
                                                                 let updatedData =
