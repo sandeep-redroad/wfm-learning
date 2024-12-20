@@ -285,7 +285,7 @@ const Invoicef = () => {
                                                     }
                                                 )
                                             }}
-                                            placeholder="Project ID"
+                                            placeholder="Invoice ID"
                                         />
                                     </div>
                                     <FormMessage />
@@ -387,7 +387,7 @@ const Invoicef = () => {
                                                     }
                                                 )
                                             }}
-                                            placeholder="Client"
+                                            placeholder="LOF Buisness"
                                         />
                                     </div>
                                     <FormMessage />
@@ -419,7 +419,7 @@ const Invoicef = () => {
                                                     }
                                                 )
                                             }}
-                                            placeholder="Employee Name"
+                                            placeholder="Billing From"
                                         />
                                     </div>
                                 </FormItem>
@@ -448,7 +448,7 @@ const Invoicef = () => {
                                                     }
                                                 )
                                             }}
-                                            placeholder="Employee Name"
+                                            placeholder="Billing To"
                                         />
                                     </div>
                                 </FormItem>
@@ -877,7 +877,7 @@ const Invoicef = () => {
                                     <FormLabel>Total Amount</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Head count"
+                                            placeholder="Total Amount"
                                             {...field}
                                         />
                                     </FormControl>
@@ -906,7 +906,7 @@ const Invoicef = () => {
                                                     }
                                                 )
                                             }}
-                                            placeholder="Employee Name"
+                                            placeholder="Status"
                                         />
                                     </div>
                                 </FormItem>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState,useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { useForm, useFieldArray } from 'react-hook-form'
 import {
     Table,
@@ -34,6 +35,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ToastContainer, toast } from 'react-toastify'
 
 const EmployeeMapped = () => {
+     const formRef = useRef(null)
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const [noneValidatedValue, setNoneValidatedValue] = useState({
@@ -217,11 +219,30 @@ const EmployeeMapped = () => {
             label: 'SvelteKit',
         },
     ]
+
+    const handleSaveClick = () => {
+        if (formRef.current) {
+            formRef.current.requestSubmit()
+        }
+    }
     return (
         <>
-           
+            <div className="flex justify-end items-center mb-3">
+                <div className="flex items-center justify-end gap-2">
+                    <Link className="button" to="/projects">
+                        <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">
+                            Back
+                        </Button>
+                    </Link>
+                    <Button className="" onClick={handleSaveClick}>
+                        Save
+                    </Button>
+                </div>
+            </div>
             <Form {...form} className="px-10">
-                <form onSubmit={form.handleSubmit(onSubmit)} className="px-14">
+                <form ref={formRef}
+                    onSubmit={form.handleSubmit(onSubmit)}
+                     className="px-14">
                     <div className="grid grid-cols-3 gap-x-[3rem] gap-y-[1.75rem]">
                         <FormField
                             control={form.control}
@@ -603,11 +624,7 @@ const EmployeeMapped = () => {
                         )}
                         {/* </Card> */}
                     </div>
-                    <div className="flex px-10 items-end justify-end">
-                        <Button type="submit" className="bg-primary-blue">
-                            Save
-                        </Button>
-                    </div>
+                   
                 </form>
             </Form>
         </>
