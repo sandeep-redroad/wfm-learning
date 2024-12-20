@@ -1,21 +1,21 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/Components/ui/button'
-import Datatable from '@/Components/Common/Datatable'
 import { Input } from '@/Components/ui/input'
-import InvoiceColumns from './InvoiceColumn'
+import Datatable from '@/Components/Common/Datatable'
+import DailyWorkLogColumns from './DailyWorkLogColumns'
 
-const Invoice = () => {
+const DailyWorkLog = () => {
     const handleSearch = (e) => {
         console.log('e : ', e)
     }
     return (
         <div>
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Invoice</h1>
-                <Link className="button" to="/invoices/new">
+                <h1 className="text-2xl font-bold">Daily Work Log</h1>
+                <Link className="button" to="/daily-work-log/new">
                     <Button className="bg-primary-purpal hover:bg-primary-purpal">
-                        Generate Invoice
+                        Add Daily Work Log
                     </Button>
                 </Link>
             </div>
@@ -23,7 +23,7 @@ const Invoice = () => {
                 <Input type="text" onChange={handleSearch} placeholder="ID" />
             </div>
             <Datatable
-                columns={InvoiceColumns()}
+                columns={DailyWorkLogColumns()}
                 data={[]}
                 totalDataCount={10}
             />
@@ -31,4 +31,4 @@ const Invoice = () => {
     )
 }
 
-export default Invoice
+export default DailyWorkLog

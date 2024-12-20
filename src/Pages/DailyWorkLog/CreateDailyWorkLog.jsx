@@ -1,10 +1,9 @@
 import { React, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Switch } from '@/components/ui/switch'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'react-toastify'
-import { CalendarIcon } from "lucide-react"
-import { addDays, format } from "date-fns"
+import { CalendarIcon } from 'lucide-react'
+import { format } from 'date-fns'
 import {
     Table,
     TableBody,
@@ -43,11 +42,11 @@ import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../../Components/Common/SearchableDropdown'
 import { Link } from 'react-router-dom'
 
-const Dailylog = () => {
+const CreateDailyWorkLog = () => {
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
-    
+
     const [noneValidatedValue, setNoneValidatedValue] = useState({
         lob_process: '',
         client: '',
@@ -238,7 +237,7 @@ const Dailylog = () => {
         <>
             <div className="flex justify-end items-center mb-3">
                 <div className="flex items-center justify-end gap-2">
-                    <Link className="button" to="/projects">
+                    <Link className="button" to="/daily-work-log">
                         <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">
                             Back
                         </Button>
@@ -254,9 +253,7 @@ const Dailylog = () => {
                     onSubmit={form.handleSubmit(onSubmit)}
                     className=""
                 >
-
-
-<div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
+                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                         <FormField
                             control={form.control}
                             name="lob_process"
@@ -316,7 +313,7 @@ const Dailylog = () => {
                                 </FormItem>
                             )}
                         />
-                        
+
                         <FormField
                             control={form.control}
                             name="department"
@@ -348,45 +345,48 @@ const Dailylog = () => {
                             )}
                         />
 
-                          <FormField
-          control={form.control}
-          name="date"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Date</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className="w-full pl-3 text-left font-normal"
-                       
-                    
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                  
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-             
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                        <FormField
+                            control={form.control}
+                            name="date"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                    <FormLabel>Date</FormLabel>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant={'outline'}
+                                                    className="w-full pl-3 text-left font-normal"
+                                                >
+                                                    {field.value ? (
+                                                        format(
+                                                            field.value,
+                                                            'PPP'
+                                                        )
+                                                    ) : (
+                                                        <span>Pick a date</span>
+                                                    )}
+                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent
+                                            className="w-auto p-0"
+                                            align="start"
+                                        >
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                initialFocus
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
                         <FormField
                             control={form.control}
@@ -431,7 +431,7 @@ const Dailylog = () => {
                                     <TableHead className="w-[50px] border">
                                         Sr.No
                                     </TableHead>
-                                    
+
                                     <TableHead className="w-[300px] border">
                                         Process
                                     </TableHead>
@@ -477,7 +477,7 @@ const Dailylog = () => {
                                             <TableCell className="border">
                                                 {row.id}
                                             </TableCell>
-                                          
+
                                             <TableCell className="border">
                                                 <div className="w-full">
                                                     <SearchableDropdown
@@ -575,33 +575,39 @@ const Dailylog = () => {
                                             </TableCell>
                                             <TableCell className="border">
                                                 <div className="flex items-center space-x-2 justify-center">
-                                                <Input
-                                                    placeholder="Work Items"
-                                                    onChange={(e) => {
-                                                        setRows((prev) => {
-                                                            let updatedData = []
+                                                    <Input
+                                                        placeholder="Work Items"
+                                                        onChange={(e) => {
+                                                            setRows((prev) => {
+                                                                let updatedData =
+                                                                    []
 
-                                                            prev.map(
-                                                                (item, i) => {
-                                                                    if (
-                                                                        item.id ==
-                                                                        row.id
-                                                                    ) {
-                                                                        prev[i][
-                                                                            'work_item'
-                                                                        ] =
-                                                                            e.target.value
+                                                                prev.map(
+                                                                    (
+                                                                        item,
+                                                                        i
+                                                                    ) => {
+                                                                        if (
+                                                                            item.id ==
+                                                                            row.id
+                                                                        ) {
+                                                                            prev[
+                                                                                i
+                                                                            ][
+                                                                                'work_item'
+                                                                            ] =
+                                                                                e.target.value
+                                                                        }
+                                                                        updatedData.push(
+                                                                            item
+                                                                        )
                                                                     }
-                                                                    updatedData.push(
-                                                                        item
-                                                                    )
-                                                                }
-                                                            )
-                                                            return updatedData
-                                                        })
-                                                    }}
-                                                    className="border-none shadow-none"
-                                                />
+                                                                )
+                                                                return updatedData
+                                                            })
+                                                        }}
+                                                        className="border-none shadow-none"
+                                                    />
                                                 </div>
                                             </TableCell>
                                             <TableCell>
@@ -677,7 +683,6 @@ const Dailylog = () => {
                                 Delete All
                             </Button>
                         )}
-                        {/* </Card> */}
                     </div>
                 </form>
             </Form>
@@ -685,4 +690,4 @@ const Dailylog = () => {
     )
 }
 
-export default Dailylog
+export default CreateDailyWorkLog
