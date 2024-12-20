@@ -38,7 +38,6 @@ const SearchableDropdown = ({
     }
 
     const filter = (options) => {
-        // console.log(options, label)
         return options.filter(
             (option) =>
                 option['label'].toLowerCase().indexOf(query.toLowerCase()) > -1

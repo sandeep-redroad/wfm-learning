@@ -1,17 +1,12 @@
 import { React, useRef, useState } from 'react'
-;('use client')
-import { Check, ChevronsUpDown } from 'lucide-react'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { Switch } from '@/components/ui/switch'
 import { Checkbox } from '@/components/ui/checkbox'
-import { ToastContainer, toast } from 'react-toastify'
-import { z } from 'zod'
+import { toast } from 'react-toastify'
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
@@ -21,7 +16,6 @@ import { Button } from '@/components/ui/button'
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -35,39 +29,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-
+import BillingData from '@/assets/data/BillingData'
 import { Textarea } from '@/components/ui/textarea'
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card'
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from '@/components/ui/command'
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover'
-import SearchableSelect from '../Common/SearchableSelect'
-import CustomSelect from '../Common/CustomSelect'
 import SearchableDropdown from '../Common/SearchableDropdown'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 const CreateProject = () => {
-    const [checkOne, setcheckOne] = useState(false)
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
-    const formRef = useRef(null);
+    const formRef = useRef(null)
     const [noneValidatedValue, setNoneValidatedValue] = useState({
         lob_process: '',
         client: '',
@@ -80,52 +50,6 @@ const CreateProject = () => {
             comments: '',
         },
     })
-
-    const validateFields = () => {
-        let isValid = true
-
-        form.clearErrors()
-
-        // Get current form values
-        const values = form.getValues()
-
-        // Validate Process Array
-        values.process.forEach((process, index) => {
-            const processName = process.name
-            const billing = process.billing
-            const rate = process.rate
-
-            if (!processName.trim()) {
-                form.setError(`process[${index}].name`, {
-                    type: 'manual',
-                    message: 'Process name is required',
-                })
-                isValid = false
-            }
-            if (!billing.trim()) {
-                form.setError(`process[${index}].billing`, {
-                    type: 'manual',
-                    message: 'Billing is required',
-                })
-                isValid = false
-            }
-            if (!rate) {
-                form.setError(`process[${index}].rate`, {
-                    type: 'manual',
-                    message: 'Rate is required',
-                })
-                isValid = false
-            } else if (isNaN(rate) || rate < 0 || rate > 10000) {
-                form.setError(`process[${index}].rate`, {
-                    type: 'manual',
-                    message: 'Rate must be a number between 0 and 10,000',
-                })
-                isValid = false
-            }
-        })
-
-        return isValid
-    }
 
     // const [projectData]
     const lob_processes = [
@@ -206,21 +130,23 @@ const CreateProject = () => {
                 ([key, value]) =>
                     key !=="comments" && value == '' 
                   
-            ) 
+            ) // Filter based on value
         )
-        console.log("filteredObj : ",filteredObj)
         let key = Object.keys(filteredObj)[0]
-        console.log("key ", key);
         if (key == 'lob_process') {
             toast.error('Please select line of buisness')
             return
         }
         if (key == 'client') {
             toast.error('Please select client')
-            return;
+            return
         }
         if (key == 'department') {
             toast.error('Please select department')
+            return
+        }
+        if (key == 'projectlead') {
+            toast.error('Please select Project lead')
             return;
         }
         if (key == 'projectlead') {
@@ -228,47 +154,34 @@ const CreateProject = () => {
             return;
         }
 
-      let isSelect1Empty =rows.some(
-            (item) => item.select1 === '' || item.select2 === ''
-        );
-        console.log("in is select",isSelect1Empty);
-        if (!isSelect1Empty) {
-           
-            rows.forEach((process, index) => {
-              if (process.processtype === '') {
-                toast.error("Please select process name")
-                return;
-              } else if(process.billingtype==''){
-                toast.error("Please select billing type");
-                return;
-              }
-             });
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].process === '') {
+                toast.error('Please select process name')
+                return
+            } else if (rows[i].billingtype == '') {
+                toast.error('Please select billing type')
+                return
             }
-        
-        data['process'] = rows;
+        }
+        data['process'] = rows
 
-        console.log('abc : ', filteredObj)
+        console.log('final Data : ', data)
     }
-   
-
-    const onError = (errors, e) => {
-        
-        console.log('Error found 1 ', errors, e)
-    }
-   
-
     const addRow = () => {
-        setRows([
-            ...rows,
-            {
-                id: rows.length + 1,
-                checkbox: false,
-                switch: false,
-                processtype: '',
-                billingtype: '',
-                input: '',
-            },
-        ])
+        setRows((prev) => {
+            const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1; 
+            return [
+                ...prev,
+                {
+                    id: newId,
+                    checkbox: false,
+                    enable: false,
+                    process: '',
+                    billingtype: '',
+                    rate: '',
+                },
+            ]
+        })
     }
     const deleteone = (id) => {
         const updatedrows = rows.filter((row) => !row.checkbox)
@@ -279,7 +192,7 @@ const CreateProject = () => {
     const deleteAll = () => {
         setRows([])
     }
-    const changeOne = (row, i) => {
+    const changeOne = (row) => {
         setRows((prev) => {
             let updatedData = []
 
@@ -309,47 +222,32 @@ const CreateProject = () => {
     }
 
     const handleSaveClick = () => {
-        // Manually trigger form submission
         if (formRef.current) {
-            formRef.current.requestSubmit(); // This triggers the form's onSubmit
+            formRef.current.requestSubmit()
         }
-    };
+    }
 
     return (
         <>
             <div className="flex justify-end items-center mb-3">
                 <div className="flex items-center justify-end gap-2">
                     <Link className="button" to="/projects">
-                        <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">  
+                        <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">
                             Back
                         </Button>
                     </Link>
-                    <Button className="" onClick={handleSaveClick}>Save</Button>
+                    <Button className="" onClick={handleSaveClick}>
+                        Save
+                    </Button>
                 </div>
             </div>
             <Form {...form} className="">
                 <form
-                    ref={formRef} 
-                    onSubmit={form.handleSubmit(onSubmit, onError)}
+                    ref={formRef}
+                    onSubmit={form.handleSubmit(onSubmit)}
                     className=""
                 >
                     <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                        {/* <FormField
-                            control={form.control}
-                            name="projectname"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Project Name</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Project Name"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        /> */}
-
                         <FormField
                             control={form.control}
                             name="lob_process"
@@ -469,9 +367,7 @@ const CreateProject = () => {
                             )}
                         />
                     </div>
-
-                    <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem]">
-                        {/* <Card className="m-0"> */}
+                    <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
                         <Table>
                             <TableHeader>
                                 <TableRow className="border">
@@ -533,103 +429,165 @@ const CreateProject = () => {
                                             <TableCell className="border">
                                                 <div className="flex items-center space-x-2 justify-center">
                                                     <Switch
+                                                        checked={row.enable}
+                                                        onCheckedChange={(
+                                                            e
+                                                        ) => {
+                                                            setRows((prev) => {
+                                                                let updatedData =
+                                                                    []
+
+                                                                prev.map(
+                                                                    (
+                                                                        item,
+                                                                        i
+                                                                    ) => {
+                                                                        if (
+                                                                            item.id ==
+                                                                            row.id
+                                                                        ) {
+                                                                            prev[
+                                                                                i
+                                                                            ][
+                                                                                'enable'
+                                                                            ] =
+                                                                                e
+                                                                        }
+                                                                        updatedData.push(
+                                                                            item
+                                                                        )
+                                                                    }
+                                                                )
+                                                                return updatedData
+                                                            })
+                                                        }}
                                                         className="bg-primary-grn"
-                                                        name={`switch${row.id}`}
+                                                        name={`enabled${row.id}`}
                                                     />
                                                 </div>
                                             </TableCell>
                                             <TableCell className="border">
                                                 <div className="w-full">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="processName"
-                                                        render={({ field }) => (
-                                                            <FormItem>
-                                                                <SearchableDropdown
-                                                                    options={
-                                                                        process_names
-                                                                    }
-                                                                    selectedVal={
-                                                                        noneValidatedValue.process_name
-                                                                    }
-                                                                    handleChange={(
-                                                                        val
+                                                    <SearchableDropdown
+                                                        options={process_names}
+                                                        selectedVal={
+                                                            row.process
+                                                        }
+                                                        handleChange={(val) => {
+                                                            setRows((prev) => {
+                                                                let updatedData =
+                                                                    []
+
+                                                                prev.map(
+                                                                    (
+                                                                        item,
+                                                                        i
                                                                     ) => {
-                                                                        setNoneValidatedValue(
-                                                                            (
-                                                                                prev
-                                                                            ) => {
-                                                                                return {
-                                                                                    ...prev,
-                                                                                    process_name:
-                                                                                        val,
-                                                                                }
-                                                                            }
+                                                                        if (
+                                                                            item.id ==
+                                                                            row.id
+                                                                        ) {
+                                                                            prev[
+                                                                                i
+                                                                            ][
+                                                                                'process'
+                                                                            ] =
+                                                                                val
+                                                                        }
+                                                                        updatedData.push(
+                                                                            item
                                                                         )
-                                                                    }}
-                                                                    placeholder="Process"
-                                                                />
-                                                                <FormMessage />
-                                                            </FormItem>
-                                                        )}
+                                                                    }
+                                                                )
+                                                                return updatedData
+                                                            })
+                                                        }}
+                                                        placeholder="Process"
                                                     />
                                                 </div>
                                             </TableCell>
                                             <TableCell className="border">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="billing"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <Select
-                                                                onValueChange={
-                                                                    field.onChange
-                                                                }
-                                                                defaultValue={
-                                                                    field.value
-                                                                }
-                                                                className="border-none w-full"
-                                                            >
-                                                                <FormControl>
-                                                                    <SelectTrigger className="border-none shadow-none  w-full">
-                                                                        <SelectValue placeholder="Select Billing" />
-                                                                    </SelectTrigger>
-                                                                </FormControl>
-                                                                <SelectContent>
-                                                                    <SelectItem value="m@example.com">
-                                                                        m@example.com
-                                                                    </SelectItem>
-                                                                    <SelectItem value="m@google.com">
-                                                                        m@google.com
-                                                                    </SelectItem>
-                                                                    <SelectItem value="m@support.com">
-                                                                        m@support.com
-                                                                    </SelectItem>
-                                                                </SelectContent>
-                                                            </Select>
+                                                <Select
+                                                    onValueChange={(value) =>
+                                                        setRows((prev) => {
+                                                            let updatedData = []
 
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
+                                                            prev.map(
+                                                                (item, i) => {
+                                                                    if (
+                                                                        item.id ==
+                                                                        row.id
+                                                                    ) {
+                                                                        prev[i][
+                                                                            'billingtype'
+                                                                        ] =
+                                                                            value
+                                                                    }
+                                                                    updatedData.push(
+                                                                        item
+                                                                    )
+                                                                }
+                                                            )
+                                                            return updatedData
+                                                        })
+                                                    }
+                                                    defaultValue={
+                                                        row.billingtype
+                                                    }
+                                                    className="border-none w-full"
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger className="border-none shadow-none  w-full">
+                                                            <SelectValue placeholder="Select Billing" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {BillingData.map(
+                                                            (billing) => (
+                                                                <SelectItem
+                                                                    key={
+                                                                        billing.id
+                                                                    }
+                                                                    value={
+                                                                        billing.billingType
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        billing.billingType
+                                                                    }
+                                                                </SelectItem>
+                                                            )
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
                                             </TableCell>
                                             <TableCell>
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`inputs${i}`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormControl>
-                                                                <Input
-                                                                    placeholder="rate"
-                                                                    {...field}
-                                                                    className="border-none shadow-none"
-                                                                />
-                                                            </FormControl>
+                                                <Input
+                                                    placeholder="rate"
+                                                    onChange={(e) => {
+                                                        setRows((prev) => {
+                                                            let updatedData = []
 
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
+                                                            prev.map(
+                                                                (item, i) => {
+                                                                    if (
+                                                                        item.id ==
+                                                                        row.id
+                                                                    ) {
+                                                                        prev[i][
+                                                                            'rate'
+                                                                        ] =
+                                                                            e.target.value
+                                                                    }
+                                                                    updatedData.push(
+                                                                        item
+                                                                    )
+                                                                }
+                                                            )
+                                                            return updatedData
+                                                        })
+                                                    }}
+                                                    className="border-none shadow-none"
                                                 />
                                             </TableCell>
                                         </TableRow>
