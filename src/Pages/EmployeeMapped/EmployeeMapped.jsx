@@ -1,12 +1,10 @@
 import React, { useState,useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
@@ -14,13 +12,11 @@ import {
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
     Select,
@@ -32,7 +28,7 @@ import {
 import SearchableDropdown from '../../Components/Common/SearchableDropdown'
 import { Switch } from '@/components/ui/switch'
 import { Checkbox } from '@/components/ui/checkbox'
-import { ToastContainer, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 
 const EmployeeMapped = () => {
      const formRef = useRef(null)
@@ -239,10 +235,9 @@ const EmployeeMapped = () => {
                     </Button>
                 </div>
             </div>
-            <Form {...form} className="px-10">
+            <Form {...form}>
                 <form ref={formRef}
-                    onSubmit={form.handleSubmit(onSubmit)}
-                     className="px-14">
+                    onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-3 gap-x-[3rem] gap-y-[1.75rem]">
                         <FormField
                             control={form.control}

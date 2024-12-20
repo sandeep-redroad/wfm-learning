@@ -21,7 +21,7 @@ import EmployeeMapped from '@/Pages/EmployeeMapped/EmployeeMapped'
 import BulkUpload from '@/Pages/UploadPage/Listing/BulkUpload'
 import CreateBulkUpload from './Pages/UploadPage/CreateBulkUpload'
 import Dailylog from './Pages/Dailylog/Dailylog'
-import Invoicef from './Pages/Invoicef/Invoicef'
+import CreateInoice from './Pages/Invoice/CreateInvoice'
 
 let router = createBrowserRouter([
     {
@@ -54,7 +54,7 @@ let router = createBrowserRouter([
             },
             {
                 path: 'invoices/new',
-                Component: Invoicef,
+                Component: CreateInoice,
             },
             {
                 path: '/daily-work/new',
