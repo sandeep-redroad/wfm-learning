@@ -53,6 +53,7 @@ const UploadBox = () => {
                 className="hidden"
                 onChange={handleUploads}
                 id="upload-data"
+                accept=".xlsx, .xls"
             />
             <Label
                 htmlFor="upload-data"
