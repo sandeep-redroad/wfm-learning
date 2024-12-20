@@ -20,6 +20,7 @@ const SidebarMenu = {
             url: '/invoices',
             items: [],
         },
+      
         {
             title: 'Master Settings',
             url: '/master-settings',
@@ -54,6 +55,9 @@ const SidebarMenu = {
                     url: '/master-settings/employee-mapped',
                     items: [],
                 },
+                
+               
+                
             ],
         },
     ],

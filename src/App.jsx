@@ -18,6 +18,8 @@ import CreateProject from './Pages/Project/CreateProject'
 import Project from './Pages/Project/Listing/Project'
 import { ToastContainer } from 'react-toastify'
 import EmployeeMapped from './Pages/EmployeeMapped/EmployeeMapped'
+import Dailylog from './Pages/Dailylog/Dailylog'
+import Invoicef from './Pages/Invoicef/Invoicef'
 
 let router = createBrowserRouter([
     {
@@ -47,6 +49,14 @@ let router = createBrowserRouter([
             {
                 path: '/projects',
                 Component: Project,
+            },
+            {
+                path: 'invoices/new',
+                Component: Invoicef,
+            },
+            {
+                path: '/daily-work/new',
+                Component: Dailylog,
             },
             {
                 path: '/projects/new',
@@ -80,6 +90,7 @@ let router = createBrowserRouter([
                 path: '/master-settings/employee-mapped',
                 Component: EmployeeMapped,
             },
+           
         ],
     },
 ])
