@@ -22,6 +22,11 @@ const SidebarMenu = {
         },
       
         {
+            title: 'Bulk Upload',
+            url: '/bulk-upload',
+            items: [],
+        },
+        {
             title: 'Master Settings',
             url: '/master-settings',
             items: [

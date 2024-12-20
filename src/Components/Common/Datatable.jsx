@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
     flexRender,
     getCoreRowModel,
@@ -19,6 +19,7 @@ import { Badge } from '../ui/badge'
 
 const Datatable = ({ columns, data, totalDataCount, type }) => {
     const location = useLocation()
+    const navigate = useNavigate()
     const searchParams = new URLSearchParams(location.search)
     const pageSize = parseInt(searchParams.get('pageSize') || 10)
     const [pageSerialStart, setPageSerialStart] = useState(1)
@@ -29,6 +30,12 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
         manualPagination: true,
         rowCount: pageSize,
     })
+
+    const handleRowClick = (rowId) => {
+        navigate(`/project/${rowId}`);
+      };
+
+    
     return (
         <div className="rounded-md">
             <Table
@@ -85,7 +92,8 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
                         table.getRowModel().rows.map((row, pI) => (
                             <TableRow
                                 key={row.id}
-                                className="border-b shadow-md"
+                                className="border-b shadow-md cursor-pointer"
+                                onClick={() => DataTableEnumType.PROJECT == type ? handleRowClick(row.original.id) : false}
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell key={cell.column.id}>
