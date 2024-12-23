@@ -117,9 +117,6 @@ const EmployeeMapped = () => {
             ]
         })
     }
-
-    console.log("rows", rows);
-    console.log("rows", rows);
     const lob_processes = [
         {
             value: 'next.js',
