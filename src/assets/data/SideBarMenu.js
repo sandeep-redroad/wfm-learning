@@ -27,22 +27,17 @@ const SidebarMenu = {
             items: [],
         },
         {
+            title: 'Clients',
+            url: 'clients',
+            items: [],
+        },
+        {
             title: 'Master Settings',
             url: '/master-settings',
             items: [
                 {
-                    title: 'Project Master',
-                    url: '/master-settings/project-master',
-                    items: [],
-                },
-                {
                     title: 'Processes',
                     url: '/master-settings/processes',
-                    items: [],
-                },
-                {
-                    title: 'Clients',
-                    url: '/master-settings/clients',
                     items: [],
                 },
                 {
@@ -60,9 +55,6 @@ const SidebarMenu = {
                     url: '/master-settings/employee-mapped',
                     items: [],
                 },
-                
-               
-                
             ],
         },
     ],
