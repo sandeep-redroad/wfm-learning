@@ -46,6 +46,9 @@ const CreateDailyWorkLog = () => {
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
+    const date = new Date()
+    const today = format(new Date(), 'MM-dd-yyyy')
+    console.log(today)
 
     const [noneValidatedValue, setNoneValidatedValue] = useState({
         lob_process: '',
@@ -57,6 +60,7 @@ const CreateDailyWorkLog = () => {
     const form = useForm({
         defaultValues: {
             comments: '',
+            date: today,
         },
     })
 
@@ -359,10 +363,7 @@ const CreateDailyWorkLog = () => {
                                                     className="w-full pl-3 text-left font-normal"
                                                 >
                                                     {field.value ? (
-                                                        format(
-                                                            field.value,
-                                                            'PPP'
-                                                        )
+                                                        field.value
                                                     ) : (
                                                         <span>Pick a date</span>
                                                     )}
