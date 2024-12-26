@@ -22,22 +22,9 @@ import {
 } from '@/components/ui/table'
 
 import { Button } from '@/components/ui/button'
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import BillingData from '@/assets/data/BillingData'
 import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../Common/SearchableDropdown'
@@ -190,6 +177,7 @@ const CreateProject = () => {
     const addRow = () => {
         setRows((prev) => {
             const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
+            
             return [
                 ...prev,
                 {
@@ -290,22 +278,81 @@ const CreateProject = () => {
             <div className="flex justify-end items-center mb-3">
                 <div className="flex items-center justify-end gap-2">
                     <Link className="button" to="/projects">
-                        <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">
-                            Back
-                        </Button>
+                        <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                     </Link>
-                    <Button className="" onClick={handleSaveClick}>
+                    <Button className="bg-primary-purpal hover:bg-primary-purpal" onClick={handleSaveClick}>
                         Save
                     </Button>
                 </div>
             </div>
             <Form {...form} className="">
-                <form
-                    ref={formRef}
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className=""
-                >
+                <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="">
                     <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
+                        <FormField
+                            control={form.control}
+                            name="client"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Client</FormLabel>
+                                    <div className="w-full">
+                                        <SearchableDropdown
+                                            options={clients}
+                                            selectedVal={
+                                                noneValidatedValue.client
+                                            }
+                                            handleChange={(val) => {
+                                                setNoneValidatedValue(
+                                                    (prev) => {
+                                                        return {
+                                                            ...prev,
+                                                            client: val,
+                                                        }
+                                                    }
+                                                )
+                                            }}
+                                            placeholder="Client"
+                                        />
+                                    </div>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            className="w-full"
+                            control={form.control}
+                            name="status"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Status</FormLabel>
+                                    <div className="w-full">
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="status" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="Active">
+                                                    Active
+                                                </SelectItem>
+                                                <SelectItem value="Inactive">
+                                                    Inactive
+                                                </SelectItem>
+
+                                                <SelectItem value="On Hold">
+                                                    On Hold
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                         <FormField
                             control={form.control}
                             name="client"
@@ -380,18 +427,14 @@ const CreateProject = () => {
                                     <div className="w-full">
                                         <SearchableDropdown
                                             options={lob_processes}
-                                            selectedVal={
-                                                noneValidatedValue.lob_process
-                                            }
+                                            selectedVal={noneValidatedValue.lob_process}
                                             handleChange={(val) => {
-                                                setNoneValidatedValue(
-                                                    (prev) => {
-                                                        return {
-                                                            ...prev,
-                                                            lob_process: val,
-                                                        }
+                                                setNoneValidatedValue((prev) => {
+                                                    return {
+                                                        ...prev,
+                                                        lob_process: val,
                                                     }
-                                                )
+                                                })
                                             }}
                                             placeholder="LOB Process"
                                         />
@@ -458,10 +501,10 @@ const CreateProject = () => {
                                                     (prev) => {
                                                         return {
                                                             ...prev,
-                                                            department: val,
+                                                            client: val,
                                                         }
                                                     }
-                                                )
+                                                })
                                             }}
                                             placeholder="Process"
                                         />
@@ -481,9 +524,7 @@ const CreateProject = () => {
                                     <div className="full">
                                         <SearchableDropdown
                                             options={departments}
-                                            selectedVal={
-                                                noneValidatedValue.department
-                                            }
+                                            selectedVal={noneValidatedValue.department}
                                             handleChange={(val) => {
                                                 setNoneValidatedValue(
                                                     (prev) => {
@@ -549,18 +590,14 @@ const CreateProject = () => {
                                     <div className="w-full">
                                         <SearchableDropdown
                                             options={projectleads}
-                                            selectedVal={
-                                                noneValidatedValue.projectlead
-                                            }
+                                            selectedVal={noneValidatedValue.projectlead}
                                             handleChange={(val) => {
-                                                setNoneValidatedValue(
-                                                    (prev) => {
-                                                        return {
-                                                            ...prev,
-                                                            projectlead: val,
-                                                        }
+                                                setNoneValidatedValue((prev) => {
+                                                    return {
+                                                        ...prev,
+                                                        projectlead: val,
                                                     }
-                                                )
+                                                })
                                             }}
                                             placeholder="Project Lead"
                                         />
@@ -609,11 +646,7 @@ const CreateProject = () => {
                             <TableHeader>
                                 <TableRow className="border">
                                     <TableHead className="w-[35px] border">
-                                        <Checkbox
-                                            onClick={changeAll}
-                                            value={checkAll}
-                                            checked={checkAll}
-                                        />
+                                        <Checkbox onClick={changeAll} value={checkAll} checked={checkAll} />
                                     </TableHead>
                                     <TableHead className="w-[50px] border">
                                         Sr.No
@@ -634,29 +667,16 @@ const CreateProject = () => {
                                 {rows.length == 0 ? (
                                     <tr>
                                         <td colspan="6">
-                                            <h6
-                                                className="text-center"
-                                                style={{ margin: 0 }}
-                                            >
+                                            <h6 className="text-center" style={{ margin: 0 }}>
                                                 No Data
                                             </h6>
                                         </td>
                                     </tr>
                                 ) : (
                                     rows.map((row, i) => (
-                                        <TableRow
-                                            key={row.id}
-                                            name="process"
-                                            className="border"
-                                        >
+                                        <TableRow key={row.id} name="process" className="border">
                                             <TableCell className="border">
-                                                <Checkbox
-                                                    onClick={() =>
-                                                        changeOne(row, i)
-                                                    }
-                                                    checked={row.checkbox}
-                                                    value={row.checkbox}
-                                                />
+                                                <Checkbox onClick={() => changeOne(row, i)} checked={row.checkbox} value={row.checkbox} />
                                             </TableCell>
                                             <TableCell className="border">
                                                 {row.id}
@@ -668,8 +688,7 @@ const CreateProject = () => {
                                                         placeholder="label"
                                                         onChange={(e) => {
                                                             setRows((prev) => {
-                                                                let updatedData =
-                                                                    []
+                                                                let updatedData = []
 
                                                                 prev.map(
                                                                     (
@@ -734,8 +753,7 @@ const CreateProject = () => {
                                                         placeholder="Data Type"
                                                         onChange={(e) => {
                                                             setRows((prev) => {
-                                                                let updatedData =
-                                                                    []
+                                                                let updatedData = []
 
                                                                 prev.map(
                                                                     (
@@ -1148,12 +1166,7 @@ const CreateProject = () => {
                         )}
 
                         {checkhisotryAll && historyrows.length > 0 && (
-                            <Button
-                                type="button"
-                                className="bg-primary-red ml-1"
-                                onClick={delete_history_All}
-                                style={{ padding: '0px 10px', height: '28px' }}
-                            >
+                            <Button type="button" className="bg-primary-red ml-1" onClick={delete_history_All} style={{ padding: '0px 10px', height: '28px' }}>
                                 Delete All
                             </Button>
                         )}

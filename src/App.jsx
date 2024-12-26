@@ -22,6 +22,7 @@ import CreateBulkUpload from './Pages/UploadPage/CreateBulkUpload'
 import CreateInoice from './Pages/Invoice/CreateInvoice'
 import CreateDailyWorkLog from './Pages/DailyWorkLog/CreateDailyWorkLog'
 import DailyWorkLog from './Pages/DailyWorkLog/Listing/DailyWorkLog'
+import CreateClient from './Pages/Clients/CreateClient'
 
 let router = createBrowserRouter([
     {
@@ -82,16 +83,20 @@ let router = createBrowserRouter([
                 Component: CreateBulkUpload,
             },
             {
+                path: '/clients',
+                Component: Clients,
+            },
+            {
+                path: '/clients/new',
+                Component: CreateClient,
+            },
+            {
                 path: '/master-settings/billing',
                 Component: Billing,
             },
             {
                 path: '/master-settings/departments',
                 Component: Departments,
-            },
-            {
-                path: '/master-settings/clients',
-                Component: Clients,
             },
             {
                 path: '/master-settings/processes',
