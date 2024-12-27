@@ -11,8 +11,8 @@ const DailyWorkLog = () => {
         console.log('e : ', e)
     }
     return (
-        <div>
-            <Card className="p-0 mb-2 mx-0 rounded-none sticky top-16 w-full">
+        <div className="container mx-auto">
+            <Card className="p-0 mb-[75px] mx-0 rounded-none sticky top-16 w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-between items-center">
                         <Link className="button" to="/daily-work-log/new">
@@ -21,7 +21,7 @@ const DailyWorkLog = () => {
                     </div>
                 </CardContent>
             </Card>
-            <Card className="p-0 mt-16">
+            <Card className="p-0 m-3  mt-[4.5rem]">
                 <CardContent className="m-0 p-3 overflow-y-auto">
                     <div className="w-full my-2 grid grid-cols-4">
                         <Input type="text" onChange={handleSearch} placeholder="ID" />

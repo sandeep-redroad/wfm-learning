@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import { CalendarIcon, CloudCog } from 'lucide-react'
 import { format } from 'date-fns'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -209,7 +209,7 @@ const CreateDailyWorkLog = () => {
 
     return (
         <>
-            <Card className="p-0 mb-2 mx-0 rounded-none sticky top-16 w-full z-10">
+            <Card className="p-0 mb-[15px] mx-0 rounded-none sticky top-16 w-full z-10">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
