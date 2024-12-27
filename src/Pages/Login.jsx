@@ -29,7 +29,6 @@ const Login = () => {
     const navigate = useNavigate()
 
     useEffect(() =>{
-        console.log("login : ", isAuthenticated)
         if(isAuthenticated){
             return <Navigate to="/dashboard" />;
         }

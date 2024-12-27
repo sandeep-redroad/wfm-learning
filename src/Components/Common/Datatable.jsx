@@ -77,7 +77,7 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
                         </tr>
                     ))}
                 </thead>
-                <tbody ref={tbodyRef} className={`flex flex-col  overflow-y-auto w-full`} style={{ height: 'calc(100vh - 20rem)' }}>
+                <tbody ref={tbodyRef} className={`flex flex-col  overflow-y-auto w-full`} style={{ height: 'calc(100vh - 22rem)' }}>
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row, pI) => (
                             <tr
