@@ -7,19 +7,8 @@ import { CalendarIcon } from 'lucide-react'
 import { format } from 'date-fns'
 
 import { Calendar } from '@/components/ui/calendar'
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover'
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -35,22 +24,38 @@ const CreateProject = () => {
     const [checkhisotryAll, setchechistorykAll] = useState(false)
     const [rows, setRows] = useState([])
     const [historyrows, setHistoryrows] = useState([])
+    const [isbilling, setIsbilling] = useState(false)
     const formRef = useRef(null)
     const today = format(new Date(), 'MM-dd-yyyy')
-    
+
     console.log(today)
     // const date=new Date();
     const [noneValidatedValue, setNoneValidatedValue] = useState({
-        lob_process: '',
         client: '',
+        lob_process: '',
+        process: '',
         department: '',
+        billing_type: '',
         projectlead: '',
+        rate: '',
+        timeperworkitem:'',
+        comments: '',
+       
     })
 
     const form = useForm({
         defaultValues: {
             comments: '',
             date: today,
+            client: '',
+            lob_process: '',
+             process: '',
+            department: '',
+            billing_type: '',
+            projectlead: '',
+            rate: '',
+            timeperworkitem: '',
+            
         },
     })
 
@@ -117,44 +122,58 @@ const CreateProject = () => {
     ]
 
     function onSubmit(data) {
-        Object.assign(data, noneValidatedValue)
-        const filteredObj = Object.fromEntries(
-            Object.entries(data).filter(
-                ([key, value]) => key !== 'comments' && value == ''
-            ) // Filter based on value
-        )
-        let key = Object.keys(filteredObj)[0]
+        Object.assign(data, noneValidatedValue);
+        console.log("data:",data,"nonevalidatedvalue",noneValidatedValue);
+        const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => key !== 'comments' && value==''))
+        console.log(filteredObj)
+        let key = Object.keys(filteredObj)[0];
+        console.log("key",key)
         if (key == 'lob_process') {
-            toast.error('Please select line of buisness')
+            toast('Please select line of buisness')
             return
         }
         if (key == 'client') {
             toast.error('Please select client')
             return
         }
+        if(key=='process'){
+            toast.error('Please select process')
+            return
+        }
         if (key == 'department') {
             toast.error('Please select department')
             return
         }
-        if (key == 'projectlead') {
-            toast.error('Please select Project lead')
-            return
+        if(key=='billing_type'){
+            toast.error("Please select billing type")
         }
         if (key == 'projectlead') {
             toast.error('Please select Project lead')
             return
+        }if(key=='rate'){
+            toast.error("Please enter rate")
+            return;
         }
+        if(data.billing_type=="Per WorkItem Transactional"){
+            if(key=="timeperworkitem"){
+                toast.error("Please enter time in minute")
+                return;
+            }
+
+        }
+        
 
         for (let i = 0; i < rows.length; i++) {
-            if (rows[i].process === '') {
-                toast.error('Please select process name')
+            if (rows[i].label === '') {
+                toast.error('Please enter label')
                 return
-            } else if (rows[i].billingtype == '') {
-                toast.error('Please select billing type')
+            } else if (rows[i].dataType == '') {
+                toast.error('Please select data type')
                 return
             }
         }
-        data['process'] = rows
+        data['customfields']=rows;
+      
 
         console.log('final Data : ', data)
     }
@@ -166,7 +185,7 @@ const CreateProject = () => {
                 {
                     id: newId,
                     checkbox: false,
-                    status: '',
+                    hstatus: '',
                     startdate: '',
                     enddate: '',
                     comments: '',
@@ -177,16 +196,15 @@ const CreateProject = () => {
     const addRow = () => {
         setRows((prev) => {
             const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
-            
+
             return [
                 ...prev,
                 {
                     id: newId,
                     checkbox: false,
-                    enable: false,
-                    process: '',
-                    billingtype: '',
-                    rate: '',
+                    label: '',
+                    dataType: '',
+                    fieldName: '',
                 },
             ]
         })
@@ -268,9 +286,47 @@ const CreateProject = () => {
     }
 
     const handleSaveClick = () => {
+        console.log(formRef)
         if (formRef.current) {
             formRef.current.requestSubmit()
         }
+    }
+    const handlebillingChange = (e) => {
+        console.log('in billing change', e)
+        if (e == 'Per WorkItem Transactional') {
+            setIsbilling(true)
+        } else {
+            setIsbilling(false)
+        }
+    }
+    const handle_label_Change = (e, rowid) => {
+        console.log('in handle label change', e.target.value, rowid)
+        const value = e.target.value
+        let isAlphabetic = /^[A-Za-z_ ]+$/.test(value);
+        let fieldName=value.split(' ').join('_')
+        if(value>15){
+            toast('label should contain atmost 15 characters')
+        }
+       else if (!isAlphabetic&&value!=="") {
+            toast('label should contain only alphabets')
+        }else{
+            setRows((prev) => {
+                let updatedData = []
+    
+                prev.map((item, i) => {
+                    if(item.id==rowid){
+                        prev[i]['fieldName'] = fieldName
+                    }
+                    
+                    updatedData.push(item)
+                })
+    
+                return updatedData
+            })
+        }
+     
+       
+        console.log("rows",rows)
     }
 
     return (
@@ -297,18 +353,14 @@ const CreateProject = () => {
                                     <div className="w-full">
                                         <SearchableDropdown
                                             options={clients}
-                                            selectedVal={
-                                                noneValidatedValue.client
-                                            }
+                                            selectedVal={noneValidatedValue.client}
                                             handleChange={(val) => {
-                                                setNoneValidatedValue(
-                                                    (prev) => {
-                                                        return {
-                                                            ...prev,
-                                                            client: val,
-                                                        }
+                                                setNoneValidatedValue((prev) => {
+                                                    return {
+                                                        ...prev,
+                                                        client: val,
                                                     }
-                                                )
+                                                })
                                             }}
                                             placeholder="Client"
                                         />
@@ -325,26 +377,26 @@ const CreateProject = () => {
                                 <FormItem>
                                     <FormLabel>Status</FormLabel>
                                     <div className="w-full">
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
+                                        <Select onValueChange={(val) => {
+                                                setNoneValidatedValue(
+                                                    (prev) => {
+                                                        return {
+                                                            ...prev,
+                                                            status: val,
+                                                        }
+                                                    }
+                                                )
+                                            }} defaultValue={'Active'}>
                                             <FormControl>
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="status" />
+                                                    <SelectValue />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="Active">
-                                                    Active
-                                                </SelectItem>
-                                                <SelectItem value="Inactive">
-                                                    Inactive
-                                                </SelectItem>
+                                                <SelectItem value="Active">Active</SelectItem>
+                                                <SelectItem value="Inactive">Inactive</SelectItem>
 
-                                                <SelectItem value="On Hold">
-                                                    On Hold
-                                                </SelectItem>
+                                                <SelectItem value="On Hold">On Hold</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -353,7 +405,7 @@ const CreateProject = () => {
                                 </FormItem>
                             )}
                         />
-                        <FormField
+                        {/* <FormField
                             control={form.control}
                             name="client"
                             render={({ field }) => (
@@ -417,7 +469,7 @@ const CreateProject = () => {
                                     <FormMessage />
                                 </FormItem>
                             )}
-                        />
+                        /> */}
                         <FormField
                             control={form.control}
                             name="lob_process"
@@ -453,27 +505,25 @@ const CreateProject = () => {
                                     <Popover>
                                         <PopoverTrigger asChild>
                                             <FormControl>
-                                                <Button
-                                                    variant={'outline'}
-                                                    className="w-full pl-3 text-left font-normal"
-                                                >
-                                                    {field.value ? (
-                                                        field.value
-                                                    ) : (
-                                                        <span>Pick a date</span>
-                                                    )}
+                                                <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
+                                                    {noneValidatedValue.date ? format(noneValidatedValue.date, 'MM-dd-yyyy') : today}
                                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                 </Button>
                                             </FormControl>
                                         </PopoverTrigger>
-                                        <PopoverContent
-                                            className="w-auto p-0"
-                                            align="start"
-                                        >
+                                        <PopoverContent className="w-auto p-0" align="start">
                                             <Calendar
                                                 mode="single"
-                                                selected={field.value}
-                                                onSelect={field.onChange}
+                                                selected={noneValidatedValue.date}
+                                                onSelect={(e) => {
+                                                    console.log('date', e)
+                                                    setNoneValidatedValue((prev) => {
+                                                        return {
+                                                            ...prev,
+                                                            date: e,
+                                                        }
+                                                    })
+                                                }}
                                                 initialFocus
                                             />
                                         </PopoverContent>
@@ -486,23 +536,19 @@ const CreateProject = () => {
 
                         <FormField
                             control={form.control}
-                            name="processs"
+                            name="process"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Process</FormLabel>
                                     <div className="full">
                                         <SearchableDropdown
                                             options={departments}
-                                            selectedVal={
-                                                noneValidatedValue.department
-                                            }
+                                            selectedVal={noneValidatedValue.process}
                                             handleChange={(val) => {
-                                                setNoneValidatedValue(
-                                                    (prev) => {
-                                                        return {
-                                                            ...prev,
-                                                            client: val,
-                                                        }
+                                                setNoneValidatedValue((prev) => {
+                                                    return {
+                                                        ...prev,
+                                                        process: val,
                                                     }
                                                 })
                                             }}
@@ -526,14 +572,12 @@ const CreateProject = () => {
                                             options={departments}
                                             selectedVal={noneValidatedValue.department}
                                             handleChange={(val) => {
-                                                setNoneValidatedValue(
-                                                    (prev) => {
-                                                        return {
-                                                            ...prev,
-                                                            department: val,
-                                                        }
+                                                setNoneValidatedValue((prev) => {
+                                                    return {
+                                                        ...prev,
+                                                        department: val,
                                                     }
-                                                )
+                                                })
                                             }}
                                             placeholder="Department"
                                         />
@@ -547,31 +591,32 @@ const CreateProject = () => {
                         <FormField
                             className="w-full"
                             control={form.control}
-                            name="status"
+                            name="billing_type"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Billing Type</FormLabel>
                                     <div className="w-full">
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
+                                        <Select onValueChange={(val) => {
+                                                setNoneValidatedValue(
+                                                    (prev) => {
+                                                        return {
+                                                            ...prev,
+                                                            billing_type: val,
+                                                        }
+                                                    }
+                                                )
+                                                handlebillingChange(val)
+                                            } } defaultValue={field.value}>
                                             <FormControl>
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="billing type" />
+                                                    <SelectValue />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="Active">
-                                                    Per WorkItem Transactional
-                                                </SelectItem>
-                                                <SelectItem value="Inactive">
-                                                    FTE
-                                                </SelectItem>
+                                                <SelectItem value="Per WorkItem Transactional">Per WorkItem Transactional</SelectItem>
+                                                <SelectItem value="FTE">FTE</SelectItem>
 
-                                                <SelectItem value="On Hold">
-                                                    Hourly Transactional
-                                                </SelectItem>
+                                                <SelectItem value="Hourly Transactional">Hourly Transactional</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -606,20 +651,52 @@ const CreateProject = () => {
                             )}
                         />
 
-                        <FormField
-                            control={form.control}
-                            name="rate"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Rate</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="rate" {...field} />
-                                    </FormControl>
+                        <div>
+                            <FormField
+                                control={form.control}
+                                name="rate"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Rate</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="rate" onChange={(e) => {
+                                                setNoneValidatedValue((prev) => {
+                                                    return {
+                                                        ...prev,
+                                                        rate: e.target.value,
+                                                    }
+                                                })
+                                            }} />
+                                        </FormControl>
 
-                                    <FormMessage />
-                                </FormItem>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            {isbilling && (
+                                <FormField
+                                    control={form.control}
+                                    name="timeperworkitem"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Time per WorkItem</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="minutes"  onChange={(e) => {
+                                                setNoneValidatedValue((prev) => {
+                                                    return {
+                                                        ...prev,
+                                                        timeperworkitem: e.target.value,
+                                                    }
+                                                }) 
+                                                }}/>
+                                            </FormControl>
+
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             )}
-                        />
+                        </div>
 
                         <FormField
                             control={form.control}
@@ -628,11 +705,7 @@ const CreateProject = () => {
                                 <FormItem>
                                     <FormLabel>Comments</FormLabel>
                                     <FormControl>
-                                        <Textarea
-                                            placeholder="You can write your comments here"
-                                            className="resize-none"
-                                            row="1"
-                                        />
+                                        <Textarea placeholder="comments " className="resize-none" rows="4.5" />
                                     </FormControl>
 
                                     <FormMessage />
@@ -648,19 +721,12 @@ const CreateProject = () => {
                                     <TableHead className="w-[35px] border">
                                         <Checkbox onClick={changeAll} value={checkAll} checked={checkAll} />
                                     </TableHead>
-                                    <TableHead className="w-[50px] border">
-                                        Sr.No
-                                    </TableHead>
+                                    <TableHead className="w-[50px] border">Sr.No</TableHead>
 
-                                    <TableHead className="w-[300px] border">
-                                        Label
-                                    </TableHead>
-                                    <TableHead className="w-[200px] border">
-                                        Field Name
-                                    </TableHead>
-                                    <TableHead className="w-[200px] border">
-                                        Data Type
-                                    </TableHead>
+                                    <TableHead className="w-[300px] border">Label</TableHead>
+
+                                    <TableHead className="w-[200px] border">Data Type</TableHead>
+                                    <TableHead className="w-[200px] border">Field Name</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -674,13 +740,11 @@ const CreateProject = () => {
                                     </tr>
                                 ) : (
                                     rows.map((row, i) => (
-                                        <TableRow key={row.id} name="process" className="border">
+                                        <TableRow key={row.id} name="customfields" className="border">
                                             <TableCell className="border">
                                                 <Checkbox onClick={() => changeOne(row, i)} checked={row.checkbox} value={row.checkbox} />
                                             </TableCell>
-                                            <TableCell className="border">
-                                                {row.id}
-                                            </TableCell>
+                                            <TableCell className="border">{row.id}</TableCell>
 
                                             <TableCell className="border">
                                                 <div className="w-full">
@@ -690,98 +754,61 @@ const CreateProject = () => {
                                                             setRows((prev) => {
                                                                 let updatedData = []
 
-                                                                prev.map(
-                                                                    (
-                                                                        item,
-                                                                        i
-                                                                    ) => {
-                                                                        if (
-                                                                            item.id ==
-                                                                            row.id
-                                                                        ) {
-                                                                            prev[
-                                                                                i
-                                                                            ][
-                                                                                'hours'
-                                                                            ] =
-                                                                                e.target.value
-                                                                        }
-                                                                        updatedData.push(
-                                                                            item
-                                                                        )
+                                                                prev.map((item, i) => {
+                                                                    if (item.id == row.id) {
+                                                                        prev[i]['label'] = e.target.value
                                                                     }
-                                                                )
+                                                                    updatedData.push(item)
+                                                                })
                                                                 return updatedData
                                                             })
+                                                           
                                                         }}
+                                                        onBlur={ (e)=>handle_label_Change(e, row.id)}
                                                         className="border-none shadow-none"
                                                     />
+                                                </div>
+                                            </TableCell>
+
+                                            <TableCell className="border">
+                                                <div className="flex items-center space-x-2 justify-center">
+                                                    <Select
+                                                        onValueChange={(value) =>
+                                                            setRows((prev) => {
+                                                                let updatedData = []
+
+                                                                prev.map((item, i) => {
+                                                                    if (item.id == row.id) {
+                                                                        prev[i]['dataType'] = value
+                                                                    }
+                                                                    updatedData.push(item)
+                                                                })
+                                                                return updatedData
+                                                            })
+                                                        }
+                                                        defaultValue={rows.dataType}
+                                                        className="border-none w-full"
+                                                    >
+                                                        <SelectTrigger className="border-none">
+                                                            <SelectValue placeholder="Data Type" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="data">Data</SelectItem>
+                                                            <SelectItem value="date">Date</SelectItem>
+                                                            <SelectItem value="smallText">Small Text</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="border">
                                                 <Input
                                                     placeholder="Field Name"
-                                                    onChange={(e) => {
-                                                        setRows((prev) => {
-                                                            let updatedData = []
-
-                                                            prev.map(
-                                                                (item, i) => {
-                                                                    if (
-                                                                        item.id ==
-                                                                        row.id
-                                                                    ) {
-                                                                        prev[i][
-                                                                            'hours'
-                                                                        ] =
-                                                                            e.target.value
-                                                                    }
-                                                                    updatedData.push(
-                                                                        item
-                                                                    )
-                                                                }
-                                                            )
-                                                            return updatedData
-                                                        })
-                                                    }}
+                                                    name="fieldName"
+                                                    value={row.fieldName}
+                                                    
                                                     className="border-none shadow-none"
+                                                    disabled
                                                 />
-                                            </TableCell>
-                                            <TableCell className="border">
-                                                <div className="flex items-center space-x-2 justify-center">
-                                                    <Input
-                                                        placeholder="Data Type"
-                                                        onChange={(e) => {
-                                                            setRows((prev) => {
-                                                                let updatedData = []
-
-                                                                prev.map(
-                                                                    (
-                                                                        item,
-                                                                        i
-                                                                    ) => {
-                                                                        if (
-                                                                            item.id ==
-                                                                            row.id
-                                                                        ) {
-                                                                            prev[
-                                                                                i
-                                                                            ][
-                                                                                'work_item'
-                                                                            ] =
-                                                                                e.target.value
-                                                                        }
-                                                                        updatedData.push(
-                                                                            item
-                                                                        )
-                                                                    }
-                                                                )
-                                                                return updatedData
-                                                            })
-                                                        }}
-                                                        className="border-none shadow-none"
-                                                    />
-                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -818,12 +845,7 @@ const CreateProject = () => {
                         )}
 
                         {checkAll && rows.length > 0 && (
-                            <Button
-                                type="button"
-                                className="bg-primary-red ml-1"
-                                onClick={deleteAll}
-                                style={{ padding: '0px 10px', height: '28px' }}
-                            >
+                            <Button type="button" className="bg-primary-red ml-1" onClick={deleteAll} style={{ padding: '0px 10px', height: '28px' }}>
                                 Delete All
                             </Button>
                         )}
@@ -834,102 +856,53 @@ const CreateProject = () => {
                             <TableHeader>
                                 <TableRow className="border">
                                     <TableHead className="w-[35px] border">
-                                        <Checkbox
-                                            onClick={change_history_All}
-                                            value={checkhisotryAll}
-                                            checked={checkhisotryAll}
-                                        />
+                                        <Checkbox onClick={change_history_All} value={checkhisotryAll} checked={checkhisotryAll} />
                                     </TableHead>
-                                    <TableHead className="w-[50px] border">
-                                        Sr.No
-                                    </TableHead>
+                                    <TableHead className="w-[50px] border">Sr.No</TableHead>
 
-                                    <TableHead className=" border">
-                                        Status
-                                    </TableHead>
-                                    <TableHead className="w-[200px] border">
-                                        Start Date
-                                    </TableHead>
-                                    <TableHead className="w-[200px] border">
-                                        End Date
-                                    </TableHead>
-                                    <TableHead className=" border">
-                                        Comments
-                                    </TableHead>
+                                    <TableHead className=" border">Status</TableHead>
+                                    <TableHead className="w-[200px] border">Start Date</TableHead>
+                                    <TableHead className="w-[200px] border">End Date</TableHead>
+                                    <TableHead className=" border">Comments</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {historyrows.length == 0 ? (
                                     <tr>
                                         <td colspan="6">
-                                            <h6
-                                                className="text-center"
-                                                style={{ margin: 0 }}
-                                            >
+                                            <h6 className="text-center" style={{ margin: 0 }}>
                                                 No Data
                                             </h6>
                                         </td>
                                     </tr>
                                 ) : (
                                     historyrows.map((historyrow, i) => (
-                                        <TableRow
-                                            key={historyrows.id}
-                                            name="process"
-                                            className="border"
-                                        >
+                                        <TableRow key={historyrows.id} name="history" className="border">
                                             <TableCell className="border">
                                                 <Checkbox
-                                                    onClick={() =>
-                                                        change_history_One(
-                                                            historyrow,
-                                                            i
-                                                        )
-                                                    }
-                                                    checked={
-                                                        historyrow.checkbox
-                                                    }
+                                                    onClick={() => change_history_One(historyrow, i)}
+                                                    checked={historyrow.checkbox}
                                                     value={historyrow.checkbox}
                                                 />
                                             </TableCell>
-                                            <TableCell className="border">
-                                                {historyrow.id}
-                                            </TableCell>
+                                            <TableCell className="border">{historyrow.id}</TableCell>
                                             <TableCell className="border">
                                                 <Select
+                                                name="hstatus"
                                                     onValueChange={(value) =>
-                                                        setHistoryrows(
-                                                            (prev) => {
-                                                                let updatedData =
-                                                                    []
+                                                        setHistoryrows((prev) => {
+                                                            let updatedData = []
 
-                                                                prev.map(
-                                                                    (
-                                                                        item,
-                                                                        i
-                                                                    ) => {
-                                                                        if (
-                                                                            item.id ==
-                                                                            historyrow.id
-                                                                        ) {
-                                                                            prev[
-                                                                                i
-                                                                            ][
-                                                                                'label'
-                                                                            ] =
-                                                                                value
-                                                                        }
-                                                                        updatedData.push(
-                                                                            item
-                                                                        )
-                                                                    }
-                                                                )
-                                                                return updatedData
-                                                            }
-                                                        )
+                                                            prev.map((item, i) => {
+                                                                if (item.id == historyrow.id) {
+                                                                    prev[i]['label'] = value
+                                                                }
+                                                                updatedData.push(item)
+                                                            })
+                                                            return updatedData
+                                                        })
                                                     }
-                                                    defaultValue={
-                                                        historyrows.label
-                                                    }
+                                                    defaultValue={historyrows.label}
                                                     className="border-none w-full"
                                                 >
                                                     <FormControl>
@@ -938,16 +911,10 @@ const CreateProject = () => {
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        <SelectItem value="Active">
-                                                            Active
-                                                        </SelectItem>
-                                                        <SelectItem value="Inactive">
-                                                            Inactive
-                                                        </SelectItem>
+                                                        <SelectItem value="Active">Active</SelectItem>
+                                                        <SelectItem value="Inactive">Inactive</SelectItem>
 
-                                                        <SelectItem value="On Hold">
-                                                            On Hold
-                                                        </SelectItem>
+                                                        <SelectItem value="On Hold">On Hold</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </TableCell>
@@ -957,66 +924,30 @@ const CreateProject = () => {
                                                     <Popover>
                                                         <PopoverTrigger asChild>
                                                             <Button
-                                                                variant={
-                                                                    'outline'
-                                                                }
+                                                                variant={'outline'}
                                                                 className="w-full justify-start text-left font-normal border-none"
                                                             >
-                                                                {historyrow.startdate
-                                                                    ? format(
-                                                                          historyrow.startdate,
-                                                                          'MM-dd-yyyy'
-                                                                      )
-                                                                    : 'pick a date'}
+                                                                {historyrow.startdate ? format(historyrow.startdate, 'MM-dd-yyyy') : ''}
                                                             </Button>
                                                         </PopoverTrigger>
-                                                        <PopoverContent
-                                                            className="w-auto p-0 "
-                                                            align="start"
-                                                        >
+                                                        <PopoverContent className="w-auto p-0 " align="start">
                                                             <Calendar
                                                                 mode="single"
                                                                 key={historyrow.startdate}
-                                                                
-                                                                selected={
-                                                                    historyrow.startdate
-                                                                }
-                                                                onSelect={(
-                                                                    e
-                                                                ) => {
-                                                                    setHistoryrows(
-                                                                        (
-                                                                            prev
-                                                                        ) => {
-                                                                            let updatedData =
-                                                                                []
+                                                                selected={historyrow.startdate}
+                                                                onSelect={(e) => {
+                                                                    setHistoryrows((prev) => {
+                                                                        let updatedData = []
 
-                                                                            prev.map(
-                                                                                (
-                                                                                    item,
-                                                                                    i
-                                                                                ) => {
-                                                                                    if (
-                                                                                        item.id ==
-                                                                                        historyrow.id
-                                                                                    ) {
-                                                                                        prev[
-                                                                                            i
-                                                                                        ][
-                                                                                            'startdate'
-                                                                                        ] =
-                                                                                        e
-                                                                                    }
-                                                                                    updatedData.push(
-                                                                                        item
-                                                                                    )
-                                                                                }
-                                                                            )
-                                                                            return updatedData
-                                                                        }
-                                                                    )
+                                                                        prev.map((item, i) => {
+                                                                            if (item.id == historyrow.id) {
+                                                                                prev[i]['startdate'] = e
+                                                                            }
+                                                                            updatedData.push(item)
+                                                                        })
+                                                                        return updatedData
+                                                                    })
                                                                 }}
-                                                     
                                                                 initialFocus
                                                             />
                                                         </PopoverContent>
@@ -1029,66 +960,31 @@ const CreateProject = () => {
                                                     <Popover>
                                                         <PopoverTrigger asChild>
                                                             <Button
-                                                                variant={
-                                                                    'outline'
-                                                                }
+                                                                variant={'outline'}
                                                                 className="w-full justify-start text-left font-normal border-none"
                                                             >
-                                                                { historyrow.enddate
-                                                                    ? format(
-                                                                        historyrow.enddate,
-                                                                          'MM-dd-yyyy'
-                                                                      )
-                                                                    : 'pick a date'}
+                                                                {historyrow.enddate ? format(historyrow.enddate, 'MM-dd-yyyy') : ''}
                                                             </Button>
                                                         </PopoverTrigger>
-                                                        <PopoverContent
-                                                            className="w-auto p-0"
-                                                            align="start"
-                                                        >
-                                                        {console.log("historyrow : ",historyrow)}
+                                                        <PopoverContent className="w-auto p-0" align="start">
+                                                            {console.log('historyrow : ', historyrow)}
                                                             <Calendar
                                                                 key={historyrow.enddate}
                                                                 mode="single"
-                                                                selected={
-                                                                    historyrow.enddate
-                                                                }
-                                                                onSelect={(
-                                                                    e
-                                                                ) => {
-                                                                    setHistoryrows(
-                                                                        (
-                                                                            prev
-                                                                        ) => {
-                                                                            let updatedData =
-                                                                                []
+                                                                selected={historyrow.enddate}
+                                                                onSelect={(e) => {
+                                                                    setHistoryrows((prev) => {
+                                                                        let updatedData = []
 
-                                                                            prev.map(
-                                                                                (
-                                                                                    item,
-                                                                                    i
-                                                                                ) => {
-                                                                                    if (
-                                                                                        item.id ==
-                                                                                        historyrow.id
-                                                                                    ) {
-                                                                                        prev[
-                                                                                            i
-                                                                                        ][
-                                                                                            'enddate'
-                                                                                        ] =
-                                                                                        e
-                                                                                    }
-                                                                                    updatedData.push(
-                                                                                        item
-                                                                                    )
-                                                                                }
-                                                                            )
-                                                                            return updatedData
-                                                                        }
-                                                                    )
+                                                                        prev.map((item, i) => {
+                                                                            if (item.id == historyrow.id) {
+                                                                                prev[i]['enddate'] = e
+                                                                            }
+                                                                            updatedData.push(item)
+                                                                        })
+                                                                        return updatedData
+                                                                    })
                                                                 }}
-                                                                
                                                             />
                                                         </PopoverContent>
                                                     </Popover>
@@ -1096,37 +992,19 @@ const CreateProject = () => {
                                             </TableCell>
                                             <TableCell>
                                                 <Input
-                                                    placeholder="Your Comments will come here"
+                                                    placeholder=" Comments"
                                                     onChange={(e) => {
-                                                        setHistoryrows(
-                                                            (prev) => {
-                                                                let updatedData =
-                                                                    []
+                                                        setHistoryrows((prev) => {
+                                                            let updatedData = []
 
-                                                                prev.map(
-                                                                    (
-                                                                        item,
-                                                                        i
-                                                                    ) => {
-                                                                        if (
-                                                                            item.id ==
-                                                                            historyrow.id
-                                                                        ) {
-                                                                            prev[
-                                                                                i
-                                                                            ][
-                                                                                'hours'
-                                                                            ] =
-                                                                                e.target.value
-                                                                        }
-                                                                        updatedData.push(
-                                                                            item
-                                                                        )
-                                                                    }
-                                                                )
-                                                                return updatedData
-                                                            }
-                                                        )
+                                                            prev.map((item, i) => {
+                                                                if (item.id == historyrow.id) {
+                                                                    prev[i]['hours'] = e.target.value
+                                                                }
+                                                                updatedData.push(item)
+                                                            })
+                                                            return updatedData
+                                                        })
                                                     }}
                                                     className="border-none shadow-none"
                                                 />
@@ -1166,7 +1044,12 @@ const CreateProject = () => {
                         )}
 
                         {checkhisotryAll && historyrows.length > 0 && (
-                            <Button type="button" className="bg-primary-red ml-1" onClick={delete_history_All} style={{ padding: '0px 10px', height: '28px' }}>
+                            <Button
+                                type="button"
+                                className="bg-primary-red ml-1"
+                                onClick={delete_history_All}
+                                style={{ padding: '0px 10px', height: '28px' }}
+                            >
                                 Delete All
                             </Button>
                         )}
