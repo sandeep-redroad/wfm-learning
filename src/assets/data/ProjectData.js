@@ -1,6 +1,6 @@
 const ProjectData = []
 
-for (let i = 1; i < 21; i++) {
+for (let i = 1; i < 25; i++) {
     ProjectData.push({
         id: crypto.randomUUID().slice(0, 3),
         client: crypto.randomUUID().slice(3, 10),

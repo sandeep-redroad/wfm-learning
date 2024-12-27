@@ -32,7 +32,7 @@ const Navbar = () => {
 
             <DropdownMenu>
                 <DropdownMenuTrigger>
-                    <div className="flex items-end flex-col gap-0 cursor-pointer">
+                    <div className="flex items-end flex-col gap-2 cursor-pointer">
                         <Avatar className="text-sm h-7 w-7">
                             <AvatarImage src="" className="bg-white " />
                             <AvatarFallback className="text-black">

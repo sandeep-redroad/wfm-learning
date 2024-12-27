@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -9,7 +9,7 @@ import { z } from 'zod'
 import { Eye, EyeClosed, LockIcon, Mail } from 'lucide-react'
 import assets from '@/assets/assets'
 import Header from '@/Components/Header/Header'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/Context/AuthContext'
 
 const formSchema = z.object({
@@ -22,12 +22,17 @@ const formSchema = z.object({
 })
 
 const Login = () => {
-    const { login } = useAuth()
+    const { login, isAuthenticated } = useAuth()
     const [isError, setIsError] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const navigate = useNavigate()
 
+    useEffect(() =>{
+        if(isAuthenticated){
+            return <Navigate to="/dashboard" />;
+        }
+    }, [isAuthenticated])
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -58,6 +63,7 @@ const Login = () => {
         login()
         navigate('/')
     }
+    
 
     return (
         <>

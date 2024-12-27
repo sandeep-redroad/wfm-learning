@@ -26,6 +26,10 @@
     --sidebar-ring: 217.2 91.2% 59.8%}
 }
 
+html{
+  line-height: 0;
+}
+
 body{
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
 
@@ -207,13 +211,10 @@ table{
   width: 100%;
   height: 90vh; /* Use 90vh for better responsiveness, or any fixed height */
   overflow-y: auto; /* Make content scrollable */
-  scrollbar-width: none; /* Hide scrollbars in Firefox */
   position: relative; /* Ensure stacking context */
 }
 
-.div-container::-webkit-scrollbar {
-  display: none; /* Hide scrollbars in webkit-based browsers */
-}
+
 
 /* .sticky-div - Sticky element inside the scrollable container */
 .sticky-div {
@@ -221,8 +222,8 @@ table{
   top: 0; /* Stick the div to the top */
   background: white; /* White background */
   z-index: 10; /* Ensure it stays above content */
-  padding: 15px 20px; /* Padding inside the sticky div */
+  padding: 12px 20px; /* Padding inside the sticky div */
   border-bottom: 8px solid rgba(113, 131, 133, 0.2); /* Border for visual separation */
-  box-shadow: inset 0 -4px 5px -5px rgba(56, 61, 62, 0.13); /* Box-shadow for subtle effect */
+  box-shadow: inset 0 10px 5px -5px rgba(56, 61, 62, 0.13); /* Box-shadow for subtle effect */
   margin-bottom: 20px; /* Margin to separate sticky div from the content below */
 }

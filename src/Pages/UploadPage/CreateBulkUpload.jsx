@@ -18,7 +18,7 @@ const CreateBulkUpload = () => {
                 toast.info('Please select document type')
                 break
             case DocumentTypeEnum.DAILY_WORK_LOG:
-                const dailyWorkLogColumns = [{ name: '', date: '', amount: '' }]
+                const dailyWorkLogColumns = [{ NAME: '', DATE: '', AMOUNT: '' }]
                 if(selectedProjectId == DocumentTypeEnum.NOT_SELECTED){
                     toast.info("Please select project")
                     return false;

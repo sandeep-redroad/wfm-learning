@@ -9,12 +9,13 @@ import {
     PaginationPrevious,
 } from '@/Components/ui/pagination'
 import { useLocation } from 'react-router-dom'
+import Constent from '@/utils/constent'
 
 export function PaginationWithLinks({ totalCount, pageSearchParam }) {
     const location = useLocation()
     const searchParams = new URLSearchParams(location.search)
     const page = parseInt(searchParams.get('page') || 1)
-    const pageSize = 20
+    const pageSize = Constent.PAGINATION_SIZE
     const totalPageCount = Math.ceil(totalCount / pageSize)
 
     const buildLink = useCallback(

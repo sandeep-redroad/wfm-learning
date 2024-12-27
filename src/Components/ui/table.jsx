@@ -2,8 +2,8 @@ import * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-const Table = React.forwardRef(({ className, ...props }, ref) => (
-    <div className={`relative w-full overflow-x rounded-lg`}>
+const Table = React.forwardRef(({ className, parentClass="", ...props }, ref) => (
+    <div className={`relative w-full overflow-x rounded-lg ${parentClass}`}>
         <table
             ref={ref}
             className={cn(
@@ -50,7 +50,7 @@ const TableRow = React.forwardRef(({ className, ...props }, ref) => (
     <tr
         ref={ref}
         className={cn(
-            ' transition-colors hover:bg-neutral-100/50 data-[state=selected]:bg-neutral-100 dark:hover:bg-neutral-800/50 dark:data-[state=selected]:bg-neutral-800 h-10 text-justify',
+            'transition-colors hover:bg-neutral-100/50 data-[state=selected]:bg-neutral-100 dark:hover:bg-neutral-800/50 dark:data-[state=selected]:bg-neutral-800 h-10 text-justify',
             className
         )}
         {...props}
