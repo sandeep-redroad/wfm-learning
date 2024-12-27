@@ -1,22 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-} from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { z } from 'zod'
 import { Eye, EyeClosed } from 'lucide-react'
 import assets from '@/assets/assets'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/Context/AuthContext'
 import AuthService from '@/Service/AuthService'
+import { toast } from 'react-toastify'
 
 const formSchema = z.object({
     username: z.string().min(2, {
@@ -28,7 +23,7 @@ const formSchema = z.object({
 })
 
 const Login2 = () => {
-    const { login } = useAuth()
+    const { login, setUserInfo} = useAuth()
     const [isError, setIsError] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
@@ -47,13 +42,18 @@ const Login2 = () => {
      *
      */
     async function onSubmit(data) {
-        setIsLoading(true)
-        setIsError(false)
-        console.log("values : ", data)
-        const resp = await AuthService.login(data)
-        console.log("resp : ",resp);
-        login()
-        navigate('/')
+        try {
+            setIsLoading(true)
+            setIsError(false)
+            const resp = await AuthService.login(data)
+            if(resp.data.success){
+                toast.success(resp.data.message)
+                setUserInfo(resp.data.data)
+                login()
+                navigate('/dashboard')
+            }
+            
+        } catch (err) {}
     }
 
     /**
@@ -88,9 +88,7 @@ const Login2 = () => {
                 <Card className="w-96  px-2 py-8 xl:ms-[-50px]">
                     <CardContent className="pb-0">
                         <div className="text-center">
-                            <h1 className=" text-2xl font-bold mb-4">
-                                Login to REDROAD
-                            </h1>
+                            <h1 className=" text-2xl font-bold mb-4">Login to REDROAD</h1>
                         </div>
                         <Form {...form}>
                             <form className="space-y-4">
@@ -120,7 +118,7 @@ const Login2 = () => {
                                             <div className="relative">
                                                 <FormControl>
                                                     <Input
-                                                        type="password"
+                                                        type={showPassword ? 'text' : 'password'}
                                                         className=" focus-visible:ring-transparent space-0 mt-0"
                                                         placeholder="***************"
                                                         {...field}
@@ -128,23 +126,9 @@ const Login2 = () => {
                                                 </FormControl>
                                                 <div className=" absolute top-2 right-2">
                                                     {showPassword ? (
-                                                        <EyeClosed
-                                                            className="text-gray-400"
-                                                            onClick={() =>
-                                                                setShowPassword(
-                                                                    !showPassword
-                                                                )
-                                                            }
-                                                        />
+                                                        <EyeClosed className="text-gray-400" onClick={() => setShowPassword(!showPassword)} />
                                                     ) : (
-                                                        <Eye
-                                                            className="text-gray-400"
-                                                            onClick={() =>
-                                                                setShowPassword(
-                                                                    !showPassword
-                                                                )
-                                                            }
-                                                        />
+                                                        <Eye className="text-gray-400" onClick={() => setShowPassword(!showPassword)} />
                                                     )}
                                                 </div>
                                             </div>
@@ -154,20 +138,11 @@ const Login2 = () => {
                             </form>
                         </Form>
                         <div className="mt-3 text-sm underline flex justify-end ">
-                            <Link to="https://redconnect.v14livestaging.redroadhbs.org/#forgot">
-                                Forgot Password?
-                            </Link>
+                            <Link to="https://redconnect.v14livestaging.redroadhbs.org/#forgot">Forgot Password?</Link>
                         </div>
                         <div className="flex justify-center mt-5 w-full">
-                            <Button
-                                className="w-full bg-primary-ink hover:bg-primary-ink"
-                                onClick={form.handleSubmit(onSubmit, onError)}
-                            >
-                                {isError
-                                    ? 'Invalid Login. Try again.'
-                                    : isLoading
-                                    ? 'Loading...'
-                                    : 'Login'}
+                            <Button className="w-full bg-primary-ink hover:bg-primary-ink" onClick={form.handleSubmit(onSubmit, onError)}>
+                                {isError ? 'Invalid Login. Try again.' : isLoading ? 'Loading...' : 'Login'}
                             </Button>
                         </div>
                     </CardContent>

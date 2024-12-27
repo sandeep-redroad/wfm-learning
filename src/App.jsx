@@ -23,6 +23,7 @@ import CreateInoice from './Pages/Invoice/CreateInvoice'
 import CreateDailyWorkLog from './Pages/DailyWorkLog/CreateDailyWorkLog'
 import DailyWorkLog from './Pages/DailyWorkLog/Listing/DailyWorkLog'
 import CreateClient from './Pages/Clients/CreateClient'
+import NotFound404 from './Pages/Error/NotFound404'
 
 let router = createBrowserRouter([
     {
@@ -42,7 +43,8 @@ let router = createBrowserRouter([
         Component: AuthLayout,
         children: [
             {
-                path: '/',
+                index : true,
+                path: '/dashboard',
                 Component: Dashboard,
             },
             {
@@ -110,12 +112,21 @@ let router = createBrowserRouter([
                 path: '/master-settings/employee-mapped',
                 Component: EmployeeMapped,
             },
-           
+            {
+                path: '*',
+                Component: NotFound404,
+            }, 
         ],
     },
+    {
+        path: '*',
+        Component: NotFound404,
+    },
+    
 ])
 
 function App() {
+    
     return (
         <AuthProvider>
             <ToastContainer

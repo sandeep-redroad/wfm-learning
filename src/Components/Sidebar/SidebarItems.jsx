@@ -14,7 +14,6 @@ import ParentLabel from './ParentLabel'
 import ChildLabel from './ChildLabel'
 
 const SidebarItems = ({ items }) => {
-    const { isMobile } = useSidebar()
     return (
         <SidebarGroup>
             <SidebarMenu>
