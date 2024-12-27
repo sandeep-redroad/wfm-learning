@@ -8,6 +8,8 @@ import Datatable from '@/Components/Common/Datatable'
 import { Input } from '@/Components/ui/input'
 import BillingTypeService from '@/Service/BillingTypeService'
 import { useLocation } from 'react-router-dom'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Link } from 'react-router-dom'
 
 const Billing = () => {
     const [billingTypes, setBillingTypes] = useState([])
@@ -36,7 +38,7 @@ const Billing = () => {
     }
     return (
         <div className="container mx-auto">
-            <div className="flex justify-between items-center">
+            {/* <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Billing Types</h1>
                 <Dialog open={isOpen} onOpenChange={() => setIsOpen((prev) => !prev)}>
                     <DialogTrigger className="">
@@ -48,7 +50,33 @@ const Billing = () => {
             <div className="w-full my-2 grid grid-cols-4 mt-5">
                 <Input type="text" onChange={handleSearch} placeholder="Billing Type" />
             </div>
-            <Datatable columns={BillingColumns()} data={billingTypes} totalDataCount={totalCount} />
+            <Datatable columns={BillingColumns()} data={billingTypes} totalDataCount={totalCount} /> */}
+
+
+
+            <Card className="p-0 mb-[75px] mx-0 rounded-none sticky top-16 w-full">
+                <CardContent className="m-0 flex justify-end items-center p-3">
+                    <div className="flex justify-between items-center">
+
+                    <Dialog open={isOpen} onOpenChange={() => setIsOpen((prev) => !prev)}>
+                    <DialogTrigger className="">
+                        <Button className="bg-primary-purpal hover:bg-primary-purpal">Add Billing Type</Button>
+                    </DialogTrigger>
+                    <CreateBillingType getBillingTypes={getBillingTypes} setIsOpen={setIsOpen} />
+                </Dialog>
+                  
+              
+                    </div>
+                </CardContent>
+            </Card>
+            <Card className="p-0 m-3 mt-[4.5rem]">
+                <CardContent className="m-0 p-3 overflow-y-auto">
+                    <div className="w-full my-2 grid grid-cols-4">
+                    <Input type="text" onChange={handleSearch} placeholder="Billing Type" />
+                    </div>
+                    <Datatable columns={BillingColumns()} data={billingTypes} totalDataCount={totalCount} />
+                </CardContent>
+            </Card>
         </div>
     )
 }

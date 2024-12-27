@@ -52,8 +52,12 @@ const Login2 = () => {
                 login()
                 navigate('/dashboard')
             }
-            
-        } catch (err) {}
+            console.log("err chceck : ", resp)
+        } catch (err) {
+            setIsLoading(false)
+            setIsError(true)
+            navigate('/dashboard')
+        }
     }
 
     /**
@@ -62,10 +66,9 @@ const Login2 = () => {
      */
     const onError = (errors, e) => {
         setIsLoading(true)
-        console.log('Error found ')
+        console.log('Error found')
         setIsError(true)
-        login()
-        navigate('/')
+        navigate('/dashboard')
     }
 
     return (

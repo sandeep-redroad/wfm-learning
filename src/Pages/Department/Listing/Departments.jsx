@@ -6,7 +6,7 @@ import { Button } from '@/Components/ui/button'
 import CreateDepartment from '../CreateDepartment'
 import Datatable from '@/Components/Common/Datatable'
 import { Input } from '@/Components/ui/input'
-
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 const Departments = () => {
     const handleSearch = (e) => {
         console.log('e : ', e)
@@ -14,7 +14,36 @@ const Departments = () => {
 
     return (
         <div className="container mx-auto">
-            <div className="flex justify-between items-center">
+        <Card className="p-0 mb-[75px] mx-0 rounded-none sticky top-16 w-full">
+                <CardContent className="m-0 flex justify-end items-center p-3">
+                    <div className="flex justify-between items-center">
+
+                    <Dialog>
+                    <DialogTrigger className="">
+                        <Button className="bg-primary-purpal hover:bg-primary-purpal">
+                            Add Department
+                        </Button>
+                    </DialogTrigger>
+                    <CreateDepartment />
+                </Dialog>
+                  
+              
+                    </div>
+                </CardContent>
+            </Card>
+            <Card className="p-0 m-3 mt-[4.5rem]">
+                <CardContent className="m-0 p-3 overflow-y-auto">
+                    <div className="w-full my-2 grid grid-cols-4">
+                    <Input type="text" onChange={handleSearch} placeholder="Department" />
+                    </div>
+                    <Datatable
+                columns={DepartmentColumns()}
+                data={assets.DepartmentData}
+                totalDataCount={10}
+            />
+                </CardContent>
+            </Card>
+            {/* <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Departments</h1>
                 <Dialog>
                     <DialogTrigger className="">
@@ -36,7 +65,7 @@ const Departments = () => {
                 columns={DepartmentColumns()}
                 data={assets.DepartmentData}
                 totalDataCount={10}
-            />
+            /> */}
         </div>
     )
 }

@@ -5,6 +5,8 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'react-toastify'
 import { addDays, format } from 'date-fns'
 import { CalendarIcon } from "lucide-react"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+
 import {
     Table,
     TableBody,
@@ -244,23 +246,28 @@ const Invoicef = () => {
     }
     return (
         <>
-            <div className="flex justify-end items-center mb-3">
-                <div className="flex items-center justify-end gap-2">
-                    <Link className="button" to="/invoices">
-                        <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">
-                            Back
-                        </Button>
-                    </Link>
-                    <Button className="" onClick={handleSaveClick}>
-                        Save
-                    </Button>
-                </div>
-            </div>
+            
+                        <Card className="p-0 mb-[46px] mx-0 rounded-none sticky top-16 w-full z-10">
+                            <CardContent className="m-0 flex justify-end items-center p-3">
+                                <div className="flex justify-end items-center">
+                                    <div className="flex items-center justify-end gap-2">
+                                        <Link className="button" to="/daily-work-log">
+                                            <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
+                                        </Link>
+                                        <Button className="" onClick={handleSaveClick}>
+                                            Save
+                                        </Button>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card className="p-0 m-3 ">
+                            <CardContent className="m-0 p-3">
             <Form {...form} className="">
                 <form
                     ref={formRef}
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className=""
+                   className="p-4 lg:ps-5"
                 >
                     <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                         <FormField
@@ -933,6 +940,8 @@ const Invoicef = () => {
                     </div>
                 </form>
             </Form>
+               </CardContent>
+                        </Card>
         </>
     )
 }

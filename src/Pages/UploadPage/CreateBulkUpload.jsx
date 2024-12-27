@@ -7,6 +7,7 @@ import { ExportExcel } from '@/utils/helper'
 import DocumentTypeData from '@/assets/data/DocumentTypeData'
 import DocumentTypeEnum from '@/Enums/DocumentTypeEnum'
 import { toast } from 'react-toastify'
+import { Card, CardContent } from '@/components/ui/card'
 
 const CreateBulkUpload = () => {
     const [selectedDocumentType, setSelectedDocumentType] = useState('null')
@@ -33,16 +34,32 @@ const CreateBulkUpload = () => {
     }
     
     return (
+
+        
         <div className="container mx-auto">
-            <div className="flex justify-end items-center mb-3">
+         <Card className="p-0 mb-[75px] mx-0 rounded-none sticky top-16 w-full z-10">
+                        <CardContent className="m-0 flex justify-end items-center p-3">
+                            <div className="flex justify-end items-center">
+                                <div className="flex items-center justify-end gap-2">
+                                    <Link className="button" to="/bulk-upload">
+                                        <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
+                                    </Link>
+                                    
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+            {/* <div className="flex justify-end items-center mb-3">
                 <div className="flex items-center justify-end gap-2">
                     <Link className="button" to="/bulk-upload">
                         <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                     </Link>
                 </div>
-            </div>
+            </div> */}
+            <Card className="p-0 m-3 mt-[3rem]">
+                            <CardContent className="m-0 p-3">
             <div>
-                <div className="grid grid-cols-2 gap-3 items-end">
+                <div className="grid grid-cols-2 gap-3 items-end p-4 lg:ps-5">
                     <div className="flex flex-col gap-2 w-full">
                         <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                             Document Type
@@ -64,7 +81,7 @@ const CreateBulkUpload = () => {
                         </Select>
                     </div>
                     {DocumentTypeEnum.DAILY_WORK_LOG === selectedDocumentType  && (
-                        <div className="flex flex-col gap-2 w-full">
+                        <div className="flex flex-col gap-2 w-full p-4 lg:ps-5">
                             <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                 Project
                             </span>
@@ -94,6 +111,8 @@ const CreateBulkUpload = () => {
                 <hr className="my-6" />
                 <UploadBox />
             </div>
+              </CardContent>
+                        </Card>
         </div>
     )
 }
