@@ -24,12 +24,19 @@ import CreateDailyWorkLog from './Pages/DailyWorkLog/CreateDailyWorkLog'
 import DailyWorkLog from './Pages/DailyWorkLog/Listing/DailyWorkLog'
 import CreateClient from './Pages/Clients/CreateClient'
 import NotFound404 from './Pages/Error/NotFound404'
-
+import ErrorBoundary from './ErrorBoundary'
+import React, { Suspense } from 'react';
+import ErrorPage from './ErrorPage'
 let router = createBrowserRouter([
     {
         path: '/login',
         Component: Login2,
     },
+    {
+        path:"*",
+        Component:ErrorPage,
+    },
+
     {
         path: '/login1',
         Component: Login1,
@@ -128,7 +135,10 @@ let router = createBrowserRouter([
 function App() {
     
     return (
-        <AuthProvider>
+       
+          <ErrorBoundary>
+          <Suspense fallback={<div>Loading...</div>}>
+            <AuthProvider>
             <ToastContainer
                 position="top-center"
                 autoClose={2000}
@@ -143,6 +153,9 @@ function App() {
             />
             <RouterProvider router={router} />
         </AuthProvider>
+        </Suspense>
+          </ErrorBoundary>
+      
     )
 }
 

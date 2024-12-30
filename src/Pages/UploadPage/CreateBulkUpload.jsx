@@ -81,7 +81,7 @@ const CreateBulkUpload = () => {
                         </Select>
                     </div>
                     {DocumentTypeEnum.DAILY_WORK_LOG === selectedDocumentType  && (
-                        <div className="flex flex-col gap-2 w-full p-4 lg:ps-5">
+                        <div className="flex flex-col gap-2 w-full ">
                             <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                 Project
                             </span>
