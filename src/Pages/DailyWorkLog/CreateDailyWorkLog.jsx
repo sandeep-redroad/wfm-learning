@@ -249,7 +249,7 @@ const CreateDailyWorkLog = () => {
                                                 />
                                             </FormControl>
 
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -274,7 +274,7 @@ const CreateDailyWorkLog = () => {
                                                 />
                                             </FormControl>
 
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -299,7 +299,7 @@ const CreateDailyWorkLog = () => {
                                                     placeholder="Project ID"
                                                 />
                                             </div>
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -336,7 +336,7 @@ const CreateDailyWorkLog = () => {
                                                 </PopoverContent>
                                             </Popover>
 
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -362,7 +362,7 @@ const CreateDailyWorkLog = () => {
                                                     placeholder="Client"
                                                 />
                                             </div>
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -387,7 +387,7 @@ const CreateDailyWorkLog = () => {
                                                 />
                                             </FormControl>
 
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -414,7 +414,7 @@ const CreateDailyWorkLog = () => {
                                                 />
                                             </div>
 
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -438,7 +438,7 @@ const CreateDailyWorkLog = () => {
                                                 />
                                             </FormControl>
 
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -479,7 +479,7 @@ const CreateDailyWorkLog = () => {
                                                 </Select>
                                             </div>
 
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -509,7 +509,7 @@ const CreateDailyWorkLog = () => {
                                                         />
                                                     </FormControl>
 
-                                                    <FormMessage />
+                                                    
                                                 </FormItem>
                                             )}
                                         />
@@ -547,7 +547,7 @@ const CreateDailyWorkLog = () => {
                                                         </PopoverContent>
                                                     </Popover>
 
-                                                    <FormMessage />
+                                                    
                                                 </FormItem>
                                             )}
                                         />

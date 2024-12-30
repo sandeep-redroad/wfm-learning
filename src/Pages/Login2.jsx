@@ -45,7 +45,6 @@ const Login2 = () => {
             setIsError(false)
             const resp = await AuthService.login(data)
             if(resp.data.success){
-                toast.success(resp.data.message)
                 setUserInfo(resp.data.data)
                 login()
                 navigate('/dashboard')

@@ -1,37 +1,39 @@
 import React from 'react'
-import {
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog'
+import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/Components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/Components/ui/form'
 import { Input } from '@/Components/ui/input'
 import { Button } from '@/Components/ui/button'
+import DepartmentService from '@/Service/DepartmentService'
 const formSchema = z.object({
-    name: z.string().min(1, {
+    department: z.string().min(1, {
         message: 'Department is required.',
     }),
 })
-const CreateDepartment = () => {
+const CreateDepartment = ({ getDepartment, setIsOpen }) => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: '',
+            department: '',
         },
     })
 
-    function onSubmit(values) {
-        console.log(values)
+    async function onSubmit(values) {
+        try {
+            const resp = await DepartmentService.createDepartment(values)
+            if (resp.data.success) {
+                const searchParams = new URLSearchParams(location.search)
+                const page = searchParams.get('page')
+                if (page) {
+                    navigate('/master-settings/department')
+                } else {
+                    getDepartment()
+                }
+                setIsOpen(false)
+            }
+        } catch (err) {}
     }
 
     return (
@@ -41,13 +43,10 @@ const CreateDepartment = () => {
             </DialogHeader>
             <div>
                 <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-4"
-                    >
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FormField
                             control={form.control}
-                            name="name"
+                            name="department"
                             render={({ field }) => (
                                 <FormItem className="space-y-1">
                                     <FormLabel>Department</FormLabel>
@@ -58,15 +57,11 @@ const CreateDepartment = () => {
                                             {...field}
                                         />
                                     </FormControl>
-                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        <div className='flex justify-end'>
-                            <Button
-                                type="submit"
-                                className=" "
-                            >
+                        <div className="flex justify-end">
+                            <Button type="submit" className="bg-primary-purpal hover:bg-primary-purpal">
                                 Submit
                             </Button>
                         </div>

@@ -33,9 +33,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const resp = await AuthService.logout()
             if(resp.data.success){
-                toast.success(resp.data.message)
-              //  setIsAuthenticated(false)
-              setIsAuthenticated(true)
+                setIsAuthenticated(false)
             }    
         } catch (err) {}
     }

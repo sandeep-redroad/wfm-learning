@@ -295,7 +295,7 @@ const Invoicef = () => {
                                             placeholder="Invoice ID"
                                         />
                                     </div>
-                                    <FormMessage />
+                                    
                                 </FormItem>
                             )}
                         />
@@ -338,7 +338,7 @@ const Invoicef = () => {
                                         </PopoverContent>
                                     </Popover>
 
-                                    <FormMessage />
+                                    
                                 </FormItem>
                             )}
                         />
@@ -368,7 +368,7 @@ const Invoicef = () => {
                                         />
                                     </div>
 
-                                    <FormMessage />
+                                    
                                 </FormItem>
                             )}
                         />
@@ -397,7 +397,7 @@ const Invoicef = () => {
                                             placeholder="LOF Buisness"
                                         />
                                     </div>
-                                    <FormMessage />
+                                    
                                 </FormItem>
                             )}
                         />
@@ -501,7 +501,7 @@ const Invoicef = () => {
                                         </PopoverContent>
                                     </Popover>
 
-                                    <FormMessage />
+                                    
                                 </FormItem>
                             )}
                         />
@@ -544,7 +544,7 @@ const Invoicef = () => {
                                         </PopoverContent>
                                     </Popover>
 
-                                    <FormMessage />
+                                    
                                 </FormItem>
                             )}
                         />
@@ -871,7 +871,7 @@ const Invoicef = () => {
                                                                        />
                                                                    </FormControl>
                                
-                                                                   <FormMessage />
+                                                                   
                                                                </FormItem>
                             )}
                         />

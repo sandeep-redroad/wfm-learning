@@ -26,19 +26,21 @@ const CreateBillingType = ({ getBillingTypes, setIsOpen }) => {
             billingType: '',
         })
     }, [form])
+    
     async function onSubmit(values) {
-        console.log(values)
-        const resp = await BillingTypeService.createBillingType(values)
-        if (resp.data.success) {
-            const searchParams = new URLSearchParams(location.search)
-            const page = searchParams.get('page')
-            if (page) {
-                navigate('/master-settings/billing')
-            } else {
-                getBillingTypes()
+        try {
+            const resp = await BillingTypeService.createBillingType(values)
+            if (resp.data.success) {
+                const searchParams = new URLSearchParams(location.search)
+                const page = searchParams.get('page')
+                if (page) {
+                    navigate('/master-settings/billing')
+                } else {
+                    getBillingTypes()
+                }
+                setIsOpen(false)
             }
-            setIsOpen(false)
-        }
+        } catch (err) {}
     }
 
     return (
@@ -62,12 +64,11 @@ const CreateBillingType = ({ getBillingTypes, setIsOpen }) => {
                                             {...field}
                                         />
                                     </FormControl>
-                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
                         <div className="flex justify-end">
-                            <Button type="submit" className="bg-primary-blue hover:bg-primary-blue-hover ">
+                            <Button type="submit" className="bg-primary-purpal hover:bg-primary-purpal ">
                                 Submit
                             </Button>
                         </div>
