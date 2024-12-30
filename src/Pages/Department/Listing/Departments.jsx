@@ -9,14 +9,21 @@ import { Input } from '@/Components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { useLocation } from 'react-router-dom'
 import DepartmentService from '@/Service/DepartmentService'
+import { useDebounce } from 'use-debounce'
 const Departments = () => {
     const [department, setDepartment] = useState([])
     const [totalCount, setTotalCount] = useState(0)
+    const [search, setSearch] = useState('')
+    const [queryParam, setQueryParam] = useState({
+        page: 1,
+        search: '',
+    })
+    const [debouncedValue] = useDebounce(search, 500)
     const [isOpen, setIsOpen] = useState(false)
     const location = useLocation()
-    const getDepartment = async (page = 1) => {
+    const getDepartment = async () => {
         try {
-            const resp = await DepartmentService.getDepartment({ page })
+            const resp = await DepartmentService.getDepartment(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)
                 setDepartment(resp.data.data)
@@ -26,15 +33,26 @@ const Departments = () => {
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search)
         const page = parseInt(searchParams.get('page') || 1)
-        if (page == 0) {
-            return false
-        }
-        getDepartment(page)
+        setQueryParam((prev) => {
+            return {
+                ...prev,
+                page: page,
+            }
+        })
     }, [location.search])
 
-    const handleSearch = (e) => {
-        console.log('e : ', e)
-    }
+    useEffect(() => {
+        getDepartment()
+    }, [queryParam])
+
+    useEffect(() => {
+        setQueryParam((prev) => {
+            return {
+                ...prev,
+                search: debouncedValue,
+            }
+        })
+    }, [debouncedValue])
 
     return (
         <div>
@@ -53,7 +71,7 @@ const Departments = () => {
             <Card className="p-0 m-3 mt-[4.5rem]">
                 <CardContent className="m-0 p-3 overflow-y-auto">
                     <div className="w-full my-2 grid grid-cols-4">
-                        <Input type="text" onChange={handleSearch} placeholder="Department" />
+                        <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Department" />
                     </div>
                     <Datatable columns={DepartmentColumns()} data={department} totalDataCount={totalCount} />
                 </CardContent>
