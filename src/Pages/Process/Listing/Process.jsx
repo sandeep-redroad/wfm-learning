@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ProcessColumns from './ProcessColumn'
 
 import { Dialog, DialogTrigger } from '@/Components/ui/dialog'
@@ -7,21 +7,47 @@ import CreateProcess from '../CreateProcess'
 import Datatable from '@/Components/Common/Datatable'
 import { Input } from '@/Components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
+import { useLocation } from 'react-router-dom'
+import ProcessService from '@/Service/ProcessService'
 
 const Process = () => {
+
+    const [process, setProcess] = useState([])
+    const [totalCount, setTotalCount] = useState(0)
+    const [isOpen, setIsOpen] = useState(false)
+    const location = useLocation()
+    const getProcess = async (page = 1) => {
+        try {
+            const resp = await ProcessService.getProcess({ page })
+            if (resp.data.success) {
+                setTotalCount(resp.data.pagination.totalRecords)
+                setProcess(resp.data.data)
+            }
+        } catch (err) {}
+    }
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search)
+        const page = parseInt(searchParams.get('page') || 1)
+        if (page == 0) {
+            return false
+        }
+        getProcess(page)
+    }, [location.search])
+
+    
     const handleSearch = (e) => {
         console.log('e : ', e)
     }
     return (
-        <div className="container mx-auto">
+        <div >
             <Card className="p-0 mb-[75px] mx-0 rounded-none sticky top-16 w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-between items-center">
-                        <Dialog>
-                            <DialogTrigger className="">
+                        <Dialog open={isOpen} onOpenChange={() => setIsOpen((prev) => !prev)}>
+                            <DialogTrigger>
                                 <Button className="bg-primary-purpal hover:bg-primary-purpal">Add Process</Button>
                             </DialogTrigger>
-                            <CreateProcess />
+                            <CreateProcess getProcess={getProcess} setIsOpen={setIsOpen} />
                         </Dialog>
                     </div>
                 </CardContent>
@@ -31,7 +57,7 @@ const Process = () => {
                     <div className="w-full my-2 grid grid-cols-4">
                         <Input type="text" onChange={handleSearch} placeholder="Process" />
                     </div>
-                    <Datatable columns={ProcessColumns()} data={[]} totalDataCount={10} />
+                    <Datatable columns={ProcessColumns()} data={process} totalDataCount={totalCount} />
                 </CardContent>
             </Card>
         </div>

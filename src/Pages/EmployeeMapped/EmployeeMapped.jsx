@@ -336,7 +336,7 @@ const EmployeeMapped = () => {
                                             placeholder="Billing Type"
                                         />
                                     </div>
-                                    <FormMessage />
+                                    
                                 </FormItem>
                             )}
                         />
@@ -398,7 +398,7 @@ const EmployeeMapped = () => {
                                                                 />
                                                             </FormControl>
 
-                                                            <FormMessage />
+                                                            
                                                         </FormItem>
                                                     )}
                                                 />
@@ -430,7 +430,7 @@ const EmployeeMapped = () => {
                                                                 />
                                                             </FormControl>
 
-                                                            <FormMessage />
+                                                            
                                                         </FormItem>
                                                     )}
                                                 />

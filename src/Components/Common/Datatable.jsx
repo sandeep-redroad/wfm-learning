@@ -112,18 +112,16 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
                             <td className="p-4 w-1/4">No results.</td>
                         </tr>
                     )}
-                    {!isScrollable && (
+                    {/* {!isScrollable && (
                         <div className="flex justify-end items-end">
                             <PaginationWithLinks totalCount={totalDataCount} />
                         </div>
-                    )}
+                    )} */}
                 </tbody>
             </table>
-            {isScrollable && (
-                <div className="flex justify-end items-end">
-                    <PaginationWithLinks totalCount={totalDataCount} />
-                </div>
-            )}
+            <div className="flex justify-end items-end">
+                <PaginationWithLinks totalCount={totalDataCount} />
+            </div>  
         </div>
     )
 }

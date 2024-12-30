@@ -17,9 +17,10 @@ import {
 } from '@/Components/ui/form'
 import { Input } from '@/Components/ui/input'
 import { Button } from '@/Components/ui/button'
+import ProcessService from '@/Service/ProcessService'
 
 const formSchema = z.object({
-    name: z.string().min(1, {
+    process: z.string().min(1, {
         message: 'Process is required.',
     }),
 })
@@ -28,7 +29,7 @@ const CreateProcess = () => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: '',
+            process: '',
         },
     })
 
@@ -59,7 +60,7 @@ const CreateProcess = () => {
                                             {...field}
                                         />
                                     </FormControl>
-                                    <FormMessage />
+                                    
                                 </FormItem>
                             )}
                         />
