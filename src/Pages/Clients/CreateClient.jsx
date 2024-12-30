@@ -5,33 +5,56 @@ import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/Components/ui/form'
 import { Input } from '@/Components/ui/input'
 import { Button } from '@/Components/ui/button'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Textarea } from '@/Components/ui/textarea'
 import { toast } from 'react-toastify'
 import { capitalizeFirstChar } from '@/utils/helper'
 import { Card, CardContent } from '@/components/ui/card'
-
-const formSchema = z.object({
-    name: z.string().min(1),
-})
+import ClientService from '@/Service/ClientService'
 
 const CreateClient = () => {
     const formRef = useRef(null)
+    const formSchema = z.object({
+        client: z.string().min(1, {
+            message: 'Client is required',
+        }),
+        address: z.string().optional(),
+        city: z.string().optional(),
+        state: z.string().optional(),
+        country: z.string().optional(),
+        pinCode: z
+            .number({
+                message: 'Pin Code should be number',
+            })
+            .optional(),
+    })
+    const navigate = useNavigate()
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: '',
+            client: '',
+            address: '',
+            city: '',
+            state: '',
+            country: '',
+            pinCode: '',
         },
     })
 
-    function onSubmit(values) {
-        console.log(values)
+    async function onSubmit(values) {
+        try{
+            const resp = await ClientService.createClient(values)
+            if (resp.data.success) {
+                navigate('/clients')
+            }
+        }catch(err){}
     }
 
     function onError(errors, e) {
+        console.log(errors, e)
         const errorKeys = Object.keys(errors)
-        if (errorKeys.length > 0) {
-            toast.error(capitalizeFirstChar(errorKeys[0]) + ' is required.')
+        if (errorKeys.length > 0 && errors[errorKeys[0]]?.message) {
+            toast.error(errors[errorKeys[0]].message)
         } else {
             toast.error('Something went wrong.')
         }
@@ -48,7 +71,7 @@ const CreateClient = () => {
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
-                            <Link className="button" to="/daily-work-log">
+                            <Link className="button" to="/clients">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                             </Link>
                             <Button className="" onClick={handleSaveClick}>
@@ -66,14 +89,14 @@ const CreateClient = () => {
                                 <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                     <FormField
                                         control={form.control}
-                                        name="name"
+                                        name="client"
                                         render={({ field }) => (
                                             <FormItem className="space-y-1">
-                                                <FormLabel>Name</FormLabel>
+                                                <FormLabel>Client</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Name"
+                                                        placeholder="client"
                                                         {...field}
                                                     />
                                                 </FormControl>
@@ -91,9 +114,13 @@ const CreateClient = () => {
                                                         className="shadow-none focus-visible:ring-transparent space-0 mt-0"
                                                         placeholder="Pin Code"
                                                         {...field}
+                                                        value={field.value || ''}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value ? Number(e.target.value) : ''
+                                                            field.onChange(value)
+                                                        }}
                                                     />
                                                 </FormControl>
-                                                <FormMessage />
                                             </FormItem>
                                         )}
                                     />
@@ -130,7 +157,6 @@ const CreateClient = () => {
                                                             {...field}
                                                         />
                                                     </FormControl>
-                                                    <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
@@ -147,7 +173,6 @@ const CreateClient = () => {
                                                             {...field}
                                                         />
                                                     </FormControl>
-                                                    <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
@@ -167,7 +192,6 @@ const CreateClient = () => {
                                                         {...field}
                                                     />
                                                 </FormControl>
-                                                <FormMessage />
                                             </FormItem>
                                         )}
                                     />

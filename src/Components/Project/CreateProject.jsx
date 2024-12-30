@@ -366,7 +366,7 @@ const CreateProject = () => {
                                                     placeholder="Client"
                                                 />
                                             </div>
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -403,7 +403,7 @@ const CreateProject = () => {
                                                 </Select>
                                             </div>
 
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -432,7 +432,7 @@ const CreateProject = () => {
                                             placeholder="Client"
                                         />
                                     </div>
-                                    <FormMessage />
+                                    
                                 </FormItem>
                             )}
                         />
@@ -468,7 +468,7 @@ const CreateProject = () => {
                                         </Select>
                                     </div>
 
-                                    <FormMessage />
+                                    
                                 </FormItem>
                             )}
                         /> */}
@@ -493,7 +493,7 @@ const CreateProject = () => {
                                                     placeholder="LOB Process"
                                                 />
                                             </div>
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -531,7 +531,7 @@ const CreateProject = () => {
                                                 </PopoverContent>
                                             </Popover>
 
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -558,7 +558,7 @@ const CreateProject = () => {
                                                 />
                                             </div>
 
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -585,7 +585,7 @@ const CreateProject = () => {
                                                 />
                                             </div>
 
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -624,7 +624,7 @@ const CreateProject = () => {
                                                 </Select>
                                             </div>
 
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />
@@ -675,7 +675,7 @@ const CreateProject = () => {
                                                     />
                                                 </FormControl>
 
-                                                <FormMessage />
+                                                
                                             </FormItem>
                                         )}
                                     />
@@ -700,7 +700,7 @@ const CreateProject = () => {
                                                         />
                                                     </FormControl>
 
-                                                    <FormMessage />
+                                                    
                                                 </FormItem>
                                             )}
                                         />
@@ -717,7 +717,7 @@ const CreateProject = () => {
                                                 <Textarea placeholder="comments " className="resize-none" rows="4.5" />
                                             </FormControl>
 
-                                            <FormMessage />
+                                            
                                         </FormItem>
                                     )}
                                 />

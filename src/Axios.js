@@ -20,6 +20,9 @@ Axios.interceptors.request.use(
 
 Axios.interceptors.response.use(
     (response) => {
+        if(response.data?.success){
+            toast.success(response.data.message)
+        }
         return response
     },
     (error) => {
