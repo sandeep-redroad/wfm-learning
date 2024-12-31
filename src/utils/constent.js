@@ -1,5 +1,6 @@
 const Constent = {
-    PAGINATION_SIZE : 20
+    PAGINATION_SIZE : 20,
+    DEBOUNCE_DELAY : 500
 }
 
 Object.freeze(Constent);

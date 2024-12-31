@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import assets from '@/assets/assets'
 import DepartmentColumns from './DepartmentColumns'
 import { Dialog, DialogTrigger } from '@/Components/ui/dialog'
 import { Button } from '@/Components/ui/button'
 import CreateDepartment from '../CreateDepartment'
 import Datatable from '@/Components/Common/Datatable'
 import { Input } from '@/Components/ui/input'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { useLocation } from 'react-router-dom'
 import DepartmentService from '@/Service/DepartmentService'
 import { useDebounce } from 'use-debounce'
+import Constent from '@/utils/constent'
 const Departments = () => {
     const [department, setDepartment] = useState([])
     const [totalCount, setTotalCount] = useState(0)
@@ -18,11 +18,12 @@ const Departments = () => {
         page: 1,
         search: '',
     })
-    const [debouncedValue] = useDebounce(search, 500)
+    const [debouncedValue] = useDebounce(search, Constent.DEBOUNCE_DELAY)
     const [isOpen, setIsOpen] = useState(false)
     const location = useLocation()
     const getDepartment = async () => {
         try {
+            console.log("queryParam : ", queryParam)
             const resp = await DepartmentService.getDepartment(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)
@@ -43,7 +44,7 @@ const Departments = () => {
 
     useEffect(() => {
         getDepartment()
-    }, [queryParam])
+    }, [queryParam.page, queryParam.search])
 
     useEffect(() => {
         setQueryParam((prev) => {
