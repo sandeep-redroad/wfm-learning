@@ -247,7 +247,7 @@ const Invoicef = () => {
     return (
         <>
             
-                        <Card className="p-0 mb-[46px] mx-0 rounded-none sticky top-16 w-full z-10">
+                        <Card className="p-0 mb-[44px] mx-0 rounded-none sticky top-16 w-full z-10">
                             <CardContent className="m-0 flex justify-end items-center p-3">
                                 <div className="flex justify-end items-center">
                                     <div className="flex items-center justify-end gap-2">

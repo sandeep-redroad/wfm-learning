@@ -36,8 +36,8 @@ const CreateBulkUpload = () => {
     return (
 
         
-        <div className="container mx-auto">
-         <Card className="p-0 mb-[75px] mx-0 rounded-none sticky top-16 w-full z-10">
+        <div className="">
+         <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full z-10">
                         <CardContent className="m-0 flex justify-end items-center p-3">
                             <div className="flex justify-end items-center">
                                 <div className="flex items-center justify-end gap-2">
@@ -81,7 +81,7 @@ const CreateBulkUpload = () => {
                         </Select>
                     </div>
                     {DocumentTypeEnum.DAILY_WORK_LOG === selectedDocumentType  && (
-                        <div className="flex flex-col gap-2 w-full p-4 lg:ps-5">
+                        <div className="flex flex-col gap-2 w-full ">
                             <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                 Project
                             </span>
