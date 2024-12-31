@@ -9,7 +9,7 @@ const ProcessColumns = () => {
             header: 'Sr. No.',
         },
         {
-            accessorKey: 'Process',
+            accessorKey: 'process',
             header: 'Process',
         }
     ]
