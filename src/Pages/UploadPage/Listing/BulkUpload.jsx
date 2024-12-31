@@ -13,7 +13,7 @@ const BulkUpload = () => {
         console.log('e : ', field, e)
     }
     return (
-        <div className="container mx-auto">
+        <div className="">
             <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-between items-center">

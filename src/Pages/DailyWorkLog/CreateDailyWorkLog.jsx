@@ -224,7 +224,7 @@ const CreateDailyWorkLog = () => {
                 </CardContent>
             </Card>
 
-            <Card className="p-0 m-3 mt-[3rem]">
+            <Card className="p-0 m-3 mt-[2.55rem]">
                 <CardContent className="m-0 p-3">
                     <Form {...form}>
                         <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="p-4 lg:ps-5">

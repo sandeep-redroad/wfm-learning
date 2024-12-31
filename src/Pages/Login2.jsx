@@ -37,11 +37,9 @@ const Login2 = () => {
         },
     })
 
-    /**
-     * This will call on submit form with no validation error
-     *
-     */
+
     async function onSubmit(data) {
+        navigate('/dashboard')
         try {
             setIsLoading(true)
             setIsError(false)
@@ -67,7 +65,7 @@ const Login2 = () => {
         setIsLoading(true)
         console.log('Error found')
         setIsError(true)
-        navigate('/dashboard')
+      
     }
 
     return (

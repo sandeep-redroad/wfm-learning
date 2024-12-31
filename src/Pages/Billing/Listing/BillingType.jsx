@@ -39,7 +39,7 @@ const Billing = () => {
     }
     return (
         <div>
-            <Card className="p-0 mb-[75px] mx-0 rounded-none sticky top-16 w-full">
+            <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-between items-center">
                         <Dialog open={isOpen} onOpenChange={() => setIsOpen((prev) => !prev)}>
