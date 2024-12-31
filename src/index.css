@@ -174,8 +174,7 @@ thead{
   width: 100%;
   z-index: 1000;
   -webkit-overflow-scrolling: touch;
-  line-height: 10px;
-  height: 100px;
+  
 }
 
 .dropdownx .options.open {

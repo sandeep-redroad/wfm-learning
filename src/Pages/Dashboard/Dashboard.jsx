@@ -10,7 +10,7 @@ const Dashboard = () => {
                     <h1>Hello</h1>
                 </CardContent>
             </Card>
-            <Card className="p-0 m-3 mt-16">
+            <Card className="p-0 m-3 mt-[72px]">
                 <CardContent className="m-0 p-3 overflow-y-auto">
                     dashboard
                 </CardContent>

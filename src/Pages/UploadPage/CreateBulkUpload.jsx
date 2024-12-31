@@ -36,8 +36,8 @@ const CreateBulkUpload = () => {
     return (
 
         
-        <div className="container mx-auto">
-         <Card className="p-0 mb-[75px] mx-0 rounded-none sticky top-16 w-full z-10">
+        <div className="">
+         <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full z-10">
                         <CardContent className="m-0 flex justify-end items-center p-3">
                             <div className="flex justify-end items-center">
                                 <div className="flex items-center justify-end gap-2">

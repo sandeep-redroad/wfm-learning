@@ -3,7 +3,7 @@ import CreateProject from '@/Components/Project/CreateProject'
 
 const Project = () => {
     return (
-        <div className="container mx-auto">
+        <div className="">
             <CreateProject />
         </div>
     )

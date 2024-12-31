@@ -65,8 +65,7 @@ const Login2 = () => {
         setIsLoading(true)
         console.log('Error found')
         setIsError(true)
-        login()
-        navigate('/dashboard')
+      
     }
 
     return (
