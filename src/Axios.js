@@ -20,7 +20,7 @@ Axios.interceptors.request.use(
 
 Axios.interceptors.response.use(
     (response) => {
-        if(response.data?.success){
+        if(response.status !== 200 && response.data?.success){
             toast.success(response.data.message)
         }
         return response

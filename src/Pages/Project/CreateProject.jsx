@@ -1,12 +1,8 @@
 import React from 'react'
 import CreateProject from '@/Components/Project/CreateProject'
 
-const Project = () => {
-    return (
-        <div className="">
-            <CreateProject />
-        </div>
-    )
+const Project = ({type}) => {
+    return <CreateProject type={type} />
 }
 
 export default Project

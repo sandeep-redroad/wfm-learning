@@ -1,17 +1,71 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Datatable from '@/Components/Common/Datatable'
 import { Input } from '@/Components/ui/input'
 import ProjectColumns from './ProjectColumn'
 import assets from '@/assets/assets'
 import { Button } from '@/Components/ui/button'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import DataTableEnumType from '@/Enums/DataTableTypeEnum'
 import { Card, CardContent } from '@/components/ui/card'
-
+import Constent from '@/utils/constent'
+import ProjectService from '@/Service/ProjectService'
+import { useDebounce } from 'use-debounce'
 const Project = () => {
-    const handleSearch = (field, e) => {
-        console.log('e : ', field, e)
+    const [projects, setProjects] = useState([])
+    const [totalCount, setTotalCount] = useState(0)
+    const [searchId, setSearchId] = useState('')
+    const [searchClient, setSearchClient] = useState('')
+    const [queryParam, setQueryParam] = useState({
+        page: 1,
+        search: [],
+    })
+    const [debounce1] = useDebounce(searchId, Constent.DEBOUNCE_DELAY)
+    const [debounce2] = useDebounce(searchClient, Constent.DEBOUNCE_DELAY)
+    const location = useLocation()
+    const getProject = async () => {
+        try {
+            const resp = await ProjectService.getProject(queryParam)
+            if (resp.data.success) {
+                setTotalCount(resp.data.pagination.totalRecords)
+                setProjects(resp.data.data)
+            }
+        } catch (err) {}
     }
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search)
+        const page = parseInt(searchParams.get('page') || 1)
+        setQueryParam((prev) => {
+            return {
+                ...prev,
+                page: page,
+            }
+        })
+    }, [location.search])
+
+    useEffect(() => {
+        getProject()
+    }, [queryParam.page, queryParam.search])
+
+
+    useEffect(() => {
+        setQueryParam((prev) => {
+            return {
+                ...prev,
+                search: [
+                    {
+                        value: debounce1,
+                        field: 'id',
+                    },
+                    {
+                        value: debounce2,
+                        field: 'client',
+                    },
+                ],
+            }
+        })
+    }, [debounce1, debounce2])
+
+
     return (
         <div>
             <Card className="p-0 mb-2 mx-0 rounded-none sticky top-16 w-full">
@@ -26,10 +80,10 @@ const Project = () => {
             <Card className="p-0 m-3 mt-[4.5rem]">
                 <CardContent className="m-0 p-3 overflow-y-auto">
                     <div className="w-full my-2 grid grid-cols-5 gap-3">
-                        <Input type="text" onChange={(e) => handleSearch('id', e)} placeholder="ID" />
-                        <Input type="text" onChange={(e) => handleSearch('client', e)} placeholder="Project Client" />
+                        <Input type="text" onChange={(e) => setSearchId(e.target.value)} placeholder="ID" />
+                        <Input type="text" onChange={(e) => setSearchClient(e.target.value)} placeholder="Project Client" />
                     </div>
-                    <Datatable columns={ProjectColumns()} data={assets.ProjectData} totalDataCount={10} type={DataTableEnumType.PROJECT} />
+                    <Datatable columns={ProjectColumns()} data={projects} totalDataCount={totalCount} type={DataTableEnumType.PROJECT} />
                 </CardContent>
             </Card>
         </div>

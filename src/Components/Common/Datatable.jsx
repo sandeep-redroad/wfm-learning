@@ -36,7 +36,7 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
     }, [])
 
     const handleRowClick = (rowId) => {
-        navigate(`/project/${rowId}`)
+        navigate(`/projects/${rowId}`)
     }
 
     return (
@@ -121,7 +121,7 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
             </table>
             <div className="flex justify-end items-end">
                 <PaginationWithLinks totalCount={totalDataCount} />
-            </div>  
+            </div>
         </div>
     )
 }

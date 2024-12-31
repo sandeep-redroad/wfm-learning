@@ -8,7 +8,6 @@ import { Button } from '@/Components/ui/button'
 import { Link, useNavigate } from 'react-router-dom'
 import { Textarea } from '@/Components/ui/textarea'
 import { toast } from 'react-toastify'
-import { capitalizeFirstChar } from '@/utils/helper'
 import { Card, CardContent } from '@/components/ui/card'
 import ClientService from '@/Service/ClientService'
 
@@ -37,7 +36,7 @@ const CreateClient = () => {
             city: '',
             state: '',
             country: '',
-            pinCode: '',
+            pinCode: null,
         },
     })
 
