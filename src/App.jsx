@@ -69,11 +69,12 @@ let router = createBrowserRouter([
             
             {
                 path: '/projects/new',
-                Component: CreateProject,
+                element: <CreateProject type="new"  />,
             },
             {
                 path: '/projects/:id',
-                Component: CreateProject,
+                element: <CreateProject type="edit" />,
+                
             },
             {
                 path: '/daily-work-log',

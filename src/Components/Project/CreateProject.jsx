@@ -20,7 +20,7 @@ import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../Common/SearchableDropdown'
 import { Link } from 'react-router-dom'
 
-const CreateProject = () => {
+const CreateProject = ({ type }) => {
     const [checkAll, setcheckAll] = useState(false)
     const [checkhisotryAll, setchechistorykAll] = useState(false)
     const [rows, setRows] = useState([])
@@ -55,7 +55,7 @@ const CreateProject = () => {
             projectlead: '',
             rate: '',
             timeperworkitem: '',
-            status:"Active"
+            status: 'Active',
         },
     })
 
@@ -334,7 +334,7 @@ const CreateProject = () => {
                             <Link className="button" to="/projects">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                             </Link>
-                            <Button className="" onClick={handleSaveClick}>
+                            <Button className="bg-primary-purpal hover:bg-primary-purpal" onClick={handleSaveClick}>
                                 Save
                             </Button>
                         </div>
@@ -367,7 +367,6 @@ const CreateProject = () => {
                                                     placeholder="Client"
                                                 />
                                             </div>
-                                            
                                         </FormItem>
                                     )}
                                 />
@@ -403,8 +402,6 @@ const CreateProject = () => {
                                                     </SelectContent>
                                                 </Select>
                                             </div>
-
-                                            
                                         </FormItem>
                                     )}
                                 />
@@ -494,7 +491,6 @@ const CreateProject = () => {
                                                     placeholder="LOB Process"
                                                 />
                                             </div>
-                                            
                                         </FormItem>
                                     )}
                                 />
@@ -531,8 +527,6 @@ const CreateProject = () => {
                                                     />
                                                 </PopoverContent>
                                             </Popover>
-
-                                            
                                         </FormItem>
                                     )}
                                 />
@@ -558,8 +552,6 @@ const CreateProject = () => {
                                                     placeholder="Process"
                                                 />
                                             </div>
-
-                                            
                                         </FormItem>
                                     )}
                                 />
@@ -585,8 +577,6 @@ const CreateProject = () => {
                                                     placeholder="Department"
                                                 />
                                             </div>
-
-                                            
                                         </FormItem>
                                     )}
                                 />
@@ -624,8 +614,6 @@ const CreateProject = () => {
                                                     </SelectContent>
                                                 </Select>
                                             </div>
-
-                                            
                                         </FormItem>
                                     )}
                                 />
@@ -675,8 +663,6 @@ const CreateProject = () => {
                                                         }}
                                                     />
                                                 </FormControl>
-
-                                                
                                             </FormItem>
                                         )}
                                     />
@@ -700,8 +686,6 @@ const CreateProject = () => {
                                                             }}
                                                         />
                                                     </FormControl>
-
-                                                    
                                                 </FormItem>
                                             )}
                                         />
@@ -717,8 +701,6 @@ const CreateProject = () => {
                                             <FormControl>
                                                 <Textarea placeholder="comments " className="resize-none" rows="4.5" />
                                             </FormControl>
-
-                                            
                                         </FormItem>
                                     )}
                                 />
@@ -1068,11 +1050,7 @@ const CreateProject = () => {
                                 )}
                             </div>
 
-                            <div className="grid  gap-x-[3rem] gap-y-[1.75rem]">
-                              
-
-                           
-                            </div>
+                            <div className="grid  gap-x-[3rem] gap-y-[1.75rem]"></div>
                         </form>
                     </Form>
                 </CardContent>
