@@ -27,6 +27,7 @@ import NotFound404 from './Pages/Error/NotFound404'
 import ErrorBoundary from './ErrorBoundary'
 import React, { Suspense } from 'react';
 import ErrorPage from './ErrorPage'
+import LofBuisness from './Pages/LOFbuisness/Listing/LofBuisness'
 let router = createBrowserRouter([
     {
         path: '/login',
@@ -106,6 +107,10 @@ let router = createBrowserRouter([
             {
                 path: '/master-settings/departments',
                 Component: Departments,
+            },
+            {
+                path: '/master-settings/lof-buisness',
+                Component: LofBuisness,
             },
             {
                 path: '/master-settings/processes',

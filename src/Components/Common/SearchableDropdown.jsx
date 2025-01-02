@@ -16,13 +16,14 @@ const SearchableDropdown = ({
     const inputRef = useRef(null)
 
     useEffect(() => {
+        console.log("options label",options,label)
         document.addEventListener('click', toggle)
         return () => document.removeEventListener('click', toggle)
     }, [])
 
     const selectOption = (option) => {
         setQuery(() => '')
-        handleChange(option['label'])
+        handleChange(option[label])
        
         setIsOpen((isOpen) => !isOpen)
     }
@@ -39,9 +40,9 @@ const SearchableDropdown = ({
     }
 
     const filter = (options) => {
-        return options.filter(
+        return options.length>0 && options.filter(
             (option) =>
-                option['label'].toLowerCase().indexOf(query.toLowerCase()) > -1
+                option[label]?.toLowerCase().indexOf(query.toLowerCase()) > -1
         )
     }
 
@@ -71,21 +72,28 @@ const SearchableDropdown = ({
             </div>
 
             <div className={`options ${isOpen ? 'open' : ''}`}>
-                {filter(options).map((option, index) => {
+                {options.length > 0 ? filter(options).map((option, index) => {
                     return (
                         <div
                             onClick={() => selectOption(option)}
                             className={`option ${
-                                option['label'] === selectedVal
+                                option[label] === selectedVal
                                     ? 'selected'
                                     : ''
                             }`}
                             key={`${index}`}
                         >
-                            {option['label']}
+                            {option[label]}
                         </div>
-                    )
-                })}
+                    )}):(<div
+                            onClick={() => selectOption("No Data found")}
+                            className={`option selected`}
+                            
+                        >
+                           No data found
+                        </div>)
+                    
+                }
             </div>
         </div>
     )

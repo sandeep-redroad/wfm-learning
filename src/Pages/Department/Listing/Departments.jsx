@@ -23,7 +23,7 @@ const Departments = () => {
     const location = useLocation()
     const getDepartment = async () => {
         try {
-            console.log("queryParam : ", queryParam)
+            console.log('queryParam : ', queryParam)
             const resp = await DepartmentService.getDepartment(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)
