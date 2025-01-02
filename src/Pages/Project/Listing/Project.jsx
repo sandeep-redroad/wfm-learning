@@ -17,7 +17,10 @@ const Project = () => {
     const [searchClient, setSearchClient] = useState('')
     const [queryParam, setQueryParam] = useState({
         page: 1,
-        search: [],
+        search: {
+            id: '',
+            client: '',
+        },
     })
     const [debounce1] = useDebounce(searchId, Constent.DEBOUNCE_DELAY)
     const [debounce2] = useDebounce(searchClient, Constent.DEBOUNCE_DELAY)
@@ -44,27 +47,19 @@ const Project = () => {
 
     useEffect(() => {
         getProject()
-    }, [queryParam.page, queryParam.search])
-
+    }, [queryParam.page, queryParam.search.id, queryParam.search.client])
 
     useEffect(() => {
         setQueryParam((prev) => {
             return {
                 ...prev,
-                search: [
-                    {
-                        value: debounce1,
-                        field: 'id',
-                    },
-                    {
-                        value: debounce2,
-                        field: 'client',
-                    },
-                ],
+                search: {
+                    id: debounce1,
+                    client: debounce2,
+                },
             }
         })
     }, [debounce1, debounce2])
-
 
     return (
         <div>

@@ -1,20 +1,22 @@
-import Axios from "@/Axios";
+import Axios from '@/Axios'
 
-
-class ProjectService{
-
-    async getProject(data){
+class ProjectService {
+    async getProject(data) {
         let postData = JSON.parse(JSON.stringify(data))
-        if (Array.isArray(postData.search)) {
-            postData.search = JSON.stringify(postData.search)
-        }
-        const queryString = new URLSearchParams(postData).toString();
+        // if (Array.isArray(postData.search)) {
+        //     postData.search = JSON.stringify(postData.search)
+        // }
+        console.log('postData : ', postData)
+        const queryString = new URLSearchParams({
+            ...postData.search,
+            page: postData.page,
+        }).toString()
         return await Axios.get(`api/project/get_pagination?${queryString}`)
     }
 
-    async createProject(data){
-        return await Axios.post("api/project", data)
+    async createProject(data) {
+        return await Axios.post('api/project', data)
     }
 }
 
-export default (new ProjectService);
+export default new ProjectService()

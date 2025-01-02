@@ -39,7 +39,6 @@ const Login2 = () => {
 
 
     async function onSubmit(data) {
-        navigate('/dashboard')
         try {
             setIsLoading(true)
             setIsError(false)
@@ -49,11 +48,9 @@ const Login2 = () => {
                 login()
                 navigate('/dashboard')
             }
-            console.log("err chceck : ", resp)
         } catch (err) {
             setIsLoading(false)
             setIsError(true)
-            navigate('/dashboard')
         }
     }
 
@@ -63,9 +60,7 @@ const Login2 = () => {
      */
     const onError = (errors, e) => {
         setIsLoading(true)
-        console.log('Error found')
-        setIsError(true)
-      
+        setIsError(true) 
     }
 
     return (
