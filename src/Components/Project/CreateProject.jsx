@@ -1,6 +1,5 @@
 import { React, useEffect, useRef, useState } from 'react'
-import { get, useForm } from 'react-hook-form'
-import { Switch } from '@/components/ui/switch'
+import { useForm } from 'react-hook-form'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'react-toastify'
 import { CalendarIcon } from 'lucide-react'
@@ -9,13 +8,12 @@ import { format } from 'date-fns'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import BillingData from '@/assets/data/BillingData'
 import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../Common/SearchableDropdown'
 import DepartmentService from '@/Service/DepartmentService'
@@ -23,6 +21,7 @@ import BillingTypeService from '@/Service/BillingTypeService'
 import { Link } from 'react-router-dom'
 import ClientService from '@/Service/ClientService'
 import ProcessService from '@/Service/ProcessService'
+import assets from '@/assets/assets'
 
 const CreateProject = ({ type }) => {
     const [checkAll, setcheckAll] = useState(false)
@@ -44,23 +43,20 @@ const CreateProject = ({ type }) => {
             const resp = await DepartmentService.getDepartment()
             if (resp.data.success) {
                 setDepartment(resp.data.data)
-              
             }
-        } catch (err) {
-         
-        }
+        } catch (err) {}
     }
     const getBillingTypes = async () => {
-        console.log("in billing")
+        console.log('in billing')
         try {
-            const resp = await BillingTypeService.getBillingType();
-            console.log("response",resp.data.data)
-            console.log("response",resp.data.success)
+            const resp = await BillingTypeService.getBillingType()
+            console.log('response', resp.data.data)
+            console.log('response', resp.data.success)
             if (resp.data.success) {
                 setBillingType(resp.data.data)
             }
         } catch (err) {
-            console.log("in billing",err)
+            console.log('in billing', err)
         }
     }
     const getClient = async () => {
@@ -82,14 +78,12 @@ const CreateProject = ({ type }) => {
     }
 
     useEffect(() => {
-     
         getDepartment()
         getClient()
         getBillingTypes()
         getProcess()
     }, [])
 
-   
     // const date=new Date();
     const [noneValidatedValue, setNoneValidatedValue] = useState({
         client: '',
@@ -118,25 +112,15 @@ const CreateProject = ({ type }) => {
             status: 'Active',
         },
     })
-
-    // const billing_type=[];
-
-    // const [projectData]
-    // const lob_processes = []
-    // const projectleads = []
-    // const clients = []
-
-    // const process = []
-
     function onSubmit(data) {
         Object.assign(data, noneValidatedValue)
-   
+
         const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => key !== 'comments' && value == ''))
-       
+
         let key = Object.keys(filteredObj)[0]
-       
+
         if (key == 'lob_process') {
-            toast('Please select line of buisness')
+            toast.error('Please select line of buisness')
             return
         }
         if (key == 'client') {
@@ -179,8 +163,6 @@ const CreateProject = ({ type }) => {
             }
         }
         data['customfields'] = rows
-
-      
     }
     const addHistoryrow = () => {
         setHistoryrows((prev) => {
@@ -291,13 +273,11 @@ const CreateProject = ({ type }) => {
     }
 
     const handleSaveClick = () => {
-      
         if (formRef.current) {
             formRef.current.requestSubmit()
         }
     }
     const handlebillingChange = (e) => {
-     
         if (e == 'Per WorkItem Transactional') {
             setIsbilling(true)
         } else {
@@ -305,14 +285,13 @@ const CreateProject = ({ type }) => {
         }
     }
     const handle_label_Change = (e, rowid) => {
-   
         const value = e.target.value
         let isAlphabetic = /^[A-Za-z_ ]+$/.test(value)
         let fieldName = value.split(' ').join('_')
         if (value > 15) {
-            toast('label should contain atmost 15 characters')
+            toast.error('label should contain atmost 15 characters')
         } else if (!isAlphabetic && value !== '') {
-            toast('label should contain only alphabets')
+            toast.error('label should contain only alphabets')
         } else {
             setRows((prev) => {
                 let updatedData = []
@@ -328,13 +307,11 @@ const CreateProject = ({ type }) => {
                 return updatedData
             })
         }
-
-   
     }
 
     return (
         <>
-            <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full z-10">
+            <Card className="p-0 mb-[45px] mx-0 rounded-none sticky top-16 w-full z-10">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
@@ -403,17 +380,16 @@ const CreateProject = ({ type }) => {
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        <SelectItem value="Active">Active</SelectItem>
-                                                        <SelectItem value="Inactive">Inactive</SelectItem>
-
-                                                        <SelectItem value="On Hold">On Hold</SelectItem>
+                                                        {assets.ProjectStatusData.map((status) => (
+                                                            <SelectItem value={status.key}>{status.value}</SelectItem>
+                                                        ))}
                                                     </SelectContent>
                                                 </Select>
                                             </div>
                                         </FormItem>
                                     )}
                                 />
-                 
+
                                 <FormField
                                     control={form.control}
                                     name="lob_process"
@@ -460,7 +436,6 @@ const CreateProject = ({ type }) => {
                                                         mode="single"
                                                         selected={noneValidatedValue.date}
                                                         onSelect={(e) => {
-                                                          
                                                             setNoneValidatedValue((prev) => {
                                                                 return {
                                                                     ...prev,
@@ -509,22 +484,20 @@ const CreateProject = ({ type }) => {
                                         <FormItem>
                                             <FormLabel>Department</FormLabel>
                                             <div className="full">
-                                               
-                                                    <SearchableDropdown
-                                                        options={departments}
-                                                        selectedVal={noneValidatedValue.department}
-                                                        handleChange={(val) => {
-                                                            setNoneValidatedValue((prev) => {
-                                                                return {
-                                                                    ...prev,
-                                                                    department: val,
-                                                                }
-                                                            })
-                                                        }}
-                                                        label="department"
-                                                        placeholder="Department"
-                                                    />
-                                               
+                                                <SearchableDropdown
+                                                    options={departments}
+                                                    selectedVal={noneValidatedValue.department}
+                                                    handleChange={(val) => {
+                                                        setNoneValidatedValue((prev) => {
+                                                            return {
+                                                                ...prev,
+                                                                department: val,
+                                                            }
+                                                        })
+                                                    }}
+                                                    label="department"
+                                                    placeholder="Department"
+                                                />
                                             </div>
                                         </FormItem>
                                     )}
@@ -538,22 +511,20 @@ const CreateProject = ({ type }) => {
                                         <FormItem>
                                             <FormLabel>Billing Type</FormLabel>
                                             <div className="full">
-                                                
-                                                    <SearchableDropdown
-                                                        options={billing_type}
-                                                        selectedVal={noneValidatedValue.billing_type}
-                                                        handleChange={(val) => {
-                                                            setNoneValidatedValue((prev) => {
-                                                                return {
-                                                                    ...prev,
-                                                                    billing_type: val,
-                                                                }
-                                                            })
-                                                        }}
-                                                        label="billingType"
-                                                        placeholder="Billing Type"
-                                                    />
-                                               
+                                                <SearchableDropdown
+                                                    options={billing_type}
+                                                    selectedVal={noneValidatedValue.billing_type}
+                                                    handleChange={(val) => {
+                                                        setNoneValidatedValue((prev) => {
+                                                            return {
+                                                                ...prev,
+                                                                billing_type: val,
+                                                            }
+                                                        })
+                                                    }}
+                                                    label="billingType"
+                                                    placeholder="Billing Type"
+                                                />
                                             </div>
                                         </FormItem>
                                     )}
@@ -904,7 +875,6 @@ const CreateProject = ({ type }) => {
                                                                     </Button>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="w-auto p-0" align="start">
-                                                                  
                                                                     <Calendar
                                                                         key={historyrow.enddate}
                                                                         mode="single"

@@ -162,11 +162,14 @@ thead{
 
 .dropdownx .options {
   display: none;
+
   background-color: #fff;
   border: 1px solid #ccc;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
-  margin-top: -1px;
+  margin-top: 3px;
+  border-radius: 8px;
+  padding: 4px;
   max-height: 200px;
   overflow-y: auto;
   position: absolute;
@@ -186,13 +189,15 @@ thead{
   color: rgba(51, 51, 51, 0.8);
   cursor: pointer;
   display: block;
-  padding: 8px 10px;
+  padding: 4px 10px;
+  
 }
 
 .dropdownx .option.selected,
 .dropdownx .option:hover {
   background-color: #f2f9fc;
   color: #333;
+  border-radius: 8px;
 }
 
 table{
