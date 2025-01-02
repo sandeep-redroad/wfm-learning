@@ -9,16 +9,24 @@ import { Input } from '@/Components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import { useLocation } from 'react-router-dom'
 import ProcessService from '@/Service/ProcessService'
+import { useDebounce } from 'use-debounce'
+import Constent from '@/utils/constent'
 
 const Process = () => {
 
     const [process, setProcess] = useState([])
     const [totalCount, setTotalCount] = useState(0)
     const [isOpen, setIsOpen] = useState(false)
-    const location = useLocation()
-    const getProcess = async (page = 1) => {
+    const location = useLocation();
+    const [search, setSearch] = useState('')
+    const [debouncedValue] = useDebounce(search, Constent.DEBOUNCE_DELAY)
+    const [queryParam, setQueryParam] = useState({
+        page: 1,
+        search: '',
+    })
+    const getProcess = async () => {
         try {
-            const resp = await ProcessService.getProcess({ page })
+            const resp = await ProcessService.getProcess(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)
                 setProcess(resp.data.data)
@@ -33,6 +41,19 @@ const Process = () => {
         }
         getProcess(page)
     }, [location.search])
+
+        useEffect(() => {
+            getProcess()
+        }, [queryParam.page, queryParam.search])
+    
+        useEffect(() => {
+            setQueryParam((prev) => {
+                return {
+                    ...prev,
+                    search: debouncedValue,
+                }
+            })
+        }, [debouncedValue])
 
     
     const handleSearch = (e) => {
@@ -55,7 +76,7 @@ const Process = () => {
             <Card className="p-0 m-3 mt-[4.5rem]">
                 <CardContent className="m-0 p-3 overflow-y-auto">
                     <div className="w-full my-2 grid grid-cols-4">
-                        <Input type="text" onChange={handleSearch} placeholder="Process" />
+                        <Input type="text"value={search}  onChange={(e) => setSearch(e.target.value)} placeholder="Process" />
                     </div>
                     <Datatable columns={ProcessColumns()} data={process} totalDataCount={totalCount} />
                 </CardContent>

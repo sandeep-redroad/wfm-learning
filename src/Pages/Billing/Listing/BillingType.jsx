@@ -8,6 +8,8 @@ import Datatable from '@/Components/Common/Datatable'
 import { Input } from '@/Components/ui/input'
 import BillingTypeService from '@/Service/BillingTypeService'
 import { useLocation } from 'react-router-dom'
+import { useDebounce } from 'use-debounce'
+import Constent from '@/utils/constent'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Link } from 'react-router-dom'
 
@@ -15,10 +17,17 @@ const Billing = () => {
     const [billingTypes, setBillingTypes] = useState([])
     const [totalCount, setTotalCount] = useState(0)
     const [isOpen, setIsOpen] = useState(false)
+    const [search, setSearch] = useState('')
+    const [debouncedValue] = useDebounce(search, Constent.DEBOUNCE_DELAY)
+    const [queryParam, setQueryParam] = useState({
+        page: 1,
+        search: '',
+    })
     const location = useLocation()
-    const getBillingTypes = async (page = 1) => {
+    const getBillingTypes = async () => {
         try {
-            const resp = await BillingTypeService.getBillingType({ page })
+            console.log('queryParam : ', queryParam)
+            const resp = await BillingTypeService.getBillingType(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)
                 setBillingTypes(resp.data.data)
@@ -28,11 +37,26 @@ const Billing = () => {
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search)
         const page = parseInt(searchParams.get('page') || 1)
-        if (page == 0) {
-            return false
-        }
-        getBillingTypes(page)
+        setQueryParam((prev) => {
+            return {
+                ...prev,
+                page: page,
+            }
+        })
     }, [location.search])
+
+    useEffect(() => {
+        getBillingTypes()
+    }, [queryParam.page, queryParam.search])
+
+    useEffect(() => {
+        setQueryParam((prev) => {
+            return {
+                ...prev,
+                search: debouncedValue,
+            }
+        })
+    }, [debouncedValue])
 
     const handleSearch = (e) => {
         console.log('e : ', e)
@@ -54,7 +78,7 @@ const Billing = () => {
             <Card className="p-0 m-3 mt-[4.5rem]">
                 <CardContent className="m-0 p-3 overflow-y-auto">
                     <div className="w-full my-2 grid grid-cols-4">
-                        <Input type="text" onChange={handleSearch} placeholder="Billing Type" />
+                        <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Billing Type" />
                     </div>
                     <Datatable columns={BillingColumns()} data={billingTypes} totalDataCount={totalCount} />
                 </CardContent>
