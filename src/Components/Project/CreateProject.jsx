@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom'
 import ClientService from '@/Service/ClientService'
 import ProcessService from '@/Service/ProcessService'
 import assets from '@/assets/assets'
+import LofBuisnessService from '@/Service/LofBuisnessService'
 
 const CreateProject = ({ type }) => {
     const [checkAll, setcheckAll] = useState(false)
@@ -37,6 +38,20 @@ const CreateProject = ({ type }) => {
     const [projectleads, setProjectLead] = useState([])
     const [process, setProcess] = useState([])
     const [billing_type, setBillingType] = useState([])
+
+
+    const getLofBuisness=async()=>{
+        try{
+            const resp=await LofBuisnessService.getLofBuisness();
+            console.log("resp",resp);
+            if(resp.data.success){
+                setLOBprocess(resp.data.data)
+            }
+            console.log(lob_processes);
+        }catch(err){
+
+        }
+    }
 
     const getDepartment = async () => {
         try {
@@ -78,10 +93,12 @@ const CreateProject = ({ type }) => {
     }
 
     useEffect(() => {
+        getLofBuisness()
         getDepartment()
         getClient()
         getBillingTypes()
         getProcess()
+      
     }, [])
 
     // const date=new Date();
@@ -409,7 +426,7 @@ const CreateProject = ({ type }) => {
                                                         })
                                                     }}
                                                     placeholder="LOB Process"
-                                                    label="lob_process"
+                                                    label="lofBuisness"
                                                 />
                                             </div>
                                         </FormItem>
