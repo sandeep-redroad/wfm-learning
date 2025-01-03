@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,9 +8,9 @@ import { Input } from '@/Components/ui/input'
 import { Button } from '@/Components/ui/button'
 import LofBuisnessService from '@/Service/LofBuisnessService'
 const formSchema = z.object({
-  lofbuisness: z.string().min(1, {
-      message: 'LOF Buisness is required.',
-  }),
+    lofBuisness: z.string().min(1, {
+        message: 'LOF Buisness is required.',
+    }),
 })
 
 const CreateLofBuisness = ({ getLofBuisness, setIsOpen }) => {

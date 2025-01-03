@@ -4,6 +4,7 @@ import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-tabl
 import { PaginationWithLinks } from './Pagination'
 import DataTableEnumType from '@/Enums/DataTableTypeEnum'
 import Constent from '@/utils/constent'
+import { format } from 'date-fns'
 
 const Datatable = ({ columns, data, totalDataCount, type }) => {
     const location = useLocation()
@@ -95,11 +96,15 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
                                                 <>{(currentPage - 1) * Constent.PAGINATION_SIZE + pI + 1}</>
                                             ) : cell.column.id === 'status' ? (
                                                 <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
+                                            ) : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
+                                                <>{format(flexRender(cell.column.columnDef.cell, cell.getContext()), Constent.DATE_FORMAT)}</>
                                             ) : (
                                                 <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
                                             )
                                         ) : cell.column.id === 'sl' ? (
                                             <>{(currentPage - 1) * Constent.PAGINATION_SIZE + pI + 1}</>
+                                        )  : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
+                                            <>{format(cell.getValue(), Constent.DATE_FORMAT)}</>
                                         ) : (
                                             <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
                                         )}

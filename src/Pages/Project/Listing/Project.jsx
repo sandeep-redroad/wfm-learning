@@ -27,7 +27,7 @@ const Project = () => {
     const location = useLocation()
     const getProject = async () => {
         try {
-            const resp = await ProjectService.getProject(queryParam)
+            const resp = await ProjectService.getProjects(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)
                 setProjects(resp.data.data)

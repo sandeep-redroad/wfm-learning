@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { Input } from '../ui/input'
 import { cn } from '@/lib/utils'
 import LofBuisnessService from '@/Service/LofBuisnessService'
 
@@ -10,7 +9,6 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
     const [Lof_buisness, setLof] = useState([])
 
     useEffect(() => {
-        console.log('options label', options, label)
         document.addEventListener('click', toggle)
         return () => document.removeEventListener('click', toggle)
     }, [])

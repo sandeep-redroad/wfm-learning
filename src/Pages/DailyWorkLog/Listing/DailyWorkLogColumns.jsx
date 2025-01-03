@@ -5,23 +5,27 @@ const DailyWorkLogColumns = () => {
     }
     memoizedColumns = [
         {
-            accessorKey: 'id',
-            header: 'ID',
-        },
-        {
-            accessorKey: 'project_id',
+            accessorKey: 'projectId',
             header: 'Project Id',
         },
         {
-            accessorKey: 'client',
+            accessorKey: 'project.client',
             header: 'Client',
         },
         {
-            accessorKey: 'employee_id',
-            header: 'Employee Id',
+            accessorKey: 'employeeName',
+            header: 'Employee Name',
         },
         {
-            accessorKey: 'created_at',
+            accessorKey: 'project.process',
+            header: 'Process',
+        },
+        {
+            accessorKey: 'project.billingType',
+            header: 'Billing Type',
+        },
+        {
+            accessorKey: 'date',
             header: 'Date',
         }
     ]
