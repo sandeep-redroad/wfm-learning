@@ -18,24 +18,33 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 
 const DailyWorkLog = () => {
     const [date, setDate] = useState({
-        from: new Date(2022, 0, 20),
-        to: addDays(new Date(2022, 0, 20), 20),
+        from: new Date(),
+        to: addDays(new Date(), 30),
     })
     const [dailyWorkLogs, setDailyWorkLogs] = useState([])
     const [totalCount, setTotalCount] = useState(0)
-    const [searchId, setSearchId] = useState('')
+    const [searchProjectId, setSearchProjectId] = useState('')
     const [searchClient, setSearchClient] = useState('')
-    const [searchEmployeeId, setSearchEmployeeId] = useState('')
+    const [searchEmployeeName, setSearchEmployeeName] = useState('')
+    const [searchProcess, setSearchProcess] = useState('')
+    const [searchBillingType, setSearchBillingType] = useState('')
     const [queryParam, setQueryParam] = useState({
         page: 1,
         search: {
             id: '',
             client: '',
-            employeeId: '',
+            employeeName: '',
+            process: '',
+            billingType: '',
+            startDate: '',
+            endDate: '',
         },
     })
-    const [debounce1] = useDebounce(searchId, Constent.DEBOUNCE_DELAY)
-    const [debounce2] = useDebounce(searchClient, Constent.DEBOUNCE_DELAY)
+    const [debounceSearchProjectId] = useDebounce(searchProjectId, Constent.DEBOUNCE_DELAY)
+    const [debounceSearchClient] = useDebounce(searchClient, Constent.DEBOUNCE_DELAY)
+    const [debounceSearchEmployeeName] = useDebounce(searchEmployeeName, Constent.DEBOUNCE_DELAY)
+    const [debounceSearchProcess] = useDebounce(searchProcess, Constent.DEBOUNCE_DELAY)
+    const [debounceSearchBillingType] = useDebounce(searchBillingType, Constent.DEBOUNCE_DELAY)
     const location = useLocation()
     const getDailyWorkLogs = async () => {
         try {
@@ -59,19 +68,24 @@ const DailyWorkLog = () => {
 
     useEffect(() => {
         getDailyWorkLogs()
-    }, [queryParam.page, queryParam.search.id, queryParam.search.client, queryParam.search.employeeId])
+    }, [queryParam.page, queryParam.search.projectId, queryParam.search.client, queryParam.search.employeeName, queryParam.search.process, queryParam.search.billingType, queryParam.search.endDate])
 
     useEffect(() => {
         setQueryParam((prev) => {
             return {
                 ...prev,
                 search: {
-                    id: debounce1,
-                    client: debounce2,
+                    projectId: debounceSearchProjectId,
+                    client: debounceSearchClient,
+                    employeeName: debounceSearchEmployeeName,
+                    process: debounceSearchProcess,
+                    billingType: debounceSearchBillingType,
+                    startDate: date?.from ? format(date.from, Constent.DATE_FORMAT) : '',
+                    endDate: date?.to ? format(date.to, Constent.DATE_FORMAT) : '',
                 },
             }
         })
-    }, [debounce1, debounce2])
+    }, [date, debounceSearchProjectId, debounceSearchClient, debounceSearchEmployeeName, debounceSearchProcess, debounceSearchBillingType])
     return (
         <div>
             <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full">
@@ -85,27 +99,38 @@ const DailyWorkLog = () => {
             </Card>
             <Card className="p-0 m-3  mt-[4.5rem]">
                 <CardContent className="m-0 p-3 overflow-y-auto">
-                    <div className="w-full my-2 grid grid-cols-5 gap-3">
-                        <Input type="text" onChange={(e) => console.log(e.target.value)} placeholder="Project Id" />
-                        <Input type="text" onChange={(e) => console.log(e.target.value)} placeholder="Client" />
-                        <Input type="text" onChange={(e) => console.log(e.target.value)} placeholder="Employee Name" />
-                        <Input type="text" onChange={(e) => console.log(e.target.value)} placeholder="Process" />
+                    <div className="w-full my-2 grid grid-cols-7 gap-3">
+                        <Input type="text" onChange={(e) => setSearchProjectId(e.target.value)} value={searchProjectId} placeholder="Project Id" />
+                        <Input type="text" onChange={(e) => setSearchClient(e.target.value)} value={searchClient} placeholder="Client" />
+                        <Input
+                            type="text"
+                            onChange={(e) => setSearchEmployeeName(e.target.value)}
+                            value={searchEmployeeName}
+                            placeholder="Employee Name"
+                        />
+                        <Input type="text" onChange={(e) => setSearchProcess(e.target.value)} value={searchProcess} placeholder="Process" />
+                        <Input
+                            type="text"
+                            onChange={(e) => setSearchBillingType(e.target.value)}
+                            value={searchBillingType}
+                            placeholder="Billing Type"
+                        />
                         <div className={cn('grid gap-2')}>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button
                                         id="date"
                                         variant={'outline'}
-                                        className={cn('w-[300px] justify-start text-left font-normal', !date && 'text-muted-foreground')}
+                                        className={cn('justify-start text-left font-normal', !date && 'text-muted-foreground')}
                                     >
                                         <CalendarIcon />
                                         {date?.from ? (
                                             date.to ? (
                                                 <>
-                                                    {format(date.from, 'LLL dd, y')} - {format(date.to, 'LLL dd, y')}
+                                                    {format(date.from, Constent.DATE_FORMAT)} to {format(date.to, Constent.DATE_FORMAT)}
                                                 </>
                                             ) : (
-                                                format(date.from, 'LLL dd, y')
+                                                format(date.from, Constent.DATE_FORMAT)
                                             )
                                         ) : (
                                             <span>Pick a date</span>

@@ -48,8 +48,9 @@ const CreateProject = ({ type }) => {
             const resp = await LofBuisnessService.getLofBuisness()
             console.log('resp', resp)
             if (resp.data.success) {
-                setLofBusiness(resp.data.data)
+                setLOBprocess(resp.data.data)
             }
+            console.log(lob_processes)
         } catch (err) {}
     }
 
@@ -334,7 +335,7 @@ const CreateProject = ({ type }) => {
 
     return (
         <>
-            <Card className="p-0 mb-[45px] mx-0 rounded-none sticky top-16 w-full z-10">
+            <Card className="p-0 mb-[44px] mx-0 rounded-none sticky top-16 w-full z-10">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
