@@ -1,6 +1,5 @@
 import { React, useEffect, useRef, useState } from 'react'
-import { get, useForm } from 'react-hook-form'
-import { Switch } from '@/components/ui/switch'
+import { useForm } from 'react-hook-form'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'react-toastify'
 import { CalendarIcon } from 'lucide-react'
@@ -9,13 +8,12 @@ import { format } from 'date-fns'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import BillingData from '@/assets/data/BillingData'
 import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../Common/SearchableDropdown'
 import DepartmentService from '@/Service/DepartmentService'
@@ -23,6 +21,7 @@ import BillingTypeService from '@/Service/BillingTypeService'
 import { Link } from 'react-router-dom'
 import ClientService from '@/Service/ClientService'
 import ProcessService from '@/Service/ProcessService'
+import assets from '@/assets/assets'
 import LofBuisnessService from '@/Service/LofBuisnessService'
 
 const CreateProject = ({ type }) => {
@@ -126,16 +125,6 @@ const CreateProject = ({ type }) => {
             status: 'Active',
         },
     })
-
-    // const billing_type=[];
-
-    // const [projectData]
-    // const lob_processes = []
-    // const projectleads = []
-    // const clients = []
-
-    // const process = []
-
     function onSubmit(data) {
         Object.assign(data, noneValidatedValue)
 
@@ -144,7 +133,7 @@ const CreateProject = ({ type }) => {
         let key = Object.keys(filteredObj)[0]
 
         if (key == 'lob_process') {
-            toast('Please select line of buisness')
+            toast.error('Please select line of buisness')
             return
         }
         if (key == 'client') {
@@ -313,9 +302,9 @@ const CreateProject = ({ type }) => {
         let isAlphabetic = /^[A-Za-z_ ]+$/.test(value)
         let fieldName = value.split(' ').join('_')
         if (value > 15) {
-            toast('label should contain atmost 15 characters')
+            toast.error('label should contain atmost 15 characters')
         } else if (!isAlphabetic && value !== '') {
-            toast('label should contain only alphabets')
+            toast.error('label should contain only alphabets')
         } else {
             setRows((prev) => {
                 let updatedData = []
@@ -404,10 +393,9 @@ const CreateProject = ({ type }) => {
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        <SelectItem value="Active">Active</SelectItem>
-                                                        <SelectItem value="Inactive">Inactive</SelectItem>
-
-                                                        <SelectItem value="On Hold">On Hold</SelectItem>
+                                                        {assets.ProjectStatusData.map((status) => (
+                                                            <SelectItem value={status.key}>{status.value}</SelectItem>
+                                                        ))}
                                                     </SelectContent>
                                                 </Select>
                                             </div>

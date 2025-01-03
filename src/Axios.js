@@ -10,7 +10,6 @@ const Axios = axios.create({
 
 Axios.interceptors.request.use(
     (config) => {
-        // You can add additional logic here (e.g., adding tokens, modifying headers, etc.)
         return config
     },
     (error) => {
@@ -26,13 +25,10 @@ Axios.interceptors.response.use(
         return response
     },
     (error) => {
-        // Handle errors globally (e.g., session expired, unauthorized, etc.)
-        console.log("error : ",error)
         if (error.response && error.response.status === 401) {
-            // Handle session expired or unauthorized error (redirect to login page)
             window.alert('Session expired or unauthorized, redirecting to login...')
             document.cookie = `session_id=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
-            window.location.href = '/login' // Redirect to login page
+            window.location.href = '/login'
         }else if(error?.response?.data?.message){
             toast.error(error?.response?.data?.message)
         }else if(error?.message){

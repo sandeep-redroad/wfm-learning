@@ -10,6 +10,7 @@ import DepartmentData from './data/DepartmentData';
 import ClientData from './data/ClientData';
 import ProjectData from './data/ProjectData';
 import UploadData from './data/UploadData';
+import ProjectStatusData from './data/ProjectStatusData';
 
 const assets = {
     redroadicon,
@@ -19,7 +20,8 @@ const assets = {
     DepartmentData,
     ClientData,
     ProjectData,
-    UploadData
+    UploadData,
+    ProjectStatusData
 }
 
 
