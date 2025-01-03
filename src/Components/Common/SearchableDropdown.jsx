@@ -52,9 +52,9 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
               }
           } catch (err) {}
       }
-      useEffect(()=>{
-        getLofBuisness({page:1,search:query});
-      },[query])
+    //   useEffect(()=>{
+    //     getLofBuisness({page:1,search:query});
+    //   },[query])
 
     return (
         <div className="dropdownx">
@@ -82,18 +82,7 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
 
             <div className={`options ${isOpen ? 'open' : ''}`}>
                 {options.length > 0 ? (
-                   /* filter(options).map((option, index) => {
-                        return (
-                            <div
-                                onClick={() => selectOption(option)}
-                                className={`option ${option[label] === selectedVal ? 'selected' : ''}`}
-                                key={`${index}`}
-                            >
-                                {option[label]}
-                            </div>
-                        )
-                    })*/
-                    Lof_buisness.map((option,index)=>{
+                   filter(options).map((option, index) => {
                         return (
                             <div
                                 onClick={() => selectOption(option)}
@@ -104,6 +93,17 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
                             </div>
                         )
                     })
+                    // Lof_buisness.map((option,index)=>{
+                    //     return (
+                    //         <div
+                    //             onClick={() => selectOption(option)}
+                    //             className={`option ${option[label] === selectedVal ? 'selected' : ''}`}
+                    //             key={`${index}`}
+                    //         >
+                    //             {option[label]}
+                    //         </div>
+                    //     )
+                    // })
                 ) : (
                     <div onClick={() => selectOption('No Data found')} className={`option selected`}>
                         No data found

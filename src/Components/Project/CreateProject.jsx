@@ -48,7 +48,7 @@ const CreateProject = ({ type }) => {
             const resp = await LofBuisnessService.getLofBuisness()
             console.log('resp', resp)
             if (resp.data.success) {
-                setLOBprocess(resp.data.data)
+                setLofBusiness(resp.data.data)
             }
             console.log(lob_processes)
         } catch (err) {}
@@ -433,7 +433,7 @@ const CreateProject = ({ type }) => {
                                                         })
                                                     }}
                                                     placeholder="LOB Process"
-                                                    label="lofBuisness"
+                                                    label="lofBusiness"
                                                 />
                                             </div>
                                         </FormItem>
