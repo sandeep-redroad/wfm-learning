@@ -11,7 +11,7 @@ memoizedColumns = [
         header: 'Sr. No.',
     },
     {
-        accessorKey: 'lofbuisness',
+        accessorKey: 'lofBuisness',
         header: 'LofBuisness',
     }
 ]

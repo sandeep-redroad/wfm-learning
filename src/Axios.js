@@ -25,10 +25,15 @@ Axios.interceptors.response.use(
         return response
     },
     (error) => {
-        if (error.response && error.response.status === 401) {
+        console.log("error : ",error)
+        if (error?.response && error?.response?.status === 401) {
             window.alert('Session expired or unauthorized, redirecting to login...')
             document.cookie = `session_id=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
             window.location.href = '/login'
+        }else if(error?.response && error?.response?.status === 400){
+            if(error?.response?.data?.details && error?.response?.data?.details.length > 0){
+                toast.error(error?.response?.data?.details[0]['msg'])
+            }
         }else if(error?.response?.data?.message){
             toast.error(error?.response?.data?.message)
         }else if(error?.message){

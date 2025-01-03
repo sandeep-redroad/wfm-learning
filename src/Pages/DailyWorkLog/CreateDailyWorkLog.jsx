@@ -1,153 +1,113 @@
-import { React, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'react-toastify'
-import { CalendarIcon, CloudCog } from 'lucide-react'
+import { CalendarIcon } from 'lucide-react'
 import { format } from 'date-fns'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Card, CardContent } from '@/components/ui/card'
-
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import BillingData from '@/assets/data/BillingData'
-import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../../Components/Common/SearchableDropdown'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import ProjectService from '@/Service/ProjectService'
+import { useAuth } from '@/Context/AuthContext'
+import DailyWorkLogService from '@/Service/DailyWorkLogService'
+import Constent from '@/utils/constent'
 
 const CreateDailyWorkLog = () => {
+    const navigate = useNavigate()
+    const { userInfo } = useAuth()
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
-    const date = new Date()
-    const today = format(new Date(), 'MM-dd-yyyy')
-    console.log(today)
-    const customfields = [
-        { label: 'Text Label', dataType: 'small Text', fieldType: 'test_label' },
-        { label: 'Data Label', dataType: 'Data', fieldType: 'data_label' },
-        { label: 'Date Label', dataType: 'Date', fieldType: 'date_label' },
-    ]
-
+    const [date, setDate] = useState(format(new Date(), Constent.DATE_FORMAT))
+    const [product, setProduct] = useState(null)
+    const [projects, setProjects] = useState([])
+    const [customFields, setCustomFields] = useState([])
     const [noneValidatedValue, setNoneValidatedValue] = useState({
-        projectID: '',
-        workitem: '',
-        worked_hours: '',
-        billing_type: '',
+        employeeId: userInfo?.employee_id,
+        employeeName: userInfo?.full_name,
+        date: date,
+        projectId: '',
+        workItem: '',
+        workedHours: '',
+        customFields: {},
     })
 
-    const form = useForm({
-        defaultValues: {
-            date: today,
-        },
-    })
+    const form = useForm()
 
-    // const [projectData]
-    const lob_processes = [
-        {
-            value: 'next.js',
-            label: 'Next.js',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-    ]
-    const projectleads = [
-        {
-            value: 'next.js',
-            label: 'Next.js',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-    ]
-    const clients = [
-        {
-            value: 'next.js',
-            label: 'Next.js',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-    ]
-    const departments = [
-        {
-            value: 'next.js',
-            label: 'Next.js',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-    ]
-    const process_names = [
-        {
-            value: 'next.js',
-            label: 'Next.js',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-    ]
+    const getProjects = async () => {
+        try {
+            const resp = await ProjectService.getProjects({})
+            if (resp.data.success) {
+                setProjects(resp.data.data)
+            }
+        } catch (err) {}
+    }
 
-    function onSubmit(data) {
-        Object.assign(data, noneValidatedValue)
-        const filteredObj = Object.fromEntries(
-            Object.entries(data).filter(([key, value]) => key !== 'comments' && value == '') // Filter based on value
-        )
-        let key = Object.keys(filteredObj)[0]
-        console.log('keys', Object.keys(filteredObj), key)
-        if (key == 'projectID') {
-            toast.error('Please select ProjectID')
-            return
-        }
-        if (key == 'workitem') {
-            toast.error('Please enter work item')
-            return
-        }
-        if (key == 'worked_hours') {
-            toast.error('Please enter worked hours')
-            return
-        }
+    const getProject = async (projectId) => {
+        try {
+            const resp = await ProjectService.getProject(projectId)
+            if (resp.data.success) {
+                setProduct(resp.data.data)
+                resp.data.data.customeFields.map((fields) => {
+                    noneValidatedValue.customFields[fields['_id']] = {
+                        projectExtraFiledId: fields['_id'],
+                        label: fields['label'],
+                        value: '',
+                    }
+                })
+                setCustomFields(resp.data.data.customeFields)
+            }
+        } catch (err) {}
+    }
 
-        for (let i = 0; i < customfields.length; i++) {
-            console.log(customfields[i].fieldType)
-            if (customfields[i].fieldType === '') {
-                toast.error('Please select process name')
+    useEffect(() => {
+        getProjects()
+    }, [])
+
+    async function onSubmit(data) {
+        try {
+            let custmField = noneValidatedValue.customFields
+            const filteredObj = Object.fromEntries(
+                Object.entries(noneValidatedValue).filter(([key, value]) => value == '')
+            )
+            let key = Object.keys(filteredObj)[0]
+            if (key == 'projectId') {
+                toast.error('Please select ProjectId')
                 return
             }
-        }
-        data['customfields'] = customfields
+            if (key == 'workItem') {
+                toast.error('Please enter work item')
+                return
+            }
+            if (key == 'workedHours') {
+                toast.error('Please enter worked hours')
+                return
+            }
+            let customFieldKeys = Object.keys(custmField)
+            let customFieldWithData = []
+            for (let i = 0; i < customFieldKeys.length; i++) {
+                customFieldWithData.push({
+                    projectExtraFiledId: customFieldKeys[i],
+                    value: custmField[customFieldKeys[i]]['value'],
+                })
+            }
 
-        console.log('final Data : ', data)
+            let postData = JSON.parse(JSON.stringify(noneValidatedValue))
+            postData['customFields'] = customFieldWithData
+            postData['date'] = String(postData['date'])
+            const resp = await DailyWorkLogService.createDailyWorkLog(postData)
+            if (resp.data.success) {
+                navigate('/daily-work-log')
+            }
+        } catch (err) {
+            toast.error(err)
+        }
     }
+
     const addRow = () => {
         setRows((prev) => {
             const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
@@ -231,25 +191,13 @@ const CreateDailyWorkLog = () => {
                             <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                 <FormField
                                     control={form.control}
-                                    name="employeeID"
+                                    name="employeeId"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Employee ID</FormLabel>
+                                            <FormLabel>Employee Id</FormLabel>
                                             <FormControl>
-                                                <Input
-                                                    placeholder="employee ID"
-                                                    onChange={(e) => {
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                employeeID: e.target.value,
-                                                            }
-                                                        })
-                                                    }}
-                                                />
+                                                <Input placeholder="Employee Id" value={noneValidatedValue.employeeId} disabled={true} />
                                             </FormControl>
-
-                                            
                                         </FormItem>
                                     )}
                                 />
@@ -261,45 +209,34 @@ const CreateDailyWorkLog = () => {
                                         <FormItem>
                                             <FormLabel>Employee Name</FormLabel>
                                             <FormControl>
-                                                <Input
-                                                    placeholder="employeeName"
-                                                    onChange={(e) => {
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                employeeName: e.target.value,
-                                                            }
-                                                        })
-                                                    }}
-                                                />
+                                                <Input placeholder="employeeName" value={noneValidatedValue.employeeName} disabled={true} />
                                             </FormControl>
-
-                                            
                                         </FormItem>
                                     )}
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="projectID"
+                                    name="projectId"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Project ID</FormLabel>
+                                            <FormLabel>Project Id</FormLabel>
                                             <div className="w-full">
                                                 <SearchableDropdown
-                                                    options={lob_processes}
-                                                    selectedVal={noneValidatedValue.projectID}
+                                                    options={projects}
+                                                    selectedVal={noneValidatedValue.projectId}
                                                     handleChange={(val) => {
+                                                        getProject(val)
                                                         setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                projectID: val,
+                                                                projectId: val,
                                                             }
                                                         })
                                                     }}
-                                                    placeholder="Project ID"
+                                                    placeholder="Project Id"
+                                                    label="id"
                                                 />
                                             </div>
-                                            
                                         </FormItem>
                                     )}
                                 />
@@ -312,8 +249,8 @@ const CreateDailyWorkLog = () => {
                                             <Popover>
                                                 <PopoverTrigger asChild>
                                                     <FormControl>
-                                                        <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {noneValidatedValue.date ? format(noneValidatedValue.date, 'MM-dd-yyyy') : today}
+                                                        <Button variant={'outline'} disabled={true} className="w-full pl-3 text-left font-normal">
+                                                            {noneValidatedValue.date ? format(noneValidatedValue.date, Constent.DATE_FORMAT) : date}
                                                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                         </Button>
                                                     </FormControl>
@@ -323,11 +260,10 @@ const CreateDailyWorkLog = () => {
                                                         mode="single"
                                                         selected={noneValidatedValue.date}
                                                         onSelect={(e) => {
-                                                            console.log('date', e)
                                                             setNoneValidatedValue((prev) => {
                                                                 return {
                                                                     ...prev,
-                                                                    date: e,
+                                                                    date: format(e, Constent.DATE_FORMAT),
                                                                 }
                                                             })
                                                         }}
@@ -335,8 +271,6 @@ const CreateDailyWorkLog = () => {
                                                     />
                                                 </PopoverContent>
                                             </Popover>
-
-                                            
                                         </FormItem>
                                     )}
                                 />
@@ -347,47 +281,33 @@ const CreateDailyWorkLog = () => {
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Client</FormLabel>
-                                            <div className="w-full">
-                                                <SearchableDropdown
-                                                    options={clients}
-                                                    selectedVal={noneValidatedValue.client}
-                                                    handleChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                client: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="Client"
-                                                />
-                                            </div>
-                                            
+                                            <FormControl>
+                                                <Input {...field} placeholder="client" value={product?.client ?? ''} disabled={true} />
+                                            </FormControl>
                                         </FormItem>
                                     )}
                                 />
 
                                 <FormField
                                     control={form.control}
-                                    name="workitem"
+                                    name="workItem"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Work Items</FormLabel>
                                             <FormControl>
                                                 <Input
-                                                    placeholder="Work Items"
-                                                    onChange={(e) => {
+                                                    onChange={(e) =>
                                                         setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                workitem: e.target.value,
+                                                                workItem: e.target.value,
                                                             }
                                                         })
-                                                    }}
+                                                    }
+                                                    type="number"
+                                                    placeholder="Work Items"
                                                 />
                                             </FormControl>
-
-                                            
                                         </FormItem>
                                     )}
                                 />
@@ -398,47 +318,33 @@ const CreateDailyWorkLog = () => {
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Process</FormLabel>
-                                            <div className="full">
-                                                <SearchableDropdown
-                                                    options={departments}
-                                                    selectedVal={noneValidatedValue.department}
-                                                    handleChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                process: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="Select Process"
-                                                />
-                                            </div>
-
-                                            
+                                            <FormControl>
+                                                <Input {...field} placeholder="process" value={product?.process ?? ''} disabled={true} />
+                                            </FormControl>
                                         </FormItem>
                                     )}
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="worked_hours"
+                                    name="workedHours"
+                                    onOpenAutoFocus={(e) => e.preventDefault()}
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Worked Hours</FormLabel>
                                             <FormControl>
                                                 <Input
-                                                    placeholder="Worked Hours"
-                                                    onChange={(e) => {
+                                                    onChange={(e) =>
                                                         setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                worked_hours: e.target.value,
+                                                                workedHours: e.target.value,
                                                             }
                                                         })
-                                                    }}
+                                                    }
+                                                    type="text"
+                                                    placeholder="Worked Hours"
                                                 />
                                             </FormControl>
-
-                                            
                                         </FormItem>
                                     )}
                                 />
@@ -446,114 +352,112 @@ const CreateDailyWorkLog = () => {
                                 <FormField
                                     className="w-full"
                                     control={form.control}
-                                    name="billing_type"
+                                    name="billingType"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Billing Type</FormLabel>
-                                            <div className="w-full">
-                                                <Select
-                                                    onValueChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                billing_type: val,
-                                                            }
-                                                        })
-                                                        handlebillingChange(val)
-                                                    }}
-                                                    defaultValue="Hourly Transactional"
-                                                >
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        <SelectItem value="Per WorkItem Transactional">Per WorkItem Transactional</SelectItem>
-                                                        <SelectItem value="FTE">FTE</SelectItem>
-
-                                                        <SelectItem value="Hourly Transactional" selected>
-                                                            Hourly Transactional
-                                                        </SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-
-                                            
+                                            <FormControl>
+                                                <Input {...field} placeholder="Billing Type" value={product?.billingType ?? ''} disabled={true} />
+                                            </FormControl>
                                         </FormItem>
                                     )}
                                 />
                             </div>
-                            <hr className="mt-[1.75rem] mb-[1.75rem]" />
-                            <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                {customfields.map((cfield) => {
-                                    console.log('custom fields', cfield)
-                                    return cfield.dataType == 'small Text' || cfield.dataType == 'Data' ? (
-                                        <FormField
-                                            control={form.control}
-                                            name={cfield.fieldType}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>{cfield.label}</FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            placeholder="Worked Hours"
-                                                            onChange={(e) => {
-                                                                setNoneValidatedValue((prev) => {
-                                                                    return {
-                                                                        ...prev,
-                                                                        workedhours: e.target.value,
-                                                                    }
-                                                                })
-                                                            }}
-                                                        />
-                                                    </FormControl>
-
-                                                    
-                                                </FormItem>
-                                            )}
-                                        />
-                                    ) : (
-                                        <FormField
-                                            control={form.control}
-                                            name={cfield.fieldType}
-                                            render={({ field }) => (
-                                                <FormItem className="flex flex-col">
-                                                    <FormLabel>{cfield.label}</FormLabel>
-                                                    <Popover>
-                                                        <PopoverTrigger asChild>
+                            {customFields.length > 0 && (
+                                <>
+                                    <hr className="mt-[1.75rem] mb-[1.75rem]" />
+                                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
+                                        {customFields.map((cfield) => {
+                                            return cfield.dataType !== 'date' ? (
+                                                <FormField
+                                                    control={form.control}
+                                                    name={cfield.fieldName}
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>{cfield.label}</FormLabel>
                                                             <FormControl>
-                                                                <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                                    {noneValidatedValue.date ? format(noneValidatedValue.date, 'MM-dd-yyyy') : today}
-                                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                                </Button>
+                                                                <Input
+                                                                    placeholder={cfield.label}
+                                                                    type={cfield.dataType}
+                                                                    value={noneValidatedValue.customFields[cfield['_id']]['value']}
+                                                                    onChange={(e) => {
+                                                                        setNoneValidatedValue((prev) => {
+                                                                            prev.customFields[cfield['_id']]['value'] = e.target.value
+                                                                            return prev
+                                                                        })
+                                                                        setCustomFields((prev) => {
+                                                                            let updatedCustomeField = []
+                                                                            prev.map((val) => {
+                                                                                if (val['_id'] == cfield['_id']) {
+                                                                                    val['value'] = e.target.value
+                                                                                }
+                                                                                updatedCustomeField.push(val)
+                                                                            })
+                                                                            return updatedCustomeField
+                                                                        })
+                                                                    }}
+                                                                />
                                                             </FormControl>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent className="w-auto p-0" align="start">
-                                                            <Calendar
-                                                                mode="single"
-                                                                selected={noneValidatedValue.date}
-                                                                onSelect={(e) => {
-                                                                    console.log('date', e)
-                                                                    setNoneValidatedValue((prev) => {
-                                                                        return {
-                                                                            ...prev,
-                                                                            date: e,
-                                                                        }
-                                                                    })
-                                                                }}
-                                                                initialFocus
-                                                            />
-                                                        </PopoverContent>
-                                                    </Popover>
-
-                                                    
-                                                </FormItem>
-                                            )}
-                                        />
-                                    )
-                                })}
-                            </div>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            ) : (
+                                                <FormField
+                                                    control={form.control}
+                                                    name={cfield.fieldName}
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-col">
+                                                            <FormLabel>{cfield.label}</FormLabel>
+                                                            <Popover>
+                                                                <PopoverTrigger asChild>
+                                                                    <FormControl>
+                                                                        <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
+                                                                            {cfield['value'] ? (
+                                                                                format(cfield['value'], Constent.DATE_FORMAT)
+                                                                            ) : (
+                                                                                <span>Pick a date</span>
+                                                                            )}
+                                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                                        </Button>
+                                                                    </FormControl>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-auto p-0" align="start">
+                                                                    <Calendar
+                                                                        mode="single"
+                                                                        selected={cfield['value']}
+                                                                        onSelect={(e) => {
+                                                                            setNoneValidatedValue((prev) => {
+                                                                                if (prev.customFields[cfield['_id']] !== undefined) {
+                                                                                    prev.customFields[cfield['_id']]['value'] = format(
+                                                                                        e,
+                                                                                        Constent.DATE_FORMAT
+                                                                                    )
+                                                                                }
+                                                                                return prev
+                                                                            })
+                                                                            setCustomFields((prev) => {
+                                                                                let updatedCustomeField = []
+                                                                                prev.map((val) => {
+                                                                                    if (val['_id'] == cfield['_id']) {
+                                                                                        val['value'] = e
+                                                                                    }
+                                                                                    updatedCustomeField.push(val)
+                                                                                })
+                                                                                return updatedCustomeField
+                                                                            })
+                                                                        }}
+                                                                        initialFocus
+                                                                    />
+                                                                </PopoverContent>
+                                                            </Popover>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            )
+                                        })}
+                                    </div>
+                                </>
+                            )}
                         </form>
                     </Form>
                 </CardContent>

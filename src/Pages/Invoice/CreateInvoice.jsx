@@ -20,6 +20,7 @@ import BillingData from '@/assets/data/BillingData'
 import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../../Components/Common/SearchableDropdown'
 import { Link } from 'react-router-dom'
+import Constent from '@/utils/constent'
 
 const Invoicef = () => {
     const [checkAll, setcheckAll] = useState(false)
@@ -275,7 +276,7 @@ const Invoicef = () => {
                                                 <PopoverTrigger asChild>
                                                     <FormControl>
                                                         <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+                                                            {field.value ? format(field.value, Constent.DATE_FORMAT) : <span>Pick a date</span>}
                                                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                         </Button>
                                                     </FormControl>
@@ -400,7 +401,7 @@ const Invoicef = () => {
                                                 <PopoverTrigger asChild>
                                                     <FormControl>
                                                         <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+                                                            {field.value ? format(field.value, Constent.DATE_FORMAT) : <span>Pick a date</span>}
                                                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                         </Button>
                                                     </FormControl>
@@ -423,7 +424,7 @@ const Invoicef = () => {
                                                 <PopoverTrigger asChild>
                                                     <FormControl>
                                                         <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+                                                            {field.value ? format(field.value, Constent.DATE_FORMAT) : <span>Pick a date</span>}
                                                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                         </Button>
                                                     </FormControl>

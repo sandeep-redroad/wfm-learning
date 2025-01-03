@@ -18,39 +18,39 @@ import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../Common/SearchableDropdown'
 import DepartmentService from '@/Service/DepartmentService'
 import BillingTypeService from '@/Service/BillingTypeService'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ClientService from '@/Service/ClientService'
 import ProcessService from '@/Service/ProcessService'
 import assets from '@/assets/assets'
 import LofBuisnessService from '@/Service/LofBuisnessService'
+import ProjectService from '@/Service/ProjectService'
+import { lowerFirstChar } from '@/utils/helper'
+import Constent from '@/utils/constent'
 
 const CreateProject = ({ type }) => {
+    const navigate = useNavigate()
     const [checkAll, setcheckAll] = useState(false)
     const [checkhisotryAll, setchechistorykAll] = useState(false)
     const [rows, setRows] = useState([])
     const [historyrows, setHistoryrows] = useState([])
     const [isbilling, setIsbilling] = useState(false)
     const formRef = useRef(null)
-    const today = format(new Date(), 'MM-dd-yyyy')
+    const today = format(new Date(), Constent.DATE_FORMAT)
     const [departments, setDepartment] = useState([])
     const [clients, setClient] = useState([])
-    const [lob_processes, setLOBprocess] = useState([])
-    const [projectleads, setProjectLead] = useState([])
+    const [lofBusiness, setLofBusiness] = useState([])
+    const [projectleads, setProjectLead] = useState([{ id: 11, name: 'sandeep' }])
     const [process, setProcess] = useState([])
     const [billing_type, setBillingType] = useState([])
 
-
-    const getLofBuisness=async()=>{
-        try{
-            const resp=await LofBuisnessService.getLofBuisness();
-            console.log("resp",resp);
-            if(resp.data.success){
-                setLOBprocess(resp.data.data)
+    const getLofBuisness = async () => {
+        try {
+            const resp = await LofBuisnessService.getLofBuisness()
+            console.log('resp', resp)
+            if (resp.data.success) {
+                setLofBusiness(resp.data.data)
             }
-            console.log(lob_processes);
-        }catch(err){
-
-        }
+        } catch (err) {}
     }
 
     const getDepartment = async () => {
@@ -62,11 +62,8 @@ const CreateProject = ({ type }) => {
         } catch (err) {}
     }
     const getBillingTypes = async () => {
-        console.log('in billing')
         try {
             const resp = await BillingTypeService.getBillingType()
-            console.log('response', resp.data.data)
-            console.log('response', resp.data.success)
             if (resp.data.success) {
                 setBillingType(resp.data.data)
             }
@@ -98,19 +95,18 @@ const CreateProject = ({ type }) => {
         getClient()
         getBillingTypes()
         getProcess()
-      
     }, [])
 
     // const date=new Date();
     const [noneValidatedValue, setNoneValidatedValue] = useState({
         client: '',
-        lob_process: '',
+        lofBusiness: '',
         process: '',
         department: '',
-        billing_type: '',
-        projectlead: '',
+        billingType: '',
+        projectLead: '',
         rate: '',
-        timeperworkitem: '',
+        timePerWorkItem: '',
         comments: '',
     })
 
@@ -119,67 +115,76 @@ const CreateProject = ({ type }) => {
             comments: '',
             date: today,
             client: '',
-            lob_process: '',
+            lofBusiness: '',
             process: '',
             department: '',
-            billing_type: '',
-            projectlead: '',
+            billingType: '',
+            projectLead: '',
             rate: '',
-            timeperworkitem: '',
+            timePerWorkItem: '',
             status: 'Active',
         },
     })
-    function onSubmit(data) {
-        Object.assign(data, noneValidatedValue)
+    async function onSubmit(data) {
+        try {
+            Object.assign(data, noneValidatedValue)
 
-        const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => key !== 'comments' && value == ''))
+            const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => key !== 'comments' && value == ''))
 
-        let key = Object.keys(filteredObj)[0]
+            let key = Object.keys(filteredObj)[0]
 
-        if (key == 'lob_process') {
-            toast.error('Please select line of buisness')
-            return
-        }
-        if (key == 'client') {
-            toast.error('Please select client')
-            return
-        }
-        if (key == 'process') {
-            toast.error('Please select process')
-            return
-        }
-        if (key == 'department') {
-            toast.error('Please select department')
-            return
-        }
-        if (key == 'billing_type') {
-            toast.error('Please select billing type')
-        }
-        if (key == 'projectlead') {
-            toast.error('Please select Project lead')
-            return
-        }
-        if (key == 'rate') {
-            toast.error('Please enter rate')
-            return
-        }
-        if (data.billing_type == 'Per WorkItem Transactional') {
-            if (key == 'timeperworkitem') {
-                toast.error('Please enter time in minute')
+            if (key == 'lofBusiness') {
+                toast.error('Please select line of buisness')
                 return
             }
-        }
-
-        for (let i = 0; i < rows.length; i++) {
-            if (rows[i].label === '') {
-                toast.error('Please enter label')
-                return
-            } else if (rows[i].dataType == '') {
-                toast.error('Please select data type')
+            if (key == 'client') {
+                toast.error('Please select client')
                 return
             }
+            if (key == 'process') {
+                toast.error('Please select process')
+                return
+            }
+            if (key == 'department') {
+                toast.error('Please select department')
+                return
+            }
+            if (key == 'billingType') {
+                toast.error('Please select billing type')
+            }
+            if (key == 'productLead') {
+                toast.error('Please select Project lead')
+                return
+            }
+            if (key == 'rate') {
+                toast.error('Please enter rate')
+                return
+            }
+            if (data.billingType == 'Per WorkItem Transactional') {
+                if (key == 'timePerWorkItem') {
+                    toast.error('Please enter time in minute')
+                    return
+                }
+            }
+
+            for (let i = 0; i < rows.length; i++) {
+                if (rows[i].label === '') {
+                    toast.error('Please enter label')
+                    return
+                } else if (rows[i].dataType == '') {
+                    toast.error('Please select data type')
+                    return
+                }
+            }
+            data['customFields'] = rows
+
+            const resp = await ProjectService.createProject(data)
+            if (resp.data.success) {
+                navigate('/projects')
+            }
+        } catch (err) {
+            toast.error(err)
         }
-        data['customfields'] = rows
     }
     const addHistoryrow = () => {
         setHistoryrows((prev) => {
@@ -216,7 +221,6 @@ const CreateProject = ({ type }) => {
     const deleteone = (id) => {
         const updatedrows = rows.filter((row) => !row.checkbox)
         let newdata = updatedrows.length > 0 ? updatedrows : []
-
         setRows(() => newdata)
     }
     const deleteAll = () => {
@@ -244,6 +248,7 @@ const CreateProject = ({ type }) => {
             return updatedData
         })
     }
+
     const changeAll = () => {
         let isChecked = !checkAll
         setcheckAll((prev) => isChecked)
@@ -301,10 +306,11 @@ const CreateProject = ({ type }) => {
             setIsbilling(false)
         }
     }
+
     const handle_label_Change = (e, rowid) => {
         const value = e.target.value
         let isAlphabetic = /^[A-Za-z_ ]+$/.test(value)
-        let fieldName = value.split(' ').join('_')
+        let fieldName = value.replaceAll(' ', '')
         if (value > 15) {
             toast.error('label should contain atmost 15 characters')
         } else if (!isAlphabetic && value !== '') {
@@ -315,7 +321,7 @@ const CreateProject = ({ type }) => {
 
                 prev.map((item, i) => {
                     if (item.id == rowid) {
-                        prev[i]['fieldName'] = fieldName
+                        prev[i]['fieldName'] = lowerFirstChar(fieldName)
                     }
 
                     updatedData.push(item)
@@ -415,13 +421,13 @@ const CreateProject = ({ type }) => {
                                             <FormLabel>LOF Buisness</FormLabel>
                                             <div className="w-full">
                                                 <SearchableDropdown
-                                                    options={lob_processes}
-                                                    selectedVal={noneValidatedValue.lob_process}
+                                                    options={lofBusiness}
+                                                    selectedVal={noneValidatedValue.lofBusiness}
                                                     handleChange={(val) => {
                                                         setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                lob_process: val,
+                                                                lofBusiness: val,
                                                             }
                                                         })
                                                     }}
@@ -443,7 +449,7 @@ const CreateProject = ({ type }) => {
                                                 <PopoverTrigger asChild>
                                                     <FormControl>
                                                         <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {noneValidatedValue.date ? format(noneValidatedValue.date, 'MM-dd-yyyy') : today}
+                                                            {noneValidatedValue.date ? format(noneValidatedValue.date, Constent.DATE_FORMAT) : today}
                                                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                         </Button>
                                                     </FormControl>
@@ -523,19 +529,19 @@ const CreateProject = ({ type }) => {
                                 <FormField
                                     className="w-full"
                                     control={form.control}
-                                    name="billing_type"
+                                    name="billingType"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Billing Type</FormLabel>
                                             <div className="full">
                                                 <SearchableDropdown
                                                     options={billing_type}
-                                                    selectedVal={noneValidatedValue.billing_type}
+                                                    selectedVal={noneValidatedValue.billingType}
                                                     handleChange={(val) => {
                                                         setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                billing_type: val,
+                                                                billingType: val,
                                                             }
                                                         })
                                                     }}
@@ -549,24 +555,24 @@ const CreateProject = ({ type }) => {
 
                                 <FormField
                                     control={form.control}
-                                    name="projectlead"
+                                    name="projectLead"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Project Lead</FormLabel>
                                             <div className="w-full">
                                                 <SearchableDropdown
                                                     options={projectleads}
-                                                    selectedVal={noneValidatedValue.projectlead}
+                                                    selectedVal={noneValidatedValue.projectLead}
                                                     handleChange={(val) => {
                                                         setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                projectlead: val,
+                                                                projectLead: val,
                                                             }
                                                         })
                                                     }}
                                                     placeholder="Project Lead"
-                                                    label="project_lead"
+                                                    label="name"
                                                 />
                                             </div>
                                         </FormItem>
@@ -599,18 +605,19 @@ const CreateProject = ({ type }) => {
                                     {isbilling && (
                                         <FormField
                                             control={form.control}
-                                            name="timeperworkitem"
+                                            name="timePerWorkItem"
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>Time per WorkItem</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             placeholder="minutes"
+                                                            {...field}
                                                             onChange={(e) => {
                                                                 setNoneValidatedValue((prev) => {
                                                                     return {
                                                                         ...prev,
-                                                                        timeperworkitem: e.target.value,
+                                                                        timePerWorkItem: e.target.value,
                                                                     }
                                                                 })
                                                             }}
@@ -714,9 +721,10 @@ const CreateProject = ({ type }) => {
                                                                     <SelectValue placeholder="Data Type" />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
-                                                                    <SelectItem value="data">Data</SelectItem>
-                                                                    <SelectItem value="date">Date</SelectItem>
-                                                                    <SelectItem value="smallText">Small Text</SelectItem>
+                                                                    {
+                                                                        assets.DataTypes.map((value) => <SelectItem key={value.key} value={value.key}>{value.value}</SelectItem>)
+                                                                    }
+                                                                    
                                                                 </SelectContent>
                                                             </Select>
                                                         </div>
@@ -727,7 +735,7 @@ const CreateProject = ({ type }) => {
                                                             name="fieldName"
                                                             value={row.fieldName}
                                                             className="border-none shadow-none"
-                                                            disabled
+                                                            disabled={true}
                                                         />
                                                     </TableCell>
                                                 </TableRow>
@@ -852,7 +860,7 @@ const CreateProject = ({ type }) => {
                                                                         variant={'outline'}
                                                                         className="w-full justify-start text-left font-normal border-none"
                                                                     >
-                                                                        {historyrow.startdate ? format(historyrow.startdate, 'MM-dd-yyyy') : ''}
+                                                                        {historyrow.startdate ? format(historyrow.startdate, Constent.DATE_FORMAT) : ''}
                                                                     </Button>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="w-auto p-0 " align="start">
@@ -888,7 +896,7 @@ const CreateProject = ({ type }) => {
                                                                         variant={'outline'}
                                                                         className="w-full justify-start text-left font-normal border-none"
                                                                     >
-                                                                        {historyrow.enddate ? format(historyrow.enddate, 'MM-dd-yyyy') : ''}
+                                                                        {historyrow.enddate ? format(historyrow.enddate, Constent.DATE_FORMAT) : ''}
                                                                     </Button>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="w-auto p-0" align="start">
