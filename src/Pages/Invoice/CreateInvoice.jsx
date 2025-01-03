@@ -1,4 +1,4 @@
-import { React, useRef, useState } from 'react'
+import { React, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Switch } from '@/components/ui/switch'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -20,11 +20,13 @@ import BillingData from '@/assets/data/BillingData'
 import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../../Components/Common/SearchableDropdown'
 import { Link } from 'react-router-dom'
+import LofBuisnessService from '@/Service/LofBuisnessService'
 
 const Invoicef = () => {
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
+    const [lob_processes, setLOBprocess] = useState([])
     const [noneValidatedValue, setNoneValidatedValue] = useState({
         lob_process: '',
         client: '',
@@ -38,17 +40,36 @@ const Invoicef = () => {
         },
     })
 
+    const getLofBuisness = async () => {
+        try {
+            const resp = await LofBuisnessService.getLofBuisness()
+            console.log('resp', resp)
+            if (resp.data.success) {
+                setLOBprocess(resp.data.data)
+            }
+            console.log(lob_processes)
+        } catch (err) {}
+    }
+
+    useEffect(() => {
+        getLofBuisness()
+        // getDepartment()
+        // getClient()
+        // getBillingTypes()
+        // getProcess()
+    }, [])
+
     // const [projectData]
-    const lob_processes = [
-        {
-            value: 'next.js',
-            label: 'Next.js',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-    ]
+    // const lob_processes = [
+    //     {
+    //         value: 'next.js',
+    //         label: 'Next.js',
+    //     },
+    //     {
+    //         value: 'sveltekit',
+    //         label: 'SvelteKit',
+    //     },
+    // ]
     const status = [
         {
             value: 'Hold',
@@ -241,24 +262,24 @@ const Invoicef = () => {
                             <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                 <FormField
                                     control={form.control}
-                                    name="lob_process"
+                                    name="invoiceID"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Invoice ID</FormLabel>
                                             <div className="w-full">
                                                 <SearchableDropdown
-                                                    options={lob_processes}
-                                                    selectedVal={noneValidatedValue.lob_process}
+                                                    options={[]}
+                                                    selectedVal={noneValidatedValue.invoiceID}
                                                     handleChange={(val) => {
                                                         setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                lob_process: val,
+                                                                invoiceID: val,
                                                             }
                                                         })
                                                     }}
                                                     placeholder="Invoice ID"
-                                                    label="invoice_id"
+                                                    label="Invoiceid"
                                                 />
                                             </div>
                                         </FormItem>
@@ -296,16 +317,16 @@ const Invoicef = () => {
                                             <div className="full">
                                                 <SearchableDropdown
                                                     options={departments}
-                                                    selectedVal={noneValidatedValue.department}
+                                                    selectedVal={noneValidatedValue.projectID}
                                                     handleChange={(val) => {
                                                         setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                department: val,
+                                                                projectID: val,
                                                             }
                                                         })
                                                     }}
-                                                    placeholder="Department"
+                                                    placeholder="Project ID"
                                                     label="department"
                                                 />
                                             </div>
@@ -320,18 +341,18 @@ const Invoicef = () => {
                                             <FormLabel>LOF Buisness</FormLabel>
                                             <div className="w-full">
                                                 <SearchableDropdown
-                                                    options={clients}
+                                                    options={lob_processes}
                                                     selectedVal={noneValidatedValue.lob_process}
                                                     handleChange={(val) => {
                                                         setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                client: val,
+                                                                lob_process: val,
                                                             }
                                                         })
                                                     }}
                                                     placeholder="LOF Buisness"
-                                                    label="lob_process"
+                                                    label="lofBuisness"
                                                 />
                                             </div>
                                         </FormItem>

@@ -18,7 +18,7 @@ const CreateLofBuisness = ({ getLofBuisness, setIsOpen }) => {
    const form = useForm({
           resolver: zodResolver(formSchema),
           defaultValues: {
-              lofbuisness: '',
+              lofBuisness: '',
           },
       })
   
@@ -49,7 +49,7 @@ const CreateLofBuisness = ({ getLofBuisness, setIsOpen }) => {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                             <FormField
                                 control={form.control}
-                                name="lofbuisness"
+                                name="lofBuisness"
                                 render={({ field }) => (
                                     <FormItem className="space-y-1">
                                         <FormLabel>LOF Buisness</FormLabel>

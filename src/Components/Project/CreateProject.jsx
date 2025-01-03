@@ -40,18 +40,15 @@ const CreateProject = ({ type }) => {
     const [process, setProcess] = useState([])
     const [billing_type, setBillingType] = useState([])
 
-
-    const getLofBuisness=async()=>{
-        try{
-            const resp=await LofBuisnessService.getLofBuisness();
-            console.log("resp",resp);
-            if(resp.data.success){
+    const getLofBuisness = async () => {
+        try {
+            const resp = await LofBuisnessService.getLofBuisness()
+            console.log('resp', resp)
+            if (resp.data.success) {
                 setLOBprocess(resp.data.data)
             }
-            console.log(lob_processes);
-        }catch(err){
-
-        }
+            console.log(lob_processes)
+        } catch (err) {}
     }
 
     const getDepartment = async () => {
@@ -59,23 +56,20 @@ const CreateProject = ({ type }) => {
             const resp = await DepartmentService.getDepartment()
             if (resp.data.success) {
                 setDepartment(resp.data.data)
-              
             }
-        } catch (err) {
-         
-        }
+        } catch (err) {}
     }
     const getBillingTypes = async () => {
-        console.log("in billing")
+        console.log('in billing')
         try {
-            const resp = await BillingTypeService.getBillingType();
-            console.log("response",resp.data.data)
-            console.log("response",resp.data.success)
+            const resp = await BillingTypeService.getBillingType()
+            console.log('response', resp.data.data)
+            console.log('response', resp.data.success)
             if (resp.data.success) {
                 setBillingType(resp.data.data)
             }
         } catch (err) {
-            console.log("in billing",err)
+            console.log('in billing', err)
         }
     }
     const getClient = async () => {
@@ -102,10 +96,8 @@ const CreateProject = ({ type }) => {
         getClient()
         getBillingTypes()
         getProcess()
-      
     }, [])
 
-   
     // const date=new Date();
     const [noneValidatedValue, setNoneValidatedValue] = useState({
         client: '',
@@ -146,11 +138,11 @@ const CreateProject = ({ type }) => {
 
     function onSubmit(data) {
         Object.assign(data, noneValidatedValue)
-   
+
         const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => key !== 'comments' && value == ''))
-       
+
         let key = Object.keys(filteredObj)[0]
-       
+
         if (key == 'lob_process') {
             toast('Please select line of buisness')
             return
@@ -195,8 +187,6 @@ const CreateProject = ({ type }) => {
             }
         }
         data['customfields'] = rows
-
-      
     }
     const addHistoryrow = () => {
         setHistoryrows((prev) => {
@@ -307,13 +297,11 @@ const CreateProject = ({ type }) => {
     }
 
     const handleSaveClick = () => {
-      
         if (formRef.current) {
             formRef.current.requestSubmit()
         }
     }
     const handlebillingChange = (e) => {
-     
         if (e == 'Per WorkItem Transactional') {
             setIsbilling(true)
         } else {
@@ -321,7 +309,6 @@ const CreateProject = ({ type }) => {
         }
     }
     const handle_label_Change = (e, rowid) => {
-   
         const value = e.target.value
         let isAlphabetic = /^[A-Za-z_ ]+$/.test(value)
         let fieldName = value.split(' ').join('_')
@@ -344,13 +331,11 @@ const CreateProject = ({ type }) => {
                 return updatedData
             })
         }
-
-   
     }
 
     return (
         <>
-            <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full z-10">
+            <Card className="p-0 mb-[44px] mx-0 rounded-none sticky top-16 w-full z-10">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
@@ -429,7 +414,7 @@ const CreateProject = ({ type }) => {
                                         </FormItem>
                                     )}
                                 />
-                 
+
                                 <FormField
                                     control={form.control}
                                     name="lob_process"
@@ -476,7 +461,6 @@ const CreateProject = ({ type }) => {
                                                         mode="single"
                                                         selected={noneValidatedValue.date}
                                                         onSelect={(e) => {
-                                                          
                                                             setNoneValidatedValue((prev) => {
                                                                 return {
                                                                     ...prev,
@@ -525,22 +509,20 @@ const CreateProject = ({ type }) => {
                                         <FormItem>
                                             <FormLabel>Department</FormLabel>
                                             <div className="full">
-                                               
-                                                    <SearchableDropdown
-                                                        options={departments}
-                                                        selectedVal={noneValidatedValue.department}
-                                                        handleChange={(val) => {
-                                                            setNoneValidatedValue((prev) => {
-                                                                return {
-                                                                    ...prev,
-                                                                    department: val,
-                                                                }
-                                                            })
-                                                        }}
-                                                        label="department"
-                                                        placeholder="Department"
-                                                    />
-                                               
+                                                <SearchableDropdown
+                                                    options={departments}
+                                                    selectedVal={noneValidatedValue.department}
+                                                    handleChange={(val) => {
+                                                        setNoneValidatedValue((prev) => {
+                                                            return {
+                                                                ...prev,
+                                                                department: val,
+                                                            }
+                                                        })
+                                                    }}
+                                                    label="department"
+                                                    placeholder="Department"
+                                                />
                                             </div>
                                         </FormItem>
                                     )}
@@ -554,22 +536,20 @@ const CreateProject = ({ type }) => {
                                         <FormItem>
                                             <FormLabel>Billing Type</FormLabel>
                                             <div className="full">
-                                                
-                                                    <SearchableDropdown
-                                                        options={billing_type}
-                                                        selectedVal={noneValidatedValue.billing_type}
-                                                        handleChange={(val) => {
-                                                            setNoneValidatedValue((prev) => {
-                                                                return {
-                                                                    ...prev,
-                                                                    billing_type: val,
-                                                                }
-                                                            })
-                                                        }}
-                                                        label="billingType"
-                                                        placeholder="Billing Type"
-                                                    />
-                                               
+                                                <SearchableDropdown
+                                                    options={billing_type}
+                                                    selectedVal={noneValidatedValue.billing_type}
+                                                    handleChange={(val) => {
+                                                        setNoneValidatedValue((prev) => {
+                                                            return {
+                                                                ...prev,
+                                                                billing_type: val,
+                                                            }
+                                                        })
+                                                    }}
+                                                    label="billingType"
+                                                    placeholder="Billing Type"
+                                                />
                                             </div>
                                         </FormItem>
                                     )}
@@ -920,7 +900,6 @@ const CreateProject = ({ type }) => {
                                                                     </Button>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="w-auto p-0" align="start">
-                                                                  
                                                                     <Calendar
                                                                         key={historyrow.enddate}
                                                                         mode="single"
