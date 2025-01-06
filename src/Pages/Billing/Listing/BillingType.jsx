@@ -57,10 +57,7 @@ const Billing = () => {
             }
         })
     }, [debouncedValue])
-
-    const handleSearch = (e) => {
-        console.log('e : ', e)
-    }
+    
     return (
         <div>
             <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full">

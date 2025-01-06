@@ -41,8 +41,8 @@ const SidebarMenu = {
                     items: [],
                 },
                 {
-                    title: 'LOF Buisness',
-                    url: '/master-settings/lof-buisness',
+                    title: 'LOF Business',
+                    url: '/master-settings/lof-business',
                     items: [],
                 },
                 {

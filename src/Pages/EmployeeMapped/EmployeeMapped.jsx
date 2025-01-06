@@ -72,7 +72,7 @@ const EmployeeMapped = () => {
         }
 
         if (key == 'lob_process') {
-            toast.error('Please select line of buisness')
+            toast.error('Please select line of business')
             return
         }
         if (key == 'client') {

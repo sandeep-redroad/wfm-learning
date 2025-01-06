@@ -21,7 +21,7 @@ import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../../Components/Common/SearchableDropdown'
 import { Link } from 'react-router-dom'
 import Constent from '@/utils/constent'
-import LofBuisnessService from '@/Service/LofBuisnessService'
+import LofBusinessService from '@/Service/LofBusinessService'
 
 const Invoicef = () => {
     const [checkAll, setcheckAll] = useState(false)
@@ -41,9 +41,9 @@ const Invoicef = () => {
         },
     })
 
-    const getLofBuisness = async () => {
+    const getLofBusiness = async () => {
         try {
-            const resp = await LofBuisnessService.getLofBuisness()
+            const resp = await LofBusinessService.getLofBusiness()
             console.log('resp', resp)
             if (resp.data.success) {
                 setLOBprocess(resp.data.data)
@@ -53,7 +53,7 @@ const Invoicef = () => {
     }
 
     useEffect(() => {
-        getLofBuisness()
+        getLofBusiness()
         // getDepartment()
         // getClient()
         // getBillingTypes()
@@ -149,7 +149,7 @@ const Invoicef = () => {
         )
         let key = Object.keys(filteredObj)[0]
         if (key == 'lob_process') {
-            toast.error('Please select line of buisness')
+            toast.error('Please select line of business')
             return
         }
         if (key == 'client') {
@@ -339,7 +339,7 @@ const Invoicef = () => {
                                     name="lob_process"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>LOF Buisness</FormLabel>
+                                            <FormLabel>LOF Business</FormLabel>
                                             <div className="w-full">
                                                 <SearchableDropdown
                                                     options={lob_processes}
@@ -352,8 +352,8 @@ const Invoicef = () => {
                                                             }
                                                         })
                                                     }}
-                                                    placeholder="LOF Buisness"
-                                                    label="lofBuisness"
+                                                    placeholder="LOF Business"
+                                                    label="lofBusiness"
                                                 />
                                             </div>
                                         </FormItem>

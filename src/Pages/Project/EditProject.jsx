@@ -15,7 +15,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import SearchableDropdown from '../Common/SearchableDropdown'
+import SearchableDropdown from '@/Components/Common/SearchableDropdown'
 import DepartmentService from '@/Service/DepartmentService'
 import BillingTypeService from '@/Service/BillingTypeService'
 import { Link, useNavigate } from 'react-router-dom'
@@ -27,7 +27,7 @@ import ProjectService from '@/Service/ProjectService'
 import { lowerFirstChar } from '@/utils/helper'
 import Constent from '@/utils/constent'
 
-const CreateProject = ({ type }) => {
+const EditProject = ({ type }) => {
     const navigate = useNavigate()
     const [checkAll, setcheckAll] = useState(false)
     const [checkhisotryAll, setchechistorykAll] = useState(false)
@@ -50,7 +50,6 @@ const CreateProject = ({ type }) => {
             if (resp.data.success) {
                 setLofBusiness(resp.data.data)
             }
-            console.log(lob_processes)
         } catch (err) {}
     }
 
@@ -1000,4 +999,4 @@ const CreateProject = ({ type }) => {
     )
 }
 
-export default CreateProject
+export default EditProject

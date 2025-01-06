@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
-import LofBuisnessService from '@/Service/LofBuisnessService'
 
 const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeholder, field, className }) => {
     const [query, setQuery] = useState('')
     const [isOpen, setIsOpen] = useState(false)
     const inputRef = useRef(null)
-    const [Lof_buisness, setLof] = useState([])
 
     useEffect(() => {
         document.addEventListener('click', toggle)
@@ -40,21 +38,6 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
             })
         )
     }
-
-    const getLofBuisness = async () => {
-          try {
-              console.log('queryParam : ', query)
-              const resp = await LofBuisnessService.getLofBuisness({page:1,search:query})
-              console.log("response",resp)
-              if (resp.data.success) {
-                  //setTotalCount(resp.data.pagination.totalRecords)
-                  setLof(resp.data.data)
-              }
-          } catch (err) {}
-      }
-    //   useEffect(()=>{
-    //     getLofBuisness({page:1,search:query});
-    //   },[query])
 
     return (
         <div className="dropdownx">
@@ -93,17 +76,6 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
                             </div>
                         )
                     })
-                    // Lof_buisness.map((option,index)=>{
-                    //     return (
-                    //         <div
-                    //             onClick={() => selectOption(option)}
-                    //             className={`option ${option[label] === selectedVal ? 'selected' : ''}`}
-                    //             key={`${index}`}
-                    //         >
-                    //             {option[label]}
-                    //         </div>
-                    //     )
-                    // })
                 ) : (
                     <div onClick={() => selectOption('No Data found')} className={`option selected`}>
                         No data found
