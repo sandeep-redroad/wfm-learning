@@ -22,7 +22,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import ClientService from '@/Service/ClientService'
 import ProcessService from '@/Service/ProcessService'
 import assets from '@/assets/assets'
-import LofBuisnessService from '@/Service/LofBuisnessService'
+import LofBuisnessService from '@/Service/LofBusinessService'
 import ProjectService from '@/Service/ProjectService'
 import { lowerFirstChar } from '@/utils/helper'
 import Constent from '@/utils/constent'
@@ -301,11 +301,13 @@ const CreateProject = ({ type }) => {
         }
     }
     const handlebillingChange = (e) => {
+        console.log("in handle bill change",e)
         if (e == 'Per WorkItem Transactional') {
             setIsbilling(true)
         } else {
             setIsbilling(false)
         }
+        console.log("issbilling",isbilling);
     }
 
     const handle_label_Change = (e, rowid) => {
@@ -539,12 +541,14 @@ const CreateProject = ({ type }) => {
                                                     options={billing_type}
                                                     selectedVal={noneValidatedValue.billingType}
                                                     handleChange={(val) => {
+                                                        handlebillingChange(val);
                                                         setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 billingType: val,
                                                             }
                                                         })
+                                                       
                                                     }}
                                                     label="billingType"
                                                     placeholder="Billing Type"

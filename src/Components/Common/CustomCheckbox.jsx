@@ -8,7 +8,7 @@ const CustomCheckbox = () => {
     }
   return (
     <div>
-     <Checkbox  onClick={changeOne} value={rone}/>
+     <Checkbox  onClick={()=>console.log("fsddf")} value={rone}/>
      </div>
   )
 }

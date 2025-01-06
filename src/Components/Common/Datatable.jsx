@@ -5,6 +5,17 @@ import { PaginationWithLinks } from './Pagination'
 import DataTableEnumType from '@/Enums/DataTableTypeEnum'
 import Constent from '@/utils/constent'
 import { format } from 'date-fns'
+import CustomCheckbox from './CustomCheckbox'
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+  } from "@/components/ui/dropdown-menu"
+import { Checkbox } from '@radix-ui/react-checkbox'
 
 const Datatable = ({ columns, data, totalDataCount, type }) => {
     const location = useLocation()
@@ -62,7 +73,12 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
                                                 key={header.id}
                                                 className=" flex justify-start items-center h-10 align-middle text-white font-medium text-justify px-3 w-20"
                                             >
-                                                {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                            {/* <input type="checkbox" className='peer h-4 w-4 shrink-0 rounded-sm border border-neutral-200 shadow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-neutral-900 data-[state=checked]:text-neutral-50 dark:border-neutral-50 dark:focus-visible:ring-neutral-300 dark:data-[state=checked]:bg-neutral-50 dark:data-[state=checked]:text-neutral-900'/> */}
+                                               <CustomCheckbox onCheckedChange={()=>console.log(e.target.value)}/> 
+                                             
+                                             {/* <Checkbox /> */}
+            
+                                              
                                             </th>
                                         ) : (
                                             <th
@@ -93,7 +109,8 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
                                     >
                                         {DataTableEnumType.PROJECT == type ? (
                                             cell.column.id === 'sl' ? (
-                                                <>{(currentPage - 1) * Constent.PAGINATION_SIZE + pI + 1}</>
+                                                <>{(currentPage - 1) * Constent.PAGINATION_SIZE + pI + 1}</> 
+                                               
                                             ) : cell.column.id === 'status' ? (
                                                 <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
                                             ) : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
@@ -102,7 +119,7 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
                                                 <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
                                             )
                                         ) : cell.column.id === 'sl' ? (
-                                            <>{(currentPage - 1) * Constent.PAGINATION_SIZE + pI + 1}</>
+                                            <CustomCheckbox />
                                         )  : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
                                             <>{format(cell.getValue(), Constent.DATE_FORMAT)}</>
                                         ) : (

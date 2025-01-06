@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
-import LofBuisnessService from '@/Service/LofBuisnessService'
+import LofBuisnessService from '@/Service/LofBusinessService'
 
 const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeholder, field, className }) => {
     const [query, setQuery] = useState('')
@@ -35,7 +35,7 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
         return (
             options.length > 0 &&
             options.filter((option) => {
-                console.log('option[label]', label, option[label])
+                
                 return option[label]?.toLowerCase().indexOf(query.toLowerCase()) > -1
             })
         )
