@@ -9,7 +9,7 @@ import { Button } from '@/Components/ui/button'
 import LofBusinessService from '@/Service/LofBusinessService'
 const formSchema = z.object({
     lofBusiness: z.string().min(1, {
-        message: 'LOF Buisness is required.',
+        message: 'LOF Business is required.',
     }),
 })
 
@@ -23,14 +23,13 @@ const CreateLofBusiness = ({ getLofBusiness, setIsOpen }) => {
 
     async function onSubmit(values) {
         try {
-            console.groupEnd('values', values)
             const resp = await LofBusinessService.createLofBusiness(values)
 
             if (resp.data.success) {
                 const searchParams = new URLSearchParams(location.search)
                 const page = searchParams.get('page')
                 if (page) {
-                    navigate('/master-settings/lof-buisness')
+                    navigate('/master-settings/lof-business')
                 } else {
                     getLofBusiness()
                 }
@@ -41,7 +40,7 @@ const CreateLofBusiness = ({ getLofBusiness, setIsOpen }) => {
     return (
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Add LOF Buisness</DialogTitle>
+                <DialogTitle>Add LOF Business</DialogTitle>
             </DialogHeader>
             <div>
                 <Form {...form}>
@@ -51,11 +50,11 @@ const CreateLofBusiness = ({ getLofBusiness, setIsOpen }) => {
                             name="lofBusiness"
                             render={({ field }) => (
                                 <FormItem className="space-y-1">
-                                    <FormLabel>LOF Buisness</FormLabel>
+                                    <FormLabel>LOF Business</FormLabel>
                                     <FormControl>
                                         <Input
                                             className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                            placeholder="LOF Buisness"
+                                            placeholder="LOF Business"
                                             {...field}
                                         />
                                     </FormControl>

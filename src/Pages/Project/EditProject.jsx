@@ -27,7 +27,7 @@ import ProjectService from '@/Service/ProjectService'
 import { lowerFirstChar } from '@/utils/helper'
 import Constent from '@/utils/constent'
 
-const CreateProject = ({ type }) => {
+const EditProject = ({ type }) => {
     const navigate = useNavigate()
     const [checkAll, setcheckAll] = useState(false)
     const [checkhisotryAll, setchechistorykAll] = useState(false)
@@ -42,7 +42,6 @@ const CreateProject = ({ type }) => {
     const [projectleads, setProjectLead] = useState([{ id: 11, name: 'sandeep' }])
     const [process, setProcess] = useState([])
     const [billing_type, setBillingType] = useState([])
-    const form = useForm()
 
     const getLofBusiness = async () => {
         try {
@@ -98,7 +97,8 @@ const CreateProject = ({ type }) => {
         getProcess()
     }, [])
 
-    const [projectFields, setProjectFields] = useState({
+    // const date=new Date();
+    const [noneValidatedValue, setNoneValidatedValue] = useState({
         client: '',
         lofBusiness: '',
         process: '',
@@ -108,10 +108,23 @@ const CreateProject = ({ type }) => {
         rate: '',
         timePerWorkItem: '',
         comments: '',
-        date: today,
-        status: 'Active',
     })
 
+    const form = useForm({
+        defaultValues: {
+            comments: '',
+            date: today,
+            client: '',
+            lofBusiness: '',
+            process: '',
+            department: '',
+            billingType: '',
+            projectLead: '',
+            rate: '',
+            timePerWorkItem: '',
+            status: 'Active',
+        },
+    })
     async function onSubmit(data) {
         try {
             Object.assign(data, noneValidatedValue)
@@ -349,9 +362,9 @@ const CreateProject = ({ type }) => {
                                             <div className="w-full">
                                                 <SearchableDropdown
                                                     options={clients}
-                                                    selectedVal={projectFields.client}
+                                                    selectedVal={noneValidatedValue.client}
                                                     handleChange={(val) => {
-                                                        setProjectFields((prev) => {
+                                                        setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 client: val,
@@ -374,16 +387,15 @@ const CreateProject = ({ type }) => {
                                             <FormLabel>Status</FormLabel>
                                             <div className="w-full">
                                                 <Select
-                                                    value={projectFields.status}
                                                     onValueChange={(val) => {
-                                                        setProjectFields((prev) => {
+                                                        setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 status: val,
                                                             }
                                                         })
                                                     }}
-                                                    defaultValue={projectFields.status}
+                                                    defaultValue={'Active'}
                                                 >
                                                     <FormControl>
                                                         <SelectTrigger>
@@ -410,9 +422,9 @@ const CreateProject = ({ type }) => {
                                             <div className="w-full">
                                                 <SearchableDropdown
                                                     options={lofBusiness}
-                                                    selectedVal={projectFields.lofBusiness}
+                                                    selectedVal={noneValidatedValue.lofBusiness}
                                                     handleChange={(val) => {
-                                                        setProjectFields((prev) => {
+                                                        setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 lofBusiness: val,
@@ -437,7 +449,7 @@ const CreateProject = ({ type }) => {
                                                 <PopoverTrigger asChild>
                                                     <FormControl>
                                                         <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {projectFields.date ? format(projectFields.date, Constent.DATE_FORMAT) : today}
+                                                            {noneValidatedValue.date ? format(noneValidatedValue.date, Constent.DATE_FORMAT) : today}
                                                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                         </Button>
                                                     </FormControl>
@@ -445,9 +457,9 @@ const CreateProject = ({ type }) => {
                                                 <PopoverContent className="w-auto p-0" align="start">
                                                     <Calendar
                                                         mode="single"
-                                                        selected={projectFields.date}
+                                                        selected={noneValidatedValue.date}
                                                         onSelect={(e) => {
-                                                            setProjectFields((prev) => {
+                                                            setNoneValidatedValue((prev) => {
                                                                 return {
                                                                     ...prev,
                                                                     date: e,
@@ -471,9 +483,9 @@ const CreateProject = ({ type }) => {
                                             <div className="full">
                                                 <SearchableDropdown
                                                     options={process}
-                                                    selectedVal={projectFields.process}
+                                                    selectedVal={noneValidatedValue.process}
                                                     handleChange={(val) => {
-                                                        setProjectFields((prev) => {
+                                                        setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 process: val,
@@ -497,9 +509,9 @@ const CreateProject = ({ type }) => {
                                             <div className="full">
                                                 <SearchableDropdown
                                                     options={departments}
-                                                    selectedVal={projectFields.department}
+                                                    selectedVal={noneValidatedValue.department}
                                                     handleChange={(val) => {
-                                                        setProjectFields((prev) => {
+                                                        setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 department: val,
@@ -524,9 +536,9 @@ const CreateProject = ({ type }) => {
                                             <div className="full">
                                                 <SearchableDropdown
                                                     options={billing_type}
-                                                    selectedVal={projectFields.billingType}
+                                                    selectedVal={noneValidatedValue.billingType}
                                                     handleChange={(val) => {
-                                                        setProjectFields((prev) => {
+                                                        setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 billingType: val,
@@ -550,9 +562,9 @@ const CreateProject = ({ type }) => {
                                             <div className="w-full">
                                                 <SearchableDropdown
                                                     options={projectleads}
-                                                    selectedVal={projectFields.projectLead}
+                                                    selectedVal={noneValidatedValue.projectLead}
                                                     handleChange={(val) => {
-                                                        setProjectFields((prev) => {
+                                                        setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 projectLead: val,
@@ -577,9 +589,8 @@ const CreateProject = ({ type }) => {
                                                 <FormControl>
                                                     <Input
                                                         placeholder="rate"
-                                                        value={projectFields.rate}
                                                         onChange={(e) => {
-                                                            setProjectFields((prev) => {
+                                                            setNoneValidatedValue((prev) => {
                                                                 return {
                                                                     ...prev,
                                                                     rate: e.target.value,
@@ -601,9 +612,9 @@ const CreateProject = ({ type }) => {
                                                     <FormControl>
                                                         <Input
                                                             placeholder="minutes"
-                                                            value={projectFields.timePerWorkItem}
+                                                            {...field}
                                                             onChange={(e) => {
-                                                                setProjectFields((prev) => {
+                                                                setNoneValidatedValue((prev) => {
                                                                     return {
                                                                         ...prev,
                                                                         timePerWorkItem: e.target.value,
@@ -625,20 +636,7 @@ const CreateProject = ({ type }) => {
                                         <FormItem>
                                             <FormLabel>Comments</FormLabel>
                                             <FormControl>
-                                                <Textarea
-                                                    value={projectFields.comments}
-                                                    onChange={(e) => {
-                                                        setProjectFields((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                comments: e.target.value,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="comments "
-                                                    className="resize-none"
-                                                    rows="4.5"
-                                                />
+                                                <Textarea placeholder="comments " className="resize-none" rows="4.5" />
                                             </FormControl>
                                         </FormItem>
                                     )}
@@ -1001,4 +999,4 @@ const CreateProject = ({ type }) => {
     )
 }
 
-export default CreateProject
+export default EditProject

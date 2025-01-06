@@ -21,7 +21,7 @@ import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../../Components/Common/SearchableDropdown'
 import { Link } from 'react-router-dom'
 import Constent from '@/utils/constent'
-import LofBuisnessService from '@/Service/LofBusinessService'
+import LofBusinessService from '@/Service/LofBusinessService'
 import BillingTypeService from '@/Service/BillingTypeService'
 
 import ClientService from '@/Service/ClientService'
@@ -58,9 +58,9 @@ const Invoicef = () => {
         },
     })
 
-    const getLofBuisness = async () => {
+    const getLofBusiness = async () => {
         try {
-            const resp = await LofBuisnessService.getLofBuisness()
+            const resp = await LofBusinessService.getLofBusiness()
             console.log('resp', resp)
             if (resp.data.success) {
                 setLOBprocess(resp.data.data)
@@ -70,7 +70,7 @@ const Invoicef = () => {
     }
 
     useEffect(() => {
-        getLofBuisness()
+        getLofBusiness()
         getClient()
         getBillingTypes()
         getProcess()
@@ -111,7 +111,7 @@ const Invoicef = () => {
         )
         let key = Object.keys(filteredObj)[0]
         if (key == 'lob_process') {
-            toast.error('Please select line of buisness')
+            toast.error('Please select line of business')
             return
         }
         if (key == 'client') {

@@ -22,7 +22,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import ClientService from '@/Service/ClientService'
 import ProcessService from '@/Service/ProcessService'
 import assets from '@/assets/assets'
-import LofBuisnessService from '@/Service/LofBusinessService'
+import LofBusinessService from '@/Service/LofBusinessService'
 import ProjectService from '@/Service/ProjectService'
 import { lowerFirstChar } from '@/utils/helper'
 import Constent from '@/utils/constent'
@@ -43,9 +43,9 @@ const CreateProject = ({ type }) => {
     const [process, setProcess] = useState([])
     const [billing_type, setBillingType] = useState([])
 
-    const getLofBuisness = async () => {
+    const getLofBusiness = async () => {
         try {
-            const resp = await LofBuisnessService.getLofBuisness()
+            const resp = await LofBusinessService.getLofBusiness()
             console.log('resp', resp)
             if (resp.data.success) {
                 setLofBusiness(resp.data.data)
@@ -91,7 +91,7 @@ const CreateProject = ({ type }) => {
     }
 
     useEffect(() => {
-        getLofBuisness()
+        getLofBusiness()
         getDepartment()
         getClient()
         getBillingTypes()
@@ -135,7 +135,7 @@ const CreateProject = ({ type }) => {
             let key = Object.keys(filteredObj)[0]
 
             if (key == 'lofBusiness') {
-                toast.error('Please select line of buisness')
+                toast.error('Please select line of business')
                 return
             }
             if (key == 'client') {
@@ -421,7 +421,7 @@ const CreateProject = ({ type }) => {
                                     name="lob_process"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>LOF Buisness</FormLabel>
+                                            <FormLabel>LOF Business</FormLabel>
                                             <div className="w-full">
                                                 <SearchableDropdown
                                                     options={lofBusiness}
@@ -726,10 +726,11 @@ const CreateProject = ({ type }) => {
                                                                     <SelectValue placeholder="Data Type" />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
-                                                                    {
-                                                                        assets.DataTypes.map((value) => <SelectItem key={value.key} value={value.key}>{value.value}</SelectItem>)
-                                                                    }
-                                                                    
+                                                                    {assets.DataTypes.map((value) => (
+                                                                        <SelectItem key={value.key} value={value.key}>
+                                                                            {value.value}
+                                                                        </SelectItem>
+                                                                    ))}
                                                                 </SelectContent>
                                                             </Select>
                                                         </div>
@@ -865,7 +866,9 @@ const CreateProject = ({ type }) => {
                                                                         variant={'outline'}
                                                                         className="w-full justify-start text-left font-normal border-none"
                                                                     >
-                                                                        {historyrow.startdate ? format(historyrow.startdate, Constent.DATE_FORMAT) : ''}
+                                                                        {historyrow.startdate
+                                                                            ? format(historyrow.startdate, Constent.DATE_FORMAT)
+                                                                            : ''}
                                                                     </Button>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="w-auto p-0 " align="start">

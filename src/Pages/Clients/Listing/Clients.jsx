@@ -7,14 +7,22 @@ import { Input } from '@/Components/ui/input'
 import { Link, useLocation } from 'react-router-dom'
 import { Card, CardContent } from '@/components/ui/card'
 import ClientService from '@/Service/ClientService'
+import { useDebounce } from 'use-debounce'
+import Constent from '@/utils/constent'
 
 const Clients = () => {
     const [clients, setClients] = useState([])
     const [totalCount, setTotalCount] = useState(0)
+    const [search, setSearch] = useState('')
+    const [debouncedValue] = useDebounce(search, Constent.DEBOUNCE_DELAY)
+    const [queryParam, setQueryParam] = useState({
+        page: 1,
+        search: '',
+    })
     const location = useLocation()
     const getClient = async (page = 1) => {
         try {
-            const resp = await ClientService.getClient({ page })
+            const resp = await ClientService.getClient(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)
                 setClients(resp.data.data)
@@ -24,15 +32,26 @@ const Clients = () => {
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search)
         const page = parseInt(searchParams.get('page') || 1)
-        if (page === 0) {
-            return false
-        }
-        getClient(page)
+        setQueryParam((prev) => {
+            return {
+                ...prev,
+                page: page,
+            }
+        })
     }, [location.search])
 
-    const handleSearch = (e) => {
-        console.log('e : ', e)
-    }
+    useEffect(() => {
+        setQueryParam((prev) => {
+            return {
+                ...prev,
+                search: debouncedValue,
+            }
+        })
+    }, [debouncedValue])
+
+    useEffect(() => {
+        getClient()
+    }, [queryParam.page, queryParam.search])
 
     return (
         <div className="">
@@ -48,7 +67,7 @@ const Clients = () => {
             <Card className="p-0 m-3 mt-[4.5rem]">
                 <CardContent className="m-0 p-3">
                     <div className="w-full my-2 grid grid-cols-4 mt-5">
-                        <Input type="text" onChange={handleSearch} placeholder="Client" />
+                        <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Client" />
                     </div>
                     <Datatable columns={ClientColumns()} data={clients} totalDataCount={totalCount} />
                 </CardContent>
