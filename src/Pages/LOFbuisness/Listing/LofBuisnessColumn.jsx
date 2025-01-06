@@ -1,3 +1,4 @@
+import CustomCheckbox from '@/Components/Common/CustomCheckbox'
 import React from 'react'
 let memoizedColumns = []
 const LofBuisnessColumn = () => {
@@ -8,11 +9,11 @@ const LofBuisnessColumn = () => {
 memoizedColumns = [
     {
         accessorKey: 'sl',
-        header: 'Sr. No.',
+        header: <CustomCheckbox />,
     },
     {
-        accessorKey: 'lofBuisness',
-        header: 'LofBuisness',
+        accessorKey: 'lofBusiness',
+        header: 'LofBusiness',
     }
 ]
 return memoizedColumns
