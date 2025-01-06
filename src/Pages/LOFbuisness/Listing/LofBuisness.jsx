@@ -8,12 +8,12 @@ import { Card, CardContent } from '@/components/ui/card'
 import { useLocation } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
 import Constent from '@/utils/constent'
-import CreateLofBuisness from '../CreateLofBuisness'
 import LofBuisnessColumn from './LofBuisnessColumn'
-import LofBuisnessService from '@/Service/LofBuisnessService'
+import CreateLofBusiness from '../CreateLofBuisness'
+import LofBusinessService from '@/Service/LofBusinessService'
 
 const LofBuisness = () => {
-    const [Lof_buisness, setLof] = useState([])
+    const [Lof_business, setLof] = useState([])
     const [totalCount, setTotalCount] = useState(0)
     const [search, setSearch] = useState('')
     const [queryParam, setQueryParam] = useState({
@@ -23,9 +23,9 @@ const LofBuisness = () => {
     const [debouncedValue] = useDebounce(search, Constent.DEBOUNCE_DELAY)
     const [isOpen, setIsOpen] = useState(false)
     const location = useLocation()
-    const getLofBuisness = async () => {
+    const getLofBusiness = async () => {
         try {
-            const resp = await LofBuisnessService.getLofBuisness(queryParam)
+            const resp = await LofBusinessService.getLofBusiness(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)
                 setLof(resp.data.data)
@@ -44,7 +44,7 @@ const LofBuisness = () => {
     }, [location.search])
 
     useEffect(() => {
-        getLofBuisness()
+        getLofBusiness()
     }, [queryParam.page, queryParam.search])
 
     useEffect(() => {
@@ -65,7 +65,7 @@ const LofBuisness = () => {
                             <DialogTrigger>
                                 <Button className="bg-primary-purpal hover:bg-primary-purpal">Add LOF Buisness</Button>
                             </DialogTrigger>
-                            <CreateLofBuisness getLofBuisness={getLofBuisness} setIsOpen={setIsOpen} />
+                            <CreateLofBusiness getLofBusiness={getLofBusiness} setIsOpen={setIsOpen} />
                         </Dialog>
                     </div>
                 </CardContent>
@@ -75,7 +75,7 @@ const LofBuisness = () => {
                     <div className="w-full my-2 grid grid-cols-4">
                         <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Lof Buisness" />
                     </div>
-                    <Datatable columns={LofBuisnessColumn()} data={Lof_buisness} totalDataCount={totalCount} />
+                    <Datatable columns={LofBuisnessColumn()} data={Lof_business} totalDataCount={totalCount} />
                 </CardContent>
             </Card>
         </div>
