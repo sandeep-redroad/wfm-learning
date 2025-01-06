@@ -13,8 +13,8 @@ const ProjectColumns = () => {
             header: 'Client',
         },
         {
-            accessorKey: 'lob_process',
-            header: 'LOB Process',
+            accessorKey: 'lofBusiness',
+            header: 'LOF Business',
         },
         {
             accessorKey: 'status',

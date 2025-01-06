@@ -8,18 +8,18 @@ import { Card, CardContent } from '@/components/ui/card'
 import { useDebounce } from 'use-debounce'
 import DailyWorkLogService from '@/Service/DailyWorkLogService'
 import Constent from '@/utils/constent'
-import { addDays, format } from 'date-fns'
+import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
-// import { DateRange } from 'react-day-picker'
 
 import { cn } from '@/lib/utils'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 const DailyWorkLog = () => {
+    const today = new Date();
     const [date, setDate] = useState({
-        from: new Date(),
-        to: addDays(new Date(), 30),
+        from: new Date(today.getFullYear(), today.getMonth(), 1),
+        to: new Date(today.getFullYear(), today.getMonth() + 1, 0),
     })
     const [dailyWorkLogs, setDailyWorkLogs] = useState([])
     const [totalCount, setTotalCount] = useState(0)
@@ -144,7 +144,7 @@ const DailyWorkLog = () => {
                                         defaultMonth={date?.from}
                                         selected={date}
                                         onSelect={setDate}
-                                        numberOfMonths={2}
+                                        numberOfMonths={1}
                                     />
                                 </PopoverContent>
                             </Popover>
