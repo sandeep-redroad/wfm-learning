@@ -22,12 +22,26 @@ import SearchableDropdown from '../../Components/Common/SearchableDropdown'
 import { Link } from 'react-router-dom'
 import Constent from '@/utils/constent'
 import LofBusinessService from '@/Service/LofBusinessService'
+import BillingTypeService from '@/Service/BillingTypeService'
+
+import ClientService from '@/Service/ClientService'
+import ProcessService from '@/Service/ProcessService'
 
 const Invoicef = () => {
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
     const [lob_processes, setLOBprocess] = useState([])
+    const [departments, setDepartment] = useState([])
+    const [clients, setClient] = useState([])
+    const [lofBusiness, setLofBusiness] = useState([])
+    const [invoice_date, setInvoiceDate] = useState(format(new Date(), Constent.DATE_FORMAT))
+    const [start_date, setStartDate] = useState(format(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1), Constent.DATE_FORMAT))
+    const [isbilling, setIsbilling] = useState(false)
+
+    const [end_date, setEndDate] = useState(format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), Constent.DATE_FORMAT))
+    const [process, setProcess] = useState([])
+    const [billing_type, setBillingType] = useState([])
     const [noneValidatedValue, setNoneValidatedValue] = useState({
         lob_process: '',
         client: '',
@@ -38,6 +52,9 @@ const Invoicef = () => {
     const form = useForm({
         defaultValues: {
             comments: '',
+            invoice_date: invoice_date,
+            start_date: start_date,
+            end_date: end_date,
         },
     })
 
@@ -53,93 +70,38 @@ const Invoicef = () => {
 
     useEffect(() => {
         getLofBusiness()
-        // getDepartment()
-        // getClient()
-        // getBillingTypes()
-        // getProcess()
+        getClient()
+        getBillingTypes()
+        getProcess()
     }, [])
 
-    // const [projectData]
-    // const lob_processes = [
-    //     {
-    //         value: 'next.js',
-    //         label: 'Next.js',
-    //     },
-    //     {
-    //         value: 'sveltekit',
-    //         label: 'SvelteKit',
-    //     },
-    // ]
-    const status = [
-        {
-            value: 'Hold',
-            label: 'Hold',
-        },
-        {
-            value: 'Active',
-            label: 'Active',
-        },
-    ]
-    const projectleads = [
-        {
-            value: 'next.js',
-            label: 'Next.js',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-    ]
-    const clients = [
-        {
-            value: 'next.js',
-            label: 'Next.js',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-    ]
-    const departments = [
-        {
-            value: 'next.js',
-            label: 'Next.js',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-    ]
-    const process_names = [
-        {
-            value: 'next.js',
-            label: 'Next.js',
-        },
-        {
-            value: 'sveltekit',
-            label: 'SvelteKit',
-        },
-    ]
+    const getBillingTypes = async () => {
+        try {
+            const resp = await BillingTypeService.getBillingType()
+            if (resp.data.success) {
+                setBillingType(resp.data.data)
+            }
+        } catch (err) {
+            console.log('in billing', err)
+        }
+    }
+    const getClient = async () => {
+        try {
+            const resp = await ClientService.getClient()
+            if (resp.data.success) {
+                setClient(resp.data.data)
+            }
+        } catch (err) {}
+    }
+
+    const getProcess = async () => {
+        try {
+            const resp = await ProcessService.getProcess()
+            if (resp.data.success) {
+                setProcess(resp.data.data)
+            }
+        } catch (err) {}
+    }
 
     function onSubmit(data) {
         Object.assign(data, noneValidatedValue)
@@ -239,6 +201,15 @@ const Invoicef = () => {
             formRef.current.requestSubmit()
         }
     }
+    const handlebillingChange = (e) => {
+        console.log('in handle bill change', e)
+        if (e == 'Per WorkItem Transactional') {
+            setIsbilling(true)
+        } else {
+            setIsbilling(false)
+        }
+        console.log('issbilling', isbilling)
+    }
     return (
         <>
             <Card className="p-0 mb-[44px] mx-0 rounded-none sticky top-16 w-full z-10">
@@ -255,31 +226,31 @@ const Invoicef = () => {
                     </div>
                 </CardContent>
             </Card>
-            <Card className="p-0 m-3 ">
+            <Card className="p-0 m-3">
                 <CardContent className="m-0 p-3">
                     <Form {...form} className="">
                         <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="p-4 lg:ps-5">
                             <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                 <FormField
                                     control={form.control}
-                                    name="invoiceID"
+                                    name="client"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Invoice ID</FormLabel>
-                                            <div className="w-full">
+                                            <FormLabel>Client</FormLabel>
+                                            <div className="full">
                                                 <SearchableDropdown
-                                                    options={[]}
-                                                    selectedVal={noneValidatedValue.invoiceID}
+                                                    options={clients}
+                                                    selectedVal={noneValidatedValue.client}
                                                     handleChange={(val) => {
                                                         setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                invoiceID: val,
+                                                                client: val,
                                                             }
                                                         })
                                                     }}
-                                                    placeholder="Invoice ID"
-                                                    label="Invoiceid"
+                                                    placeholder="Client"
+                                                    label="client"
                                                 />
                                             </div>
                                         </FormItem>
@@ -296,69 +267,60 @@ const Invoicef = () => {
                                                 <PopoverTrigger asChild>
                                                     <FormControl>
                                                         <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {field.value ? format(field.value, Constent.DATE_FORMAT) : <span>Pick a date</span>}
+                                                            {field.value ? format(field.value, Constent.DATE_FORMAT) : invoice_date}
                                                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                         </Button>
                                                     </FormControl>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={noneValidatedValue.invoice_date}
+                                                        onSelect={(e) => {
+                                                            setNoneValidatedValue((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    invoice_date: e,
+                                                                }
+                                                            })
+                                                        }}
+                                                        initialFocus
+                                                    />
                                                 </PopoverContent>
                                             </Popover>
                                         </FormItem>
                                     )}
                                 />
+
                                 <FormField
+                                    className="w-full"
                                     control={form.control}
-                                    name="department"
+                                    name="billingType"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Project ID</FormLabel>
+                                            <FormLabel>Billing Type</FormLabel>
                                             <div className="full">
                                                 <SearchableDropdown
-                                                    options={departments}
-                                                    selectedVal={noneValidatedValue.projectID}
+                                                    options={billing_type}
+                                                    selectedVal={noneValidatedValue.billingType}
                                                     handleChange={(val) => {
+                                                        handlebillingChange(val)
                                                         setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                projectID: val,
+                                                                billingType: val,
                                                             }
                                                         })
                                                     }}
-                                                    placeholder="Project ID"
-                                                    label="department"
+                                                    label="billingType"
+                                                    placeholder="Billing Type"
                                                 />
                                             </div>
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
-                                    control={form.control}
-                                    name="lob_process"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>LOF Business</FormLabel>
-                                            <div className="w-full">
-                                                <SearchableDropdown
-                                                    options={lob_processes}
-                                                    selectedVal={noneValidatedValue.lob_process}
-                                                    handleChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                lob_process: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="LOF Business"
-                                                    label="lofBusiness"
-                                                />
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-
+                            </div>
+                            <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem] mt-[20px]">
                                 <FormField
                                     control={form.control}
                                     name="billing_from"
@@ -366,20 +328,7 @@ const Invoicef = () => {
                                         <FormItem>
                                             <FormLabel>Billing From</FormLabel>
                                             <div className="w-full">
-                                                <SearchableDropdown
-                                                    options={projectleads}
-                                                    selectedVal={noneValidatedValue.billing_from}
-                                                    handleChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                billing_from: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="Billing From"
-                                                    label="billing_from"
-                                                />
+                                                <Textarea placeholder="billing from" className="resize-none" row="1" />
                                             </div>
                                         </FormItem>
                                     )}
@@ -392,20 +341,7 @@ const Invoicef = () => {
                                         <FormItem>
                                             <FormLabel>Billing To</FormLabel>
                                             <div className="w-full">
-                                                <SearchableDropdown
-                                                    options={projectleads}
-                                                    selectedVal={noneValidatedValue.billing_to}
-                                                    handleChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                billing_to: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="Billing To"
-                                                    label="billing_to"
-                                                />
+                                                <Textarea placeholder="billing to" className="resize-none" row="1" />
                                             </div>
                                         </FormItem>
                                     )}
@@ -421,13 +357,27 @@ const Invoicef = () => {
                                                 <PopoverTrigger asChild>
                                                     <FormControl>
                                                         <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {field.value ? format(field.value, Constent.DATE_FORMAT) : <span>Pick a date</span>}
+                                                            {noneValidatedValue.start_date
+                                                                ? format(noneValidatedValue.start_date, Constent.DATE_FORMAT)
+                                                                : start_date}
                                                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                         </Button>
                                                     </FormControl>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={noneValidatedValue.start_date}
+                                                        onSelect={(e) => {
+                                                            setNoneValidatedValue((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    start_date: e,
+                                                                }
+                                                            })
+                                                        }}
+                                                        initialFocus
+                                                    />
                                                 </PopoverContent>
                                             </Popover>
                                         </FormItem>
@@ -444,13 +394,27 @@ const Invoicef = () => {
                                                 <PopoverTrigger asChild>
                                                     <FormControl>
                                                         <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {field.value ? format(field.value, Constent.DATE_FORMAT) : <span>Pick a date</span>}
+                                                            {noneValidatedValue.end_date
+                                                                ? format(noneValidatedValue.end_date, Constent.DATE_FORMAT)
+                                                                : end_date}
                                                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                         </Button>
                                                     </FormControl>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={noneValidatedValue.end_date}
+                                                        onSelect={(e) => {
+                                                            setNoneValidatedValue((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    end_date: e,
+                                                                }
+                                                            })
+                                                        }}
+                                                        initialFocus
+                                                    />
                                                 </PopoverContent>
                                             </Popover>
                                         </FormItem>
@@ -465,11 +429,11 @@ const Invoicef = () => {
                                                 <Checkbox onClick={changeAll} value={checkAll} checked={checkAll} />
                                             </TableHead>
                                             <TableHead className="w-[50px] border">Sr.No</TableHead>
-
+                                            <TableHead className="w-[300px] border">Project</TableHead>
                                             <TableHead className="w-[300px] border">Process</TableHead>
-                                            <TableHead className="w-[200px] border">Billing</TableHead>
-                                            <TableHead className="w-[100px] border">Hours</TableHead>
-                                            <TableHead className="w-[100px] border">Rate</TableHead>
+
+                                            <TableHead className="w-[100px] border">{isbilling ? 'Charts' : 'Hours'}</TableHead>
+                                            <TableHead className="w-[150px] border">{isbilling ? 'Rate per chart' : 'Rate per hour'}</TableHead>
                                             <TableHead className="w-[100px] border">Amount</TableHead>
                                         </TableRow>
                                     </TableHeader>
@@ -493,7 +457,31 @@ const Invoicef = () => {
                                                     <TableCell className="border">
                                                         <div className="w-full">
                                                             <SearchableDropdown
-                                                                options={process_names}
+                                                                options={clients}
+                                                                selectedVal={row.process}
+                                                                handleChange={(val) => {
+                                                                    setRows((prev) => {
+                                                                        let updatedData = []
+
+                                                                        prev.map((item, i) => {
+                                                                            if (item.id == row.id) {
+                                                                                prev[i]['process'] = val
+                                                                            }
+                                                                            updatedData.push(item)
+                                                                        })
+                                                                        return updatedData
+                                                                    })
+                                                                }}
+                                                                placeholder="Project"
+                                                                label="client"
+                                                            />
+                                                        </div>
+                                                    </TableCell>
+
+                                                    <TableCell className="border">
+                                                        <div className="w-full">
+                                                            <SearchableDropdown
+                                                                options={process}
                                                                 selectedVal={row.process}
                                                                 handleChange={(val) => {
                                                                     setRows((prev) => {
@@ -513,38 +501,7 @@ const Invoicef = () => {
                                                             />
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell className="border">
-                                                        <Select
-                                                            onValueChange={(value) =>
-                                                                setRows((prev) => {
-                                                                    let updatedData = []
 
-                                                                    prev.map((item, i) => {
-                                                                        if (item.id == row.id) {
-                                                                            prev[i]['billingtype'] = value
-                                                                        }
-                                                                        updatedData.push(item)
-                                                                    })
-                                                                    return updatedData
-                                                                })
-                                                            }
-                                                            defaultValue={row.billingtype}
-                                                            className="border-none w-full"
-                                                        >
-                                                            <FormControl>
-                                                                <SelectTrigger className="border-none shadow-none  w-full">
-                                                                    <SelectValue placeholder="Select Billing" />
-                                                                </SelectTrigger>
-                                                            </FormControl>
-                                                            <SelectContent>
-                                                                {BillingData.map((billing) => (
-                                                                    <SelectItem key={billing.id} value={billing.billingType}>
-                                                                        {billing.billingType}
-                                                                    </SelectItem>
-                                                                ))}
-                                                            </SelectContent>
-                                                        </Select>
-                                                    </TableCell>
                                                     <TableCell className="border">
                                                         <div className="flex items-center space-x-2 justify-center">
                                                             <Input
@@ -678,26 +635,26 @@ const Invoicef = () => {
                                     )}
                                 />
                                 <FormField
+                                    className="w-full"
                                     control={form.control}
                                     name="status"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Status</FormLabel>
                                             <div className="w-full">
-                                                <SearchableDropdown
-                                                    options={status}
-                                                    selectedVal={noneValidatedValue.status}
-                                                    handleChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                status: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="Status"
-                                                    label="status"
-                                                />
+                                                <Select name="status" defaultValue={'Pending'} className=" w-full">
+                                                    <FormControl>
+                                                        <SelectTrigger className="shadow-none  w-full">
+                                                            <SelectValue placeholder="Select Status" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="Pending">Pending</SelectItem>
+                                                        <SelectItem value="Paid">Paid</SelectItem>
+
+                                                        <SelectItem value="Partially Paid">Partially Paid</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
                                             </div>
                                         </FormItem>
                                     )}

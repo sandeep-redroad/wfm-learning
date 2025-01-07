@@ -297,11 +297,13 @@ const CreateProject = ({ type }) => {
         }
     }
     const handlebillingChange = (e) => {
+        console.log("in handle bill change",e)
         if (e == 'Per WorkItem Transactional') {
             setIsbilling(true)
         } else {
             setIsbilling(false)
         }
+        console.log("issbilling",isbilling);
     }
 
     const handle_label_Change = (e, rowid) => {
@@ -535,12 +537,14 @@ const CreateProject = ({ type }) => {
                                                     options={billing_type}
                                                     selectedVal={noneValidatedValue.billingType}
                                                     handleChange={(val) => {
+                                                        handlebillingChange(val);
                                                         setNoneValidatedValue((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 billingType: val,
                                                             }
                                                         })
+                                                       
                                                     }}
                                                     label="billingType"
                                                     placeholder="Billing Type"

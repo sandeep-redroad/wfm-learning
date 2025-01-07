@@ -10,10 +10,14 @@ import { useLocation } from 'react-router-dom'
 import DepartmentService from '@/Service/DepartmentService'
 import { useDebounce } from 'use-debounce'
 import Constent from '@/utils/constent'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+
 const Departments = () => {
     const [department, setDepartment] = useState([])
     const [totalCount, setTotalCount] = useState(0)
     const [search, setSearch] = useState('')
+    const [allcheck, setAllcheck] = useState(false)
+    const [deleteId, setDeleteId] = useState([])
     const [queryParam, setQueryParam] = useState({
         page: 1,
         search: '',
@@ -54,6 +58,14 @@ const Departments = () => {
         })
     }, [debouncedValue])
 
+    const deleteDepartment = () => {
+        const updatedArray = department.filter((value, index) => {
+            console.log('in filter', index, !deleteId.includes(value._id))
+            return !deleteId.includes(value._id)
+        })
+        setDepartment(updatedArray)
+    }
+
     return (
         <div>
             <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full">
@@ -65,6 +77,18 @@ const Departments = () => {
                             </DialogTrigger>
                             <CreateDepartment getDepartment={getDepartment} setIsOpen={setIsOpen} />
                         </Dialog>
+
+                        <DropdownMenu className="ml-[10px] ">
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className={`ml-[10px] ${deleteId.length > 0 ? 'block' : 'hidden'}`}>
+                                    Action
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={deleteDepartment}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </CardContent>
             </Card>
@@ -73,7 +97,14 @@ const Departments = () => {
                     <div className="w-full my-2 grid grid-cols-4">
                         <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Department" />
                     </div>
-                    <Datatable columns={DepartmentColumns()} data={department} totalDataCount={totalCount} />
+                    <Datatable
+                        columns={DepartmentColumns()}
+                        data={department}
+                        totalDataCount={totalCount}
+                        allcheck={allcheck}
+                        deleteId={deleteId}
+                        setDeleteId={setDeleteId}
+                    />
                 </CardContent>
             </Card>
         </div>

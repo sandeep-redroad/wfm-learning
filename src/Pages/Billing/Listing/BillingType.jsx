@@ -12,12 +12,15 @@ import { useDebounce } from 'use-debounce'
 import Constent from '@/utils/constent'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Link } from 'react-router-dom'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 const Billing = () => {
     const [billingTypes, setBillingTypes] = useState([])
     const [totalCount, setTotalCount] = useState(0)
     const [isOpen, setIsOpen] = useState(false)
     const [search, setSearch] = useState('')
+    const [allcheck, setAllcheck] = useState(false)
+    const [deleteId, setDeleteId] = useState([])
     const [debouncedValue] = useDebounce(search, Constent.DEBOUNCE_DELAY)
     const [queryParam, setQueryParam] = useState({
         page: 1,
@@ -56,7 +59,15 @@ const Billing = () => {
             }
         })
     }, [debouncedValue])
-    
+
+    const deleteBillingType = () => {
+        const updatedArray = billingTypes.filter((value, index) => {
+            console.log('in filter', index, !deleteId.includes(value._id))
+            return !deleteId.includes(value._id)
+        })
+        setBillingTypes(updatedArray)
+    }
+
     return (
         <div>
             <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full">
@@ -68,6 +79,17 @@ const Billing = () => {
                             </DialogTrigger>
                             <CreateBillingType getBillingTypes={getBillingTypes} setIsOpen={setIsOpen} />
                         </Dialog>
+                        <DropdownMenu className="ml-[10px] ">
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className={`ml-[10px] ${deleteId.length > 0 ? 'block' : 'hidden'}`}>
+                                    Action
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={deleteBillingType}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </CardContent>
             </Card>
@@ -76,7 +98,14 @@ const Billing = () => {
                     <div className="w-full my-2 grid grid-cols-4">
                         <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Billing Type" />
                     </div>
-                    <Datatable columns={BillingColumns()} data={billingTypes} totalDataCount={totalCount} />
+                    <Datatable
+                        columns={BillingColumns()}
+                        data={billingTypes}
+                        totalDataCount={totalCount}
+                        allcheck={allcheck}
+                        deleteId={deleteId}
+                        setDeleteId={setDeleteId}
+                    />
                 </CardContent>
             </Card>
         </div>

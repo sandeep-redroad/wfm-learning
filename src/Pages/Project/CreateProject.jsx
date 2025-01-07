@@ -301,7 +301,6 @@ const CreateProject = ({ type }) => {
         } else {
             setRows((prev) => {
                 let updatedData = []
-
                 prev.map((item, i) => {
                     if (item.id == rowid) {
                         prev[i]['fieldName'] = lowerFirstChar(fieldName)
@@ -347,6 +346,7 @@ const CreateProject = ({ type }) => {
                                                     options={clients}
                                                     selectedVal={projectFields.client}
                                                     handleChange={(val) => {
+                                                       
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
@@ -522,6 +522,7 @@ const CreateProject = ({ type }) => {
                                                     options={billing_type}
                                                     selectedVal={projectFields.billingType}
                                                     handleChange={(val) => {
+                                                        handlebillingChange(val)
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
