@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button } from '@/Components/ui/button'
 import Datatable from '@/Components/Common/Datatable'
-import ClientColumns from './ClientColumns'
-import assets from '@/assets/assets'
+import BillingEntityColumns from './BillingEntityColumn'
 import { Input } from '@/Components/ui/input'
 import { Link, useLocation } from 'react-router-dom'
 import { Card, CardContent } from '@/components/ui/card'
@@ -10,9 +9,9 @@ import ClientService from '@/Service/ClientService'
 import { useDebounce } from 'use-debounce'
 import Constent from '@/utils/constent'
 import DataTableEnumType from '@/Enums/DataTableTypeEnum'
-
-const Clients = () => {
-    const [clients, setClients] = useState([])
+import BillingEntityService from '@/Service/BillingEntityService'
+const BillingEntity = () => {
+    const [billingEntity, setBillingEntity] = useState([])
     const [totalCount, setTotalCount] = useState(0)
     const [search, setSearch] = useState('')
     const [debouncedValue] = useDebounce(search, Constent.DEBOUNCE_DELAY)
@@ -21,12 +20,13 @@ const Clients = () => {
         search: '',
     })
     const location = useLocation()
-    const getClient = async (page = 1) => {
+
+    const getBillingEntity = async () => {
         try {
-            const resp = await ClientService.getClients(queryParam)
+            const resp = await BillingEntityService.getBillingEntities(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)
-                setClients(resp.data.data)
+                setBillingEntity(resp.data.data)
             }
         } catch (err) {}
     }
@@ -51,7 +51,7 @@ const Clients = () => {
     }, [debouncedValue])
 
     useEffect(() => {
-        getClient()
+        getBillingEntity()
     }, [queryParam.page, queryParam.search])
 
     return (
@@ -59,8 +59,8 @@ const Clients = () => {
             <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-between items-center">
-                        <Link to="/clients/new">
-                            <Button className="bg-primary-purpal hover:bg-primary-purpal">Add Client</Button>
+                        <Link to="/master-settings/billing-entity/new">
+                            <Button className="bg-primary-purpal hover:bg-primary-purpal">Add Billing Entity</Button>
                         </Link>
                     </div>
                 </CardContent>
@@ -68,13 +68,13 @@ const Clients = () => {
             <Card className="p-0 m-3 mt-[4.5rem]">
                 <CardContent className="m-0 p-3">
                     <div className="w-full my-2 grid grid-cols-4 mt-5">
-                        <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Client" />
+                        <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Billing Entity" />
                     </div>
-                    <Datatable columns={ClientColumns()} data={clients} totalDataCount={totalCount} type={DataTableEnumType.CLIENT} />
+                    <Datatable columns={BillingEntityColumns()} data={billingEntity} totalDataCount={totalCount} type={DataTableEnumType.BILLING_ENTITY} />
                 </CardContent>
             </Card>
         </div>
     )
 }
 
-export default Clients
+export default BillingEntity

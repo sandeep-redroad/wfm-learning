@@ -18,7 +18,7 @@ import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '@/Components/Common/SearchableDropdown'
 import DepartmentService from '@/Service/DepartmentService'
 import BillingTypeService from '@/Service/BillingTypeService'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import ClientService from '@/Service/ClientService'
 import ProcessService from '@/Service/ProcessService'
 import assets from '@/assets/assets'
@@ -29,6 +29,7 @@ import Constent from '@/utils/constent'
 
 const EditProject = ({ type }) => {
     const navigate = useNavigate()
+    const { projectId } = useParams()
     const [checkAll, setcheckAll] = useState(false)
     const [checkhisotryAll, setchechistorykAll] = useState(false)
     const [rows, setRows] = useState([])
@@ -42,11 +43,11 @@ const EditProject = ({ type }) => {
     const [projectleads, setProjectLead] = useState([{ id: 11, name: 'sandeep' }])
     const [process, setProcess] = useState([])
     const [billing_type, setBillingType] = useState([])
+    const [project, setProject] = useState(null)
 
     const getLofBusiness = async () => {
         try {
             const resp = await LofBusinessService.getLofBusiness()
-            console.log('resp', resp)
             if (resp.data.success) {
                 setLofBusiness(resp.data.data)
             }
@@ -67,13 +68,11 @@ const EditProject = ({ type }) => {
             if (resp.data.success) {
                 setBillingType(resp.data.data)
             }
-        } catch (err) {
-            console.log('in billing', err)
-        }
+        } catch (err) {}
     }
     const getClient = async () => {
         try {
-            const resp = await ClientService.getClient()
+            const resp = await ClientService.getClients()
             if (resp.data.success) {
                 setClient(resp.data.data)
             }
@@ -89,6 +88,40 @@ const EditProject = ({ type }) => {
         } catch (err) {}
     }
 
+    const getProject = async () => {
+        try {
+            const resp = await ProjectService.getProject(projectId)
+
+            if (resp.data.success) {
+                if (!resp.data.data) {
+                    toast.error('Project Not Found')
+                    navigate('/projects')
+                    return
+                }
+                setProject(resp.data.data)
+                if (resp.data.data['timePerWorkItem'] !== '') {
+                    setIsbilling(true)
+                }
+                setProjectFields((prev) => {
+                    return {
+                        ...prev,
+                        ...resp.data.data,
+                    }
+                })
+                setRows((prev) => {
+                    return [
+                        ...prev,
+                        ...resp.data.data.customFields.map((record, i) => ({
+                            ...record,
+                            id: i + 1,
+                            checkbox: false,
+                        })),
+                    ]
+                })
+            }
+        } catch (err) {}
+    }
+
     useEffect(() => {
         getLofBusiness()
         getDepartment()
@@ -97,8 +130,11 @@ const EditProject = ({ type }) => {
         getProcess()
     }, [])
 
-    // const date=new Date();
-    const [noneValidatedValue, setNoneValidatedValue] = useState({
+    useEffect(() => {
+        getProject()
+    }, [projectId])
+
+    const [projectFields, setProjectFields] = useState({
         client: '',
         lofBusiness: '',
         process: '',
@@ -108,29 +144,14 @@ const EditProject = ({ type }) => {
         rate: '',
         timePerWorkItem: '',
         comments: '',
+        date: today,
+        status: 'Active',
     })
 
-    const form = useForm({
-        defaultValues: {
-            comments: '',
-            date: today,
-            client: '',
-            lofBusiness: '',
-            process: '',
-            department: '',
-            billingType: '',
-            projectLead: '',
-            rate: '',
-            timePerWorkItem: '',
-            status: 'Active',
-        },
-    })
+    const form = useForm()
     async function onSubmit(data) {
         try {
-            Object.assign(data, noneValidatedValue)
-
-            const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => key !== 'comments' && value == ''))
-
+            const filteredObj = Object.fromEntries(Object.entries(projectFields).filter(([key, value]) => key !== 'comments' && value == ''))
             let key = Object.keys(filteredObj)[0]
 
             if (key == 'lofBusiness') {
@@ -160,11 +181,13 @@ const EditProject = ({ type }) => {
                 toast.error('Please enter rate')
                 return
             }
-            if (data.billingType == 'Per WorkItem Transactional') {
+            if (projectFields['billingType'] == 'Per WorkItem Transactional') {
                 if (key == 'timePerWorkItem') {
                     toast.error('Please enter time in minute')
                     return
                 }
+            } else {
+                projectFields['timePerWorkItem'] = ''
             }
 
             for (let i = 0; i < rows.length; i++) {
@@ -176,16 +199,17 @@ const EditProject = ({ type }) => {
                     return
                 }
             }
-            data['customFields'] = rows
-
-            const resp = await ProjectService.createProject(data)
+            projectFields['customFields'] = rows
+            const resp = await ProjectService.updateProject(projectId, projectFields)
             if (resp.data.success) {
                 navigate('/projects')
             }
         } catch (err) {
+            console.log('err : ', err)
             toast.error(err)
         }
     }
+
     const addHistoryrow = () => {
         setHistoryrows((prev) => {
             const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
@@ -202,6 +226,7 @@ const EditProject = ({ type }) => {
             ]
         })
     }
+
     const addRow = () => {
         setRows((prev) => {
             const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
@@ -211,6 +236,7 @@ const EditProject = ({ type }) => {
                 {
                     id: newId,
                     checkbox: false,
+                    deleteForProject: false,
                     label: '',
                     dataType: '',
                     fieldName: '',
@@ -218,23 +244,40 @@ const EditProject = ({ type }) => {
             ]
         })
     }
+
     const deleteone = (id) => {
-        const updatedrows = rows.filter((row) => !row.checkbox)
+        const updatedrows = rows.map((row) => {
+            if (row.checkbox) {
+                row['deleteForProject'] = true
+            }
+            return row
+        })
         let newdata = updatedrows.length > 0 ? updatedrows : []
         setRows(() => newdata)
     }
+
     const deleteAll = () => {
-        setRows([])
+        const updatedrows = rows.map((row) => {
+            if (row.checkbox) {
+                row['deleteForProject'] = true
+            }
+            return row
+        })
+        let newdata = updatedrows.length > 0 ? updatedrows : []
+        setRows(() => newdata)
     }
+
     const delete_history_one = () => {
         const updatedrows = historyrows.filter((row) => !row.checkbox)
         let newdata = updatedrows.length > 0 ? updatedrows : []
 
         setHistoryrows(() => newdata)
     }
+
     const delete_history_All = () => {
         setHistoryrows([])
     }
+
     const changeOne = (row) => {
         setRows((prev) => {
             let updatedData = []
@@ -278,6 +321,7 @@ const EditProject = ({ type }) => {
             return updatedData
         })
     }
+
     const change_history_All = () => {
         let isChecked = !checkhisotryAll
         setchechistorykAll((prev) => isChecked)
@@ -297,13 +341,6 @@ const EditProject = ({ type }) => {
     const handleSaveClick = () => {
         if (formRef.current) {
             formRef.current.requestSubmit()
-        }
-    }
-    const handlebillingChange = (e) => {
-        if (e == 'Per WorkItem Transactional') {
-            setIsbilling(true)
-        } else {
-            setIsbilling(false)
         }
     }
 
@@ -362,9 +399,9 @@ const EditProject = ({ type }) => {
                                             <div className="w-full">
                                                 <SearchableDropdown
                                                     options={clients}
-                                                    selectedVal={noneValidatedValue.client}
+                                                    selectedVal={projectFields.client}
                                                     handleChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
+                                                        setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 client: val,
@@ -387,15 +424,16 @@ const EditProject = ({ type }) => {
                                             <FormLabel>Status</FormLabel>
                                             <div className="w-full">
                                                 <Select
+                                                    value={projectFields.status}
                                                     onValueChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
+                                                        setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 status: val,
                                                             }
                                                         })
                                                     }}
-                                                    defaultValue={'Active'}
+                                                    defaultValue={projectFields.status}
                                                 >
                                                     <FormControl>
                                                         <SelectTrigger>
@@ -404,7 +442,9 @@ const EditProject = ({ type }) => {
                                                     </FormControl>
                                                     <SelectContent>
                                                         {assets.ProjectStatusData.map((status) => (
-                                                            <SelectItem value={status.key}>{status.value}</SelectItem>
+                                                            <SelectItem key={status.key} value={status.key}>
+                                                                {status.value}
+                                                            </SelectItem>
                                                         ))}
                                                     </SelectContent>
                                                 </Select>
@@ -422,9 +462,9 @@ const EditProject = ({ type }) => {
                                             <div className="w-full">
                                                 <SearchableDropdown
                                                     options={lofBusiness}
-                                                    selectedVal={noneValidatedValue.lofBusiness}
+                                                    selectedVal={projectFields.lofBusiness}
                                                     handleChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
+                                                        setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 lofBusiness: val,
@@ -449,7 +489,7 @@ const EditProject = ({ type }) => {
                                                 <PopoverTrigger asChild>
                                                     <FormControl>
                                                         <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {noneValidatedValue.date ? format(noneValidatedValue.date, Constent.DATE_FORMAT) : today}
+                                                            {projectFields.date ? format(projectFields.date, Constent.DATE_FORMAT) : today}
                                                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                         </Button>
                                                     </FormControl>
@@ -457,9 +497,9 @@ const EditProject = ({ type }) => {
                                                 <PopoverContent className="w-auto p-0" align="start">
                                                     <Calendar
                                                         mode="single"
-                                                        selected={noneValidatedValue.date}
+                                                        selected={projectFields.date}
                                                         onSelect={(e) => {
-                                                            setNoneValidatedValue((prev) => {
+                                                            setProjectFields((prev) => {
                                                                 return {
                                                                     ...prev,
                                                                     date: e,
@@ -483,9 +523,9 @@ const EditProject = ({ type }) => {
                                             <div className="full">
                                                 <SearchableDropdown
                                                     options={process}
-                                                    selectedVal={noneValidatedValue.process}
+                                                    selectedVal={projectFields.process}
                                                     handleChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
+                                                        setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 process: val,
@@ -509,9 +549,9 @@ const EditProject = ({ type }) => {
                                             <div className="full">
                                                 <SearchableDropdown
                                                     options={departments}
-                                                    selectedVal={noneValidatedValue.department}
+                                                    selectedVal={projectFields.department}
                                                     handleChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
+                                                        setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 department: val,
@@ -536,9 +576,9 @@ const EditProject = ({ type }) => {
                                             <div className="full">
                                                 <SearchableDropdown
                                                     options={billing_type}
-                                                    selectedVal={noneValidatedValue.billingType}
+                                                    selectedVal={projectFields.billingType}
                                                     handleChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
+                                                        setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 billingType: val,
@@ -562,9 +602,9 @@ const EditProject = ({ type }) => {
                                             <div className="w-full">
                                                 <SearchableDropdown
                                                     options={projectleads}
-                                                    selectedVal={noneValidatedValue.projectLead}
+                                                    selectedVal={projectFields.projectLead}
                                                     handleChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
+                                                        setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 projectLead: val,
@@ -589,8 +629,9 @@ const EditProject = ({ type }) => {
                                                 <FormControl>
                                                     <Input
                                                         placeholder="rate"
+                                                        value={projectFields.rate}
                                                         onChange={(e) => {
-                                                            setNoneValidatedValue((prev) => {
+                                                            setProjectFields((prev) => {
                                                                 return {
                                                                     ...prev,
                                                                     rate: e.target.value,
@@ -602,7 +643,7 @@ const EditProject = ({ type }) => {
                                             </FormItem>
                                         )}
                                     />
-                                    {isbilling && (
+                                    {projectFields.billingType == 'Per Workitem Transactional' && (
                                         <FormField
                                             control={form.control}
                                             name="timePerWorkItem"
@@ -612,9 +653,9 @@ const EditProject = ({ type }) => {
                                                     <FormControl>
                                                         <Input
                                                             placeholder="minutes"
-                                                            {...field}
+                                                            value={projectFields.timePerWorkItem}
                                                             onChange={(e) => {
-                                                                setNoneValidatedValue((prev) => {
+                                                                setProjectFields((prev) => {
                                                                     return {
                                                                         ...prev,
                                                                         timePerWorkItem: e.target.value,
@@ -636,13 +677,25 @@ const EditProject = ({ type }) => {
                                         <FormItem>
                                             <FormLabel>Comments</FormLabel>
                                             <FormControl>
-                                                <Textarea placeholder="comments " className="resize-none" rows="4.5" />
+                                                <Textarea
+                                                    value={projectFields.comments}
+                                                    onChange={(e) => {
+                                                        setProjectFields((prev) => {
+                                                            return {
+                                                                ...prev,
+                                                                comments: e.target.value,
+                                                            }
+                                                        })
+                                                    }}
+                                                    placeholder="comments "
+                                                    className="resize-none"
+                                                    rows="4.5"
+                                                />
                                             </FormControl>
                                         </FormItem>
                                     )}
                                 />
                             </div>
-
                             <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
                                 <Table>
                                     <TableHeader>
@@ -668,79 +721,89 @@ const EditProject = ({ type }) => {
                                                 </td>
                                             </tr>
                                         ) : (
-                                            rows.map((row, i) => (
-                                                <TableRow key={row.id} name="customfields" className="border">
-                                                    <TableCell className="border">
-                                                        <Checkbox onClick={() => changeOne(row, i)} checked={row.checkbox} value={row.checkbox} />
-                                                    </TableCell>
-                                                    <TableCell className="border">{row.id}</TableCell>
+                                            rows.map((row, i) => {
+                                                return (
+                                                    !row.deleteForProject && (
+                                                        <TableRow key={row.id} name="customfields" className="border">
+                                                            <TableCell className="border">
+                                                                <Checkbox
+                                                                    onClick={() => changeOne(row, i)}
+                                                                    checked={row.checkbox}
+                                                                    value={row.checkbox}
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell className="border">{row.id}</TableCell>
 
-                                                    <TableCell className="border">
-                                                        <div className="w-full">
-                                                            <Input
-                                                                placeholder="label"
-                                                                onChange={(e) => {
-                                                                    setRows((prev) => {
-                                                                        let updatedData = []
+                                                            <TableCell className="border">
+                                                                <div className="w-full">
+                                                                    <Input
+                                                                        placeholder="label"
+                                                                        onChange={(e) => {
+                                                                            setRows((prev) => {
+                                                                                let updatedData = []
 
-                                                                        prev.map((item, i) => {
-                                                                            if (item.id == row.id) {
-                                                                                prev[i]['label'] = e.target.value
-                                                                            }
-                                                                            updatedData.push(item)
-                                                                        })
-                                                                        return updatedData
-                                                                    })
-                                                                }}
-                                                                onBlur={(e) => handle_label_Change(e, row.id)}
-                                                                className="border-none shadow-none"
-                                                            />
-                                                        </div>
-                                                    </TableCell>
+                                                                                prev.map((item, i) => {
+                                                                                    if (item.id == row.id) {
+                                                                                        prev[i]['label'] = e.target.value
+                                                                                    }
+                                                                                    updatedData.push(item)
+                                                                                })
+                                                                                return updatedData
+                                                                            })
+                                                                        }}
+                                                                        value={row.label}
+                                                                        onBlur={(e) => handle_label_Change(e, row.id)}
+                                                                        className="border-none shadow-none"
+                                                                    />
+                                                                </div>
+                                                            </TableCell>
 
-                                                    <TableCell className="border">
-                                                        <div className="flex items-center space-x-2 justify-center">
-                                                            <Select
-                                                                onValueChange={(value) =>
-                                                                    setRows((prev) => {
-                                                                        let updatedData = []
+                                                            <TableCell className="border">
+                                                                <div className="flex items-center space-x-2 justify-center">
+                                                                    <Select
+                                                                        onValueChange={(value) =>
+                                                                            setRows((prev) => {
+                                                                                let updatedData = []
 
-                                                                        prev.map((item, i) => {
-                                                                            if (item.id == row.id) {
-                                                                                prev[i]['dataType'] = value
-                                                                            }
-                                                                            updatedData.push(item)
-                                                                        })
-                                                                        return updatedData
-                                                                    })
-                                                                }
-                                                                defaultValue={rows.dataType}
-                                                                className="border-none w-full"
-                                                            >
-                                                                <SelectTrigger className="border-none">
-                                                                    <SelectValue placeholder="Data Type" />
-                                                                </SelectTrigger>
-                                                                <SelectContent>
-                                                                    {assets.DataTypes.map((value) => (
-                                                                        <SelectItem key={value.key} value={value.key}>
-                                                                            {value.value}
-                                                                        </SelectItem>
-                                                                    ))}
-                                                                </SelectContent>
-                                                            </Select>
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell className="border">
-                                                        <Input
-                                                            placeholder="Field Name"
-                                                            name="fieldName"
-                                                            value={row.fieldName}
-                                                            className="border-none shadow-none"
-                                                            disabled={true}
-                                                        />
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))
+                                                                                prev.map((item, i) => {
+                                                                                    if (item.id == row.id) {
+                                                                                        prev[i]['dataType'] = value
+                                                                                    }
+                                                                                    updatedData.push(item)
+                                                                                })
+                                                                                return updatedData
+                                                                            })
+                                                                        }
+                                                                        value={row.dataType}
+                                                                        defaultValue={row.dataType}
+                                                                        className="border-none w-full"
+                                                                    >
+                                                                        <SelectTrigger className="border-none">
+                                                                            <SelectValue placeholder="Data Type" />
+                                                                        </SelectTrigger>
+                                                                        <SelectContent>
+                                                                            {assets.DataTypes.map((value) => (
+                                                                                <SelectItem key={value.key} value={value.key}>
+                                                                                    {value.value}
+                                                                                </SelectItem>
+                                                                            ))}
+                                                                        </SelectContent>
+                                                                    </Select>
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell className="border">
+                                                                <Input
+                                                                    placeholder="Field Name"
+                                                                    name="fieldName"
+                                                                    value={row.fieldName}
+                                                                    className="border-none shadow-none"
+                                                                    disabled={true}
+                                                                />
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    )
+                                                )
+                                            })
                                         )}
                                     </TableBody>
                                 </Table>

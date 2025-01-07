@@ -12,7 +12,6 @@ import AuthLayout from '@/Components/AuthLayout'
 import Departments from '@/Pages/Department/Listing/Departments'
 import Clients from '@/Pages/Clients/Listing/Clients'
 import Process from '@/Pages/Process/Listing/Process'
-import ProjectMaster from '@/Pages/ProjectMaster/ProjectMaster'
 import Invoice from '@/Pages/Invoice/Listing/Invoice'
 import CreateProject from '@/Pages/Project/CreateProject'
 import Project from '@/Pages/Project/Listing/Project'
@@ -25,18 +24,23 @@ import DailyWorkLog from './Pages/DailyWorkLog/Listing/DailyWorkLog'
 import CreateClient from './Pages/Clients/CreateClient'
 import NotFound404 from './Pages/Error/NotFound404'
 import ErrorBoundary from './ErrorBoundary'
-import React, { Suspense } from 'react';
+import React, { Suspense } from 'react'
 import ErrorPage from './ErrorPage'
 import LofBusiness from './Pages/LOFbusiness/Listing/LofBusiness'
 import EditProject from './Pages/Project/EditProject'
+import EditClient from './Pages/Clients/EditClient'
+import EditDailyWorkLog from './Pages/DailyWorkLog/EditDailyWorkLog'
+import BillingEntity from './Pages/BillingEntity/Listing/BillingEntity'
+import CreateBillingEntiy from './Pages/BillingEntity/CreateBillingEntity'
+import EditBillingEntiy from './Pages/BillingEntity/EditBillingEntity'
 let router = createBrowserRouter([
     {
         path: '/login',
         Component: Login2,
     },
     {
-        path:"*",
-        Component:ErrorPage,
+        path: '*',
+        Component: ErrorPage,
     },
 
     {
@@ -52,7 +56,7 @@ let router = createBrowserRouter([
         Component: AuthLayout,
         children: [
             {
-                index : true,
+                index: true,
                 path: '/dashboard',
                 Component: Dashboard,
             },
@@ -68,15 +72,14 @@ let router = createBrowserRouter([
                 path: 'invoices/new',
                 Component: CreateInoice,
             },
-            
+
             {
                 path: '/projects/new',
-                element: <CreateProject type="new"  />,
+                element: <CreateProject type="new" />,
             },
             {
-                path: '/projects/:id',
+                path: '/projects/:projectId',
                 element: <EditProject type="edit" />,
-                
             },
             {
                 path: '/daily-work-log',
@@ -85,6 +88,10 @@ let router = createBrowserRouter([
             {
                 path: '/daily-work-log/new',
                 Component: CreateDailyWorkLog,
+            },
+            {
+                path: '/daily-work-log/:dailyWorkLogId',
+                Component: EditDailyWorkLog,
             },
             {
                 path: '/bulk-upload',
@@ -97,6 +104,10 @@ let router = createBrowserRouter([
             {
                 path: '/clients',
                 Component: Clients,
+            },
+            {
+                path: '/clients/:clientId',
+                Component: EditClient,
             },
             {
                 path: '/clients/new',
@@ -119,8 +130,16 @@ let router = createBrowserRouter([
                 Component: Process,
             },
             {
-                path: '/master-settings/project-master',
-                Component: ProjectMaster,
+                path: '/master-settings/billing-entity',
+                Component: BillingEntity,
+            },
+            {
+                path: '/master-settings/billing-entity/new',
+                Component: CreateBillingEntiy,
+            },
+            {
+                path: '/master-settings/billing-entity/:billingEntityId',
+                Component: EditBillingEntiy,
             },
             {
                 path: '/master-settings/employee-mapped',
@@ -129,40 +148,36 @@ let router = createBrowserRouter([
             {
                 path: '*',
                 Component: NotFound404,
-            }, 
+            },
         ],
     },
     {
         path: '*',
         Component: NotFound404,
     },
-    
 ])
 
 function App() {
-    
     return (
-       
-          <ErrorBoundary>
-          <Suspense fallback={<div>Loading...</div>}>
-            <AuthProvider>
-            <ToastContainer
-                position="top-center"
-                autoClose={2000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick={false}
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
-            <RouterProvider router={router} />
-        </AuthProvider>
-        </Suspense>
-          </ErrorBoundary>
-      
+        <ErrorBoundary>
+            <Suspense fallback={<div>Loading...</div>}>
+                <AuthProvider>
+                    <ToastContainer
+                        position="top-center"
+                        autoClose={2000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick={false}
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="light"
+                    />
+                    <RouterProvider router={router} />
+                </AuthProvider>
+            </Suspense>
+        </ErrorBoundary>
     )
 }
 

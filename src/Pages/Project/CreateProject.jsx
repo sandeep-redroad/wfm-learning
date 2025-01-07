@@ -33,7 +33,6 @@ const CreateProject = ({ type }) => {
     const [checkhisotryAll, setchechistorykAll] = useState(false)
     const [rows, setRows] = useState([])
     const [historyrows, setHistoryrows] = useState([])
-    const [isbilling, setIsbilling] = useState(false)
     const formRef = useRef(null)
     const today = format(new Date(), Constent.DATE_FORMAT)
     const [departments, setDepartment] = useState([])
@@ -47,7 +46,6 @@ const CreateProject = ({ type }) => {
     const getLofBusiness = async () => {
         try {
             const resp = await LofBusinessService.getLofBusiness()
-            console.log('resp', resp)
             if (resp.data.success) {
                 setLofBusiness(resp.data.data)
             }
@@ -68,13 +66,11 @@ const CreateProject = ({ type }) => {
             if (resp.data.success) {
                 setBillingType(resp.data.data)
             }
-        } catch (err) {
-            console.log('in billing', err)
-        }
+        } catch (err) {}
     }
     const getClient = async () => {
         try {
-            const resp = await ClientService.getClient()
+            const resp = await ClientService.getClients()
             if (resp.data.success) {
                 setClient(resp.data.data)
             }
@@ -114,10 +110,7 @@ const CreateProject = ({ type }) => {
 
     async function onSubmit(data) {
         try {
-            Object.assign(data, noneValidatedValue)
-
-            const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => key !== 'comments' && value == ''))
-
+            const filteredObj = Object.fromEntries(Object.entries(projectFields).filter(([key, value]) => key !== 'comments' && value == ''))
             let key = Object.keys(filteredObj)[0]
 
             if (key == 'lofBusiness') {
@@ -163,16 +156,18 @@ const CreateProject = ({ type }) => {
                     return
                 }
             }
-            data['customFields'] = rows
+            projectFields['customFields'] = rows
 
-            const resp = await ProjectService.createProject(data)
+            const resp = await ProjectService.createProject(projectFields)
             if (resp.data.success) {
                 navigate('/projects')
             }
         } catch (err) {
+            console.log('err : ', err)
             toast.error(err)
         }
     }
+
     const addHistoryrow = () => {
         setHistoryrows((prev) => {
             const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
@@ -189,6 +184,7 @@ const CreateProject = ({ type }) => {
             ]
         })
     }
+
     const addRow = () => {
         setRows((prev) => {
             const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
@@ -198,6 +194,7 @@ const CreateProject = ({ type }) => {
                 {
                     id: newId,
                     checkbox: false,
+                    deleteForProject: false,
                     label: '',
                     dataType: '',
                     fieldName: '',
@@ -286,13 +283,6 @@ const CreateProject = ({ type }) => {
             formRef.current.requestSubmit()
         }
     }
-    const handlebillingChange = (e) => {
-        if (e == 'Per WorkItem Transactional') {
-            setIsbilling(true)
-        } else {
-            setIsbilling(false)
-        }
-    }
 
     const handle_label_Change = (e, rowid) => {
         const value = e.target.value
@@ -350,7 +340,6 @@ const CreateProject = ({ type }) => {
                                                     options={clients}
                                                     selectedVal={projectFields.client}
                                                     handleChange={(val) => {
-                                                       
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
@@ -392,7 +381,9 @@ const CreateProject = ({ type }) => {
                                                     </FormControl>
                                                     <SelectContent>
                                                         {assets.ProjectStatusData.map((status) => (
-                                                            <SelectItem value={status.key}>{status.value}</SelectItem>
+                                                            <SelectItem key={status.key} value={status.key}>
+                                                                {status.value}
+                                                            </SelectItem>
                                                         ))}
                                                     </SelectContent>
                                                 </Select>
@@ -526,7 +517,6 @@ const CreateProject = ({ type }) => {
                                                     options={billing_type}
                                                     selectedVal={projectFields.billingType}
                                                     handleChange={(val) => {
-                                                        handlebillingChange(val)
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
@@ -577,6 +567,7 @@ const CreateProject = ({ type }) => {
                                                 <FormLabel>Rate</FormLabel>
                                                 <FormControl>
                                                     <Input
+                                                        type="number"
                                                         placeholder="rate"
                                                         value={projectFields.rate}
                                                         onChange={(e) => {
@@ -592,7 +583,7 @@ const CreateProject = ({ type }) => {
                                             </FormItem>
                                         )}
                                     />
-                                    {isbilling && (
+                                    {projectFields.billingType == 'Per Workitem Transactional' && (
                                         <FormField
                                             control={form.control}
                                             name="timePerWorkItem"
