@@ -99,6 +99,9 @@ const EditProject = ({ type }) => {
                     return
                 }
                 setProject(resp.data.data)
+                if (resp.data.data['timePerWorkItem'] !== '') {
+                    setIsbilling(true)
+                }
                 setProjectFields((prev) => {
                     return {
                         ...prev,
@@ -178,11 +181,13 @@ const EditProject = ({ type }) => {
                 toast.error('Please enter rate')
                 return
             }
-            if (data.billingType == 'Per WorkItem Transactional') {
+            if (projectFields['billingType'] == 'Per WorkItem Transactional') {
                 if (key == 'timePerWorkItem') {
                     toast.error('Please enter time in minute')
                     return
                 }
+            } else {
+                projectFields['timePerWorkItem'] = ''
             }
 
             for (let i = 0; i < rows.length; i++) {
@@ -221,6 +226,7 @@ const EditProject = ({ type }) => {
             ]
         })
     }
+
     const addRow = () => {
         setRows((prev) => {
             const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
@@ -238,6 +244,7 @@ const EditProject = ({ type }) => {
             ]
         })
     }
+
     const deleteone = (id) => {
         const updatedrows = rows.map((row) => {
             if (row.checkbox) {
@@ -248,6 +255,7 @@ const EditProject = ({ type }) => {
         let newdata = updatedrows.length > 0 ? updatedrows : []
         setRows(() => newdata)
     }
+
     const deleteAll = () => {
         const updatedrows = rows.map((row) => {
             if (row.checkbox) {
@@ -258,12 +266,14 @@ const EditProject = ({ type }) => {
         let newdata = updatedrows.length > 0 ? updatedrows : []
         setRows(() => newdata)
     }
+
     const delete_history_one = () => {
         const updatedrows = historyrows.filter((row) => !row.checkbox)
         let newdata = updatedrows.length > 0 ? updatedrows : []
 
         setHistoryrows(() => newdata)
     }
+
     const delete_history_All = () => {
         setHistoryrows([])
     }
@@ -311,6 +321,7 @@ const EditProject = ({ type }) => {
             return updatedData
         })
     }
+
     const change_history_All = () => {
         let isChecked = !checkhisotryAll
         setchechistorykAll((prev) => isChecked)
@@ -330,13 +341,6 @@ const EditProject = ({ type }) => {
     const handleSaveClick = () => {
         if (formRef.current) {
             formRef.current.requestSubmit()
-        }
-    }
-    const handlebillingChange = (e) => {
-        if (e == 'Per WorkItem Transactional') {
-            setIsbilling(true)
-        } else {
-            setIsbilling(false)
         }
     }
 
@@ -639,7 +643,7 @@ const EditProject = ({ type }) => {
                                             </FormItem>
                                         )}
                                     />
-                                    {isbilling && (
+                                    {projectFields.billingType == 'Per Workitem Transactional' && (
                                         <FormField
                                             control={form.control}
                                             name="timePerWorkItem"
@@ -718,80 +722,86 @@ const EditProject = ({ type }) => {
                                             </tr>
                                         ) : (
                                             rows.map((row, i) => {
-                                                 return !row.deleteForProject && (
-                                                    <TableRow key={row.id} name="customfields" className="border">
-                                                        <TableCell className="border">
-                                                            <Checkbox onClick={() => changeOne(row, i)} checked={row.checkbox} value={row.checkbox} />
-                                                        </TableCell>
-                                                        <TableCell className="border">{row.id}</TableCell>
-
-                                                        <TableCell className="border">
-                                                            <div className="w-full">
-                                                                <Input
-                                                                    placeholder="label"
-                                                                    onChange={(e) => {
-                                                                        setRows((prev) => {
-                                                                            let updatedData = []
-
-                                                                            prev.map((item, i) => {
-                                                                                if (item.id == row.id) {
-                                                                                    prev[i]['label'] = e.target.value
-                                                                                }
-                                                                                updatedData.push(item)
-                                                                            })
-                                                                            return updatedData
-                                                                        })
-                                                                    }}
-                                                                    value={row.label}
-                                                                    onBlur={(e) => handle_label_Change(e, row.id)}
-                                                                    className="border-none shadow-none"
+                                                return (
+                                                    !row.deleteForProject && (
+                                                        <TableRow key={row.id} name="customfields" className="border">
+                                                            <TableCell className="border">
+                                                                <Checkbox
+                                                                    onClick={() => changeOne(row, i)}
+                                                                    checked={row.checkbox}
+                                                                    value={row.checkbox}
                                                                 />
-                                                            </div>
-                                                        </TableCell>
+                                                            </TableCell>
+                                                            <TableCell className="border">{row.id}</TableCell>
 
-                                                        <TableCell className="border">
-                                                            <div className="flex items-center space-x-2 justify-center">
-                                                                <Select
-                                                                    onValueChange={(value) =>
-                                                                        setRows((prev) => {
-                                                                            let updatedData = []
+                                                            <TableCell className="border">
+                                                                <div className="w-full">
+                                                                    <Input
+                                                                        placeholder="label"
+                                                                        onChange={(e) => {
+                                                                            setRows((prev) => {
+                                                                                let updatedData = []
 
-                                                                            prev.map((item, i) => {
-                                                                                if (item.id == row.id) {
-                                                                                    prev[i]['dataType'] = value
-                                                                                }
-                                                                                updatedData.push(item)
+                                                                                prev.map((item, i) => {
+                                                                                    if (item.id == row.id) {
+                                                                                        prev[i]['label'] = e.target.value
+                                                                                    }
+                                                                                    updatedData.push(item)
+                                                                                })
+                                                                                return updatedData
                                                                             })
-                                                                            return updatedData
-                                                                        })
-                                                                    }
-                                                                    value={row.dataType}
-                                                                    defaultValue={row.dataType}
-                                                                    className="border-none w-full"
-                                                                >
-                                                                    <SelectTrigger className="border-none">
-                                                                        <SelectValue placeholder="Data Type" />
-                                                                    </SelectTrigger>
-                                                                    <SelectContent>
-                                                                        {assets.DataTypes.map((value) => (
-                                                                            <SelectItem key={value.key} value={value.key}>
-                                                                                {value.value}
-                                                                            </SelectItem>
-                                                                        ))}
-                                                                    </SelectContent>
-                                                                </Select>
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell className="border">
-                                                            <Input
-                                                                placeholder="Field Name"
-                                                                name="fieldName"
-                                                                value={row.fieldName}
-                                                                className="border-none shadow-none"
-                                                                disabled={true}
-                                                            />
-                                                        </TableCell>
-                                                    </TableRow>
+                                                                        }}
+                                                                        value={row.label}
+                                                                        onBlur={(e) => handle_label_Change(e, row.id)}
+                                                                        className="border-none shadow-none"
+                                                                    />
+                                                                </div>
+                                                            </TableCell>
+
+                                                            <TableCell className="border">
+                                                                <div className="flex items-center space-x-2 justify-center">
+                                                                    <Select
+                                                                        onValueChange={(value) =>
+                                                                            setRows((prev) => {
+                                                                                let updatedData = []
+
+                                                                                prev.map((item, i) => {
+                                                                                    if (item.id == row.id) {
+                                                                                        prev[i]['dataType'] = value
+                                                                                    }
+                                                                                    updatedData.push(item)
+                                                                                })
+                                                                                return updatedData
+                                                                            })
+                                                                        }
+                                                                        value={row.dataType}
+                                                                        defaultValue={row.dataType}
+                                                                        className="border-none w-full"
+                                                                    >
+                                                                        <SelectTrigger className="border-none">
+                                                                            <SelectValue placeholder="Data Type" />
+                                                                        </SelectTrigger>
+                                                                        <SelectContent>
+                                                                            {assets.DataTypes.map((value) => (
+                                                                                <SelectItem key={value.key} value={value.key}>
+                                                                                    {value.value}
+                                                                                </SelectItem>
+                                                                            ))}
+                                                                        </SelectContent>
+                                                                    </Select>
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell className="border">
+                                                                <Input
+                                                                    placeholder="Field Name"
+                                                                    name="fieldName"
+                                                                    value={row.fieldName}
+                                                                    className="border-none shadow-none"
+                                                                    disabled={true}
+                                                                />
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    )
                                                 )
                                             })
                                         )}

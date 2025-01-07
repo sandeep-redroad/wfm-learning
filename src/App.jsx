@@ -12,7 +12,6 @@ import AuthLayout from '@/Components/AuthLayout'
 import Departments from '@/Pages/Department/Listing/Departments'
 import Clients from '@/Pages/Clients/Listing/Clients'
 import Process from '@/Pages/Process/Listing/Process'
-import ProjectMaster from '@/Pages/ProjectMaster/ProjectMaster'
 import Invoice from '@/Pages/Invoice/Listing/Invoice'
 import CreateProject from '@/Pages/Project/CreateProject'
 import Project from '@/Pages/Project/Listing/Project'
@@ -31,6 +30,9 @@ import LofBusiness from './Pages/LOFbusiness/Listing/LofBusiness'
 import EditProject from './Pages/Project/EditProject'
 import EditClient from './Pages/Clients/EditClient'
 import EditDailyWorkLog from './Pages/DailyWorkLog/EditDailyWorkLog'
+import BillingEntity from './Pages/BillingEntity/Listing/BillingEntity'
+import CreateBillingEntiy from './Pages/BillingEntity/CreateBillingEntity'
+import EditBillingEntiy from './Pages/BillingEntity/EditBillingEntity'
 let router = createBrowserRouter([
     {
         path: '/login',
@@ -128,8 +130,16 @@ let router = createBrowserRouter([
                 Component: Process,
             },
             {
-                path: '/master-settings/project-master',
-                Component: ProjectMaster,
+                path: '/master-settings/billing-entity',
+                Component: BillingEntity,
+            },
+            {
+                path: '/master-settings/billing-entity/new',
+                Component: CreateBillingEntiy,
+            },
+            {
+                path: '/master-settings/billing-entity/:billingEntityId',
+                Component: EditBillingEntiy,
             },
             {
                 path: '/master-settings/employee-mapped',

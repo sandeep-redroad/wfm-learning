@@ -1,17 +1,18 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/Components/ui/form'
 import { Input } from '@/Components/ui/input'
 import { Button } from '@/Components/ui/button'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Textarea } from '@/Components/ui/textarea'
 import { toast } from 'react-toastify'
 import { Card, CardContent } from '@/components/ui/card'
 import ClientService from '@/Service/ClientService'
 
-const CreateClient = () => {
+const EditBillingEntiy = () => {
+    const { clientId } = useParams()
     const formRef = useRef(null)
     const formSchema = z.object({
         client: z.string().min(1, {
@@ -40,16 +41,33 @@ const CreateClient = () => {
         },
     })
 
+    const getClient = async () => {
+        const resp = await ClientService.getClient(clientId)
+        if (resp.data.success) {
+            if (!resp.data.data) {
+                toast.error('Client Not Found')
+                navigate('/clients')
+                return
+            }
+            form.reset({ ...resp.data.data })
+        }
+    }
+
+    useEffect(() => {
+        getClient()
+    }, [clientId])
+
     async function onSubmit(values) {
-        try{
-            const resp = await ClientService.createClient(values)
+        try {
+            const resp = await ClientService.updateClient(clientId, values)
             if (resp.data.success) {
                 navigate('/clients')
             }
-        }catch(err){}
+        } catch (err) {}
     }
 
     function onError(errors, e) {
+        console.log(errors, e)
         const errorKeys = Object.keys(errors)
         if (errorKeys.length > 0 && errors[errorKeys[0]]?.message) {
             toast.error(errors[errorKeys[0]].message)
@@ -203,4 +221,4 @@ const CreateClient = () => {
     )
 }
 
-export default CreateClient
+export default EditBillingEntiy

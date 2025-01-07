@@ -145,7 +145,7 @@ const Datatable = ({ columns, data, totalDataCount,type,allcheck ,setDeleteId,de
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <td
-                                        className={`p-1 text-justify px-3 flex justify-start items-center ${
+                                        className={`p-1 px-3 flex justify-start items-center ${
                                             cell.column.id === 'sl' ? 'w-20' : 'w-1/6'
                                         }`}
                                     >
