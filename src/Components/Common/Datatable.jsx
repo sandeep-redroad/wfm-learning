@@ -5,26 +5,17 @@ import { PaginationWithLinks } from './Pagination'
 import DataTableEnumType from '@/Enums/DataTableTypeEnum'
 import Constent from '@/utils/constent'
 import { format } from 'date-fns'
-import CustomCheckbox from './CustomCheckbox'
+import { Checkbox } from '../ui/checkbox'
 
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
-import { Checkbox } from '@radix-ui/react-checkbox'
-
-const Datatable = ({ columns, data, totalDataCount, type }) => {
+const Datatable = ({ columns, data, totalDataCount,type,allcheck ,setDeleteId,deleteId}) => {
     const location = useLocation()
     const navigate = useNavigate()
     const searchParams = new URLSearchParams(location.search)
     const pageSize = Constent.PAGINATION_SIZE
     const currentPage = parseInt(searchParams.get('page') || 1)
     const tbodyRef = useRef(null)
-    const [isScrollable, setIsScrollable] = useState(false)
+    const [isScrollable, setIsScrollable] = useState(false);
+    const [rowsDelete,setRowsDelete]=useState([])
     const table = useReactTable({
         data,
         columns,
@@ -32,6 +23,7 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
         manualPagination: true,
         rowCount: pageSize,
     })
+    
 
     useEffect(() => {
         const checkIfScrollable = () => {
@@ -50,6 +42,52 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
     const handleRowClick = (rowId) => {
         navigate(`/projects/${rowId}`)
     }
+
+    const handleCheckboxChange=(event, row)=>{
+        
+           if(event){
+            console.log("in event",event)
+            if (!deleteId?.includes(row._id)) {
+                setDeleteId(prevDeleteId => [...prevDeleteId, row._id]);
+               
+              } 
+           }else{
+            console.log("in else",event)
+            if (deleteId?.includes(row._id)) {
+                // If the ID is already in the deleteId array, pop it
+                setDeleteId(prevDeleteId => prevDeleteId.filter(item => item !== row._id));
+              }
+           }
+              console.log("in one check",deleteId);
+        
+       
+       
+
+    }
+    const handleAllChange=(event,rows)=>{
+        console.log("in handleAll change",rows);
+       if(event){
+        rows.map((row,index)=>{
+            if (!deleteId.includes(row.original._id)) {
+                setDeleteId(prevDeleteId => [...prevDeleteId, row.original._id]);
+               
+              } 
+        })
+       }else{
+        setDeleteId([]);
+       }
+        console.log("in one check",deleteId);
+        // if(event){
+        //     for(let i=0;i<id;i++){
+        //         rowsDelete.push(i)
+        //     }
+        //    getRowsToDelete(rowsDelete)
+        // }
+        // console.log(event)
+        // onAllCheckboxChange(event)
+       
+    }
+ 
 
     return (
         <div className="rounded-md">
@@ -73,12 +111,8 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
                                                 key={header.id}
                                                 className=" flex justify-start items-center h-10 align-middle text-white font-medium text-justify px-3 w-20"
                                             >
-                                            {/* <input type="checkbox" className='peer h-4 w-4 shrink-0 rounded-sm border border-neutral-200 shadow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-neutral-900 data-[state=checked]:text-neutral-50 dark:border-neutral-50 dark:focus-visible:ring-neutral-300 dark:data-[state=checked]:bg-neutral-50 dark:data-[state=checked]:text-neutral-900'/> */}
-                                               <CustomCheckbox onCheckedChange={()=>console.log(e.target.value)}/> 
-                                             
-                                             {/* <Checkbox /> */}
-            
-                                              
+                                                {/* <input type="checkbox" className='peer h-4 w-4 shrink-0 rounded-sm border border-neutral-200 shadow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-neutral-900 data-[state=checked]:text-neutral-50 dark:border-neutral-50 dark:focus-visible:ring-neutral-300 dark:data-[state=checked]:bg-neutral-50 dark:data-[state=checked]:text-neutral-900'/> */}
+                                                <Checkbox id="terms" onCheckedChange={(event)=>handleAllChange(event,table.getRowModel().rows)} />
                                             </th>
                                         ) : (
                                             <th
@@ -103,14 +137,13 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <td
-                                        className={`p-1 px-3 flex justify-start items-center ${
+                                        className={`p-1 text-justify px-3 flex justify-start items-center ${
                                             cell.column.id === 'sl' ? 'w-20' : 'w-1/6'
                                         }`}
                                     >
                                         {DataTableEnumType.PROJECT == type ? (
                                             cell.column.id === 'sl' ? (
-                                                <>{(currentPage - 1) * Constent.PAGINATION_SIZE + pI + 1}</> 
-                                               
+                                                <>{(currentPage - 1) * Constent.PAGINATION_SIZE + pI + 1}</>
                                             ) : cell.column.id === 'status' ? (
                                                 <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
                                             ) : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
@@ -119,8 +152,8 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
                                                 <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
                                             )
                                         ) : cell.column.id === 'sl' ? (
-                                            <CustomCheckbox />
-                                        )  : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
+                                          allcheck?(<Checkbox onCheckedChange={(event)=>handleCheckboxChange(event, row.original)} checked={allcheck}/>):(<Checkbox onCheckedChange={(event)=>handleCheckboxChange(event, row.original)}  checked={deleteId?.includes(row.original._id)}/>)
+                                        ) : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
                                             <>{format(cell.getValue(), Constent.DATE_FORMAT)}</>
                                         ) : (
                                             <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
