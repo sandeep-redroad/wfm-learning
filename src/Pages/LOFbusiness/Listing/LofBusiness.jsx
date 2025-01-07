@@ -11,11 +11,14 @@ import Constent from '@/utils/constent'
 import LofBusinessColumn from './LofBusinessColumn'
 import CreateLofBusiness from '../CreateLofBusiness'
 import LofBusinessService from '@/Service/LofBusinessService'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 const LofBusiness = () => {
     const [Lof_business, setLof] = useState([])
     const [totalCount, setTotalCount] = useState(0)
     const [search, setSearch] = useState('')
+    const [allcheck, setAllcheck] = useState(false)
+    const [deleteId, setDeleteId] = useState([])
     const [queryParam, setQueryParam] = useState({
         page: 1,
         search: '',
@@ -56,6 +59,14 @@ const LofBusiness = () => {
         })
     }, [debouncedValue])
 
+    const deleteLofbuisness = () => {
+        const updatedArray = Lof_business.filter((value, index) => {
+            console.log('in filter', index, !deleteId.includes(value._id))
+            return !deleteId.includes(value._id)
+        })
+        setLof(updatedArray)
+    }
+
     return (
         <div>
             <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full">
@@ -67,6 +78,17 @@ const LofBusiness = () => {
                             </DialogTrigger>
                             <CreateLofBusiness getLofBusiness={getLofBusiness} setIsOpen={setIsOpen} />
                         </Dialog>
+                        <DropdownMenu className="ml-[10px] ">
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className={`ml-[10px] ${deleteId.length > 0 ? 'block' : 'hidden'}`}>
+                                    Action
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={deleteLofbuisness}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </CardContent>
             </Card>
@@ -75,7 +97,14 @@ const LofBusiness = () => {
                     <div className="w-full my-2 grid grid-cols-4">
                         <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Lof Business" />
                     </div>
-                    <Datatable columns={LofBusinessColumn()} data={Lof_business} totalDataCount={totalCount} />
+                    <Datatable
+                        columns={LofBusinessColumn()}
+                        data={Lof_business}
+                        totalDataCount={totalCount}
+                        allcheck={allcheck}
+                        deleteId={deleteId}
+                        setDeleteId={setDeleteId}
+                    />
                 </CardContent>
             </Card>
         </div>
