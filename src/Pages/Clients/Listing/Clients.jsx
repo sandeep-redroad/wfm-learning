@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import ClientService from '@/Service/ClientService'
 import { useDebounce } from 'use-debounce'
 import Constent from '@/utils/constent'
+import DataTableEnumType from '@/Enums/DataTableTypeEnum'
 
 const Clients = () => {
     const [clients, setClients] = useState([])
@@ -22,7 +23,7 @@ const Clients = () => {
     const location = useLocation()
     const getClient = async (page = 1) => {
         try {
-            const resp = await ClientService.getClient(queryParam)
+            const resp = await ClientService.getClients(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)
                 setClients(resp.data.data)
@@ -69,7 +70,7 @@ const Clients = () => {
                     <div className="w-full my-2 grid grid-cols-4 mt-5">
                         <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Client" />
                     </div>
-                    <Datatable columns={ClientColumns()} data={clients} totalDataCount={totalCount} />
+                    <Datatable columns={ClientColumns()} data={clients} totalDataCount={totalCount} type={DataTableEnumType.CLIENT} />
                 </CardContent>
             </Card>
         </div>

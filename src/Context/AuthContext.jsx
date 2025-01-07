@@ -37,6 +37,5 @@ export const AuthProvider = ({ children }) => {
             }    
         } catch (err) {}
     }
-    console.log('isAuthenticated : ', isAuthenticated)
     return <AuthContext.Provider value={{ isAuthenticated, login, logout, setUserInfo, userInfo }}>{children}</AuthContext.Provider>
 }

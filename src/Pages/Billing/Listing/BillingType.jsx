@@ -26,7 +26,6 @@ const Billing = () => {
     const location = useLocation()
     const getBillingTypes = async () => {
         try {
-            console.log('queryParam : ', queryParam)
             const resp = await BillingTypeService.getBillingType(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)

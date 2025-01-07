@@ -36,8 +36,16 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
         }
     }, [])
 
-    const handleRowClick = (rowId) => {
-        navigate(`/projects/${rowId}`)
+    const handleRedirect = (row) =>{
+        if(DataTableEnumType.PROJECT == type){
+            navigate(`/projects/${row.id}`)
+        }
+        if(DataTableEnumType.CLIENT == type){
+            navigate(`/clients/${row.client}`)
+        }
+        if(DataTableEnumType.DAILY_WORK_LOG == type){
+            navigate(`/daily-work-log/${row.id}`)
+        }
     }
 
     return (
@@ -83,7 +91,7 @@ const Datatable = ({ columns, data, totalDataCount, type }) => {
                         table.getRowModel().rows.map((row, pI) => (
                             <tr
                                 className="flex w-full border-b my-2 shadow-md cursor-pointer px-1"
-                                onClick={() => (DataTableEnumType.PROJECT == type ? handleRowClick(row.original.id) : false)}
+                                onClick={() => handleRedirect(row.original)}
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <td

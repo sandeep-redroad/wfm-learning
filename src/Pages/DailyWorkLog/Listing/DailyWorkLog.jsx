@@ -14,6 +14,7 @@ import { CalendarIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import DataTableEnumType from '@/Enums/DataTableTypeEnum'
 
 const DailyWorkLog = () => {
     const today = new Date();
@@ -150,7 +151,7 @@ const DailyWorkLog = () => {
                             </Popover>
                         </div>
                     </div>
-                    <Datatable columns={DailyWorkLogColumns()} data={dailyWorkLogs} totalDataCount={totalCount} />
+                    <Datatable columns={DailyWorkLogColumns()} data={dailyWorkLogs} totalDataCount={totalCount} type={DataTableEnumType.DAILY_WORK_LOG} />
                 </CardContent>
             </Card>
         </div>

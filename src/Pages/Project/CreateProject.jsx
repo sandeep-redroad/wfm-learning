@@ -47,7 +47,6 @@ const CreateProject = ({ type }) => {
     const getLofBusiness = async () => {
         try {
             const resp = await LofBusinessService.getLofBusiness()
-            console.log('resp', resp)
             if (resp.data.success) {
                 setLofBusiness(resp.data.data)
             }
@@ -68,13 +67,11 @@ const CreateProject = ({ type }) => {
             if (resp.data.success) {
                 setBillingType(resp.data.data)
             }
-        } catch (err) {
-            console.log('in billing', err)
-        }
+        } catch (err) {}
     }
     const getClient = async () => {
         try {
-            const resp = await ClientService.getClient()
+            const resp = await ClientService.getClients()
             if (resp.data.success) {
                 setClient(resp.data.data)
             }
@@ -114,10 +111,7 @@ const CreateProject = ({ type }) => {
 
     async function onSubmit(data) {
         try {
-            Object.assign(data, noneValidatedValue)
-
-            const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => key !== 'comments' && value == ''))
-
+            const filteredObj = Object.fromEntries(Object.entries(projectFields).filter(([key, value]) => key !== 'comments' && value == ''))
             let key = Object.keys(filteredObj)[0]
 
             if (key == 'lofBusiness') {
@@ -163,13 +157,14 @@ const CreateProject = ({ type }) => {
                     return
                 }
             }
-            data['customFields'] = rows
+            projectFields['customFields'] = rows
 
-            const resp = await ProjectService.createProject(data)
+            const resp = await ProjectService.createProject(projectFields)
             if (resp.data.success) {
                 navigate('/projects')
             }
         } catch (err) {
+            console.log("err : ", err)
             toast.error(err)
         }
     }
@@ -198,6 +193,7 @@ const CreateProject = ({ type }) => {
                 {
                     id: newId,
                     checkbox: false,
+                    deleteForProject : false,
                     label: '',
                     dataType: '',
                     fieldName: '',
@@ -392,7 +388,7 @@ const CreateProject = ({ type }) => {
                                                     </FormControl>
                                                     <SelectContent>
                                                         {assets.ProjectStatusData.map((status) => (
-                                                            <SelectItem value={status.key}>{status.value}</SelectItem>
+                                                            <SelectItem key={status.key} value={status.key}>{status.value}</SelectItem>
                                                         ))}
                                                     </SelectContent>
                                                 </Select>
@@ -576,6 +572,7 @@ const CreateProject = ({ type }) => {
                                                 <FormLabel>Rate</FormLabel>
                                                 <FormControl>
                                                     <Input
+                                                        type="number"
                                                         placeholder="rate"
                                                         value={projectFields.rate}
                                                         onChange={(e) => {

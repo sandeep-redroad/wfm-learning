@@ -44,7 +44,6 @@ const Invoicef = () => {
     const getLofBusiness = async () => {
         try {
             const resp = await LofBusinessService.getLofBusiness()
-            console.log('resp', resp)
             if (resp.data.success) {
                 setLOBprocess(resp.data.data)
             }
