@@ -113,14 +113,12 @@ const CreateProject = ({ type }) => {
     })
 
     async function onSubmit(data) {
-        console.log(" In submit",data)
         try {
             Object.assign(data, noneValidatedValue)
 
             const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => key !== 'comments' && value == ''))
-            console.log("first,",filteredObj)
+
             let key = Object.keys(filteredObj)[0]
-            console.log(key)
 
             if (key == 'lofBusiness') {
                 toast.error('Please select line of business')
@@ -172,7 +170,6 @@ const CreateProject = ({ type }) => {
                 navigate('/projects')
             }
         } catch (err) {
-            console.log("in catch",err)
             toast.error(err)
         }
     }
