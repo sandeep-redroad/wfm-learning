@@ -5,6 +5,10 @@ const InvoiceColumns = () => {
     }
     memoizedColumns = [
         {
+            accessorKey: 'sl',
+            header: 'Sr. No.',
+        },
+        {
             accessorKey: 'id',
             header: 'ID',
         },

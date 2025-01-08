@@ -15,9 +15,11 @@ import { cn } from '@/lib/utils'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import DataTableEnumType from '@/Enums/DataTableTypeEnum'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { toast } from 'react-toastify'
 
 const DailyWorkLog = () => {
-    const today = new Date();
+    const today = new Date()
     const [date, setDate] = useState({
         from: new Date(today.getFullYear(), today.getMonth(), 1),
         to: new Date(today.getFullYear(), today.getMonth() + 1, 0),
@@ -29,6 +31,8 @@ const DailyWorkLog = () => {
     const [searchEmployeeName, setSearchEmployeeName] = useState('')
     const [searchProcess, setSearchProcess] = useState('')
     const [searchBillingType, setSearchBillingType] = useState('')
+    const [allcheck, setAllcheck] = useState(false)
+    const [deleteId, setDeleteId] = useState([])
     const [queryParam, setQueryParam] = useState({
         page: 1,
         search: {
@@ -69,7 +73,15 @@ const DailyWorkLog = () => {
 
     useEffect(() => {
         getDailyWorkLogs()
-    }, [queryParam.page, queryParam.search.projectId, queryParam.search.client, queryParam.search.employeeName, queryParam.search.process, queryParam.search.billingType, queryParam.search.endDate])
+    }, [
+        queryParam.page,
+        queryParam.search.projectId,
+        queryParam.search.client,
+        queryParam.search.employeeName,
+        queryParam.search.process,
+        queryParam.search.billingType,
+        queryParam.search.endDate,
+    ])
 
     useEffect(() => {
         setQueryParam((prev) => {
@@ -87,6 +99,20 @@ const DailyWorkLog = () => {
             }
         })
     }, [date, debounceSearchProjectId, debounceSearchClient, debounceSearchEmployeeName, debounceSearchProcess, debounceSearchBillingType])
+
+    const deleteDailyworklog = async () => {
+        try {
+            const resp = await DailyWorkLogService.deleteDailyWorkLog(deleteId)
+            console.log('response', resp)
+            if (resp.data.success) {
+                toast.success(resp.data.message)
+                getDailyWorkLogs()
+            }
+        } catch (err) {
+            console.log('error', err)
+        }
+    }
+
     return (
         <div>
             <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full">
@@ -95,6 +121,17 @@ const DailyWorkLog = () => {
                         <Link className="button" to="/daily-work-log/new">
                             <Button className="bg-primary-purpal hover:bg-primary-purpal">Add Daily Work Log</Button>
                         </Link>
+                        <DropdownMenu className="ml-[10px] ">
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className={`ml-[10px] ${deleteId.length > 0 ? 'block' : 'hidden'}`}>
+                                    Action
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={deleteDailyworklog}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </CardContent>
             </Card>
@@ -151,7 +188,15 @@ const DailyWorkLog = () => {
                             </Popover>
                         </div>
                     </div>
-                    <Datatable columns={DailyWorkLogColumns()} data={dailyWorkLogs} totalDataCount={totalCount} type={DataTableEnumType.DAILY_WORK_LOG} />
+                    <Datatable
+                        columns={DailyWorkLogColumns()}
+                        data={dailyWorkLogs}
+                        totalDataCount={totalCount}
+                        type={DataTableEnumType.DAILY_WORK_LOG}
+                        allcheck={allcheck}
+                        deleteId={deleteId}
+                        setDeleteId={setDeleteId}
+                    />
                 </CardContent>
             </Card>
         </div>

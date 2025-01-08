@@ -21,6 +21,10 @@ class DailyWorkLogService {
     async updateDailyWorkLog(dailyWorkLogId, data) {
         return await Axios.put(`api/daily_work_log/${dailyWorkLogId}`, data)
     }
+
+    async deleteDailyWorkLog(data){
+        return await Axios.delete("api/daily_work_log",{data})
+    }
 }
 
 export default new DailyWorkLogService()

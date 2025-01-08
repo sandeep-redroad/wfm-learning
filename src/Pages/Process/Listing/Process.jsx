@@ -61,12 +61,7 @@ const Process = () => {
     }, [debouncedValue])
 
     const deleteProcess = async () => {
-        const updatedArray = process.filter((value, index) => {
-            console.log('in filter', index, !deleteId.includes(value._id))
-            return !deleteId.includes(value._id)
-        })
-
-        try {
+     try {
             const resp = await ProcessService.deleteProcess(deleteId)
             console.log('response', resp)
             if (resp.data.success) {

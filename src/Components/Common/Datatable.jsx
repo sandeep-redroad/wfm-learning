@@ -8,6 +8,7 @@ import { format } from 'date-fns'
 import { Checkbox } from '../ui/checkbox'
 
 const Datatable = ({ columns, data, totalDataCount,type,allcheck ,setDeleteId,deleteId}) => {
+    const checkboxRef = useRef(null); 
     const location = useLocation()
     const navigate = useNavigate()
     const searchParams = new URLSearchParams(location.search)
@@ -52,8 +53,7 @@ const Datatable = ({ columns, data, totalDataCount,type,allcheck ,setDeleteId,de
     }
 
     const handleCheckboxChange=(event, row)=>{
-        
-           if(event){
+        if(event){
             console.log("in event",event)
             if (!deleteId?.includes(row._id)) {
                 setDeleteId(prevDeleteId => [...prevDeleteId, row._id]);
@@ -71,6 +71,10 @@ const Datatable = ({ columns, data, totalDataCount,type,allcheck ,setDeleteId,de
        
        
 
+    }
+
+    const handleCheckboxClick=(event)=>{
+        event.stopPropagation();
     }
     const handleAllChange=(event,rows)=>{
         console.log("in handleAll change",rows);
@@ -151,7 +155,7 @@ const Datatable = ({ columns, data, totalDataCount,type,allcheck ,setDeleteId,de
                                     >
                                         {DataTableEnumType.PROJECT == type ? (
                                             cell.column.id === 'sl' ? (
-                                                <>{(currentPage - 1) * Constent.PAGINATION_SIZE + pI + 1}</>
+                                                allcheck?(<Checkbox onCheckedChange={(event)=>handleCheckboxChange(event, row.original)} checked={allcheck}/>):(<Checkbox onClick={(event)=>handleCheckboxClick(event)}  onCheckedChange={(event)=>handleCheckboxChange(event,row.original)}checked={deleteId?.includes(row.original._id)}/>)
                                             ) : cell.column.id === 'status' ? (
                                                 <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
                                             ) : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
@@ -160,7 +164,7 @@ const Datatable = ({ columns, data, totalDataCount,type,allcheck ,setDeleteId,de
                                                 <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
                                             )
                                         ) : cell.column.id === 'sl' ? (
-                                          allcheck?(<Checkbox onCheckedChange={(event)=>handleCheckboxChange(event, row.original)} checked={allcheck}/>):(<Checkbox onCheckedChange={(event)=>handleCheckboxChange(event, row.original)}  checked={deleteId?.includes(row.original._id)}/>)
+                                          allcheck?(<Checkbox onCheckedChange={(event)=>handleCheckboxChange(event, row.original)} checked={allcheck}/>):(<Checkbox onClick={(event)=>handleCheckboxClick(event)}  onCheckedChange={(event)=>handleCheckboxChange(event, row.original)}  checked={deleteId?.includes(row.original._id)}/>)
                                         ) : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
                                             <>{format(cell.getValue(), Constent.DATE_FORMAT)}</>
                                         ) : (

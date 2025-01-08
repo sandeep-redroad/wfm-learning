@@ -21,6 +21,9 @@ class ProjectService {
     async updateProject(projectId, data) {
         return await Axios.put(`api/project/${projectId}`, data)
     }
+    async deleteProject(data){
+        return await Axios.delete(`api/project`,{data})
+    }
 }
 
 export default new ProjectService()

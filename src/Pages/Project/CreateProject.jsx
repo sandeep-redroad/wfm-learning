@@ -564,7 +564,7 @@ const CreateProject = ({ type }) => {
                                         name="rate"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>{isbilling?"Rate Per WorkItem":"Rate Per Hour"}</FormLabel>
+                                                <FormLabel>{projectFields.billingType=="Per WorkItem Transactional"?"Rate Per WorkItem":"Rate Per Hour"}</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         type="number"

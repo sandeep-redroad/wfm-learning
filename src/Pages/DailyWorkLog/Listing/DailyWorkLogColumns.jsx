@@ -5,6 +5,10 @@ const DailyWorkLogColumns = () => {
     }
     memoizedColumns = [
         {
+            accessorKey: 'sl',
+            header: 'Sr. No.',
+        },
+        {
             accessorKey: 'id',
             header: 'Id',
         },
