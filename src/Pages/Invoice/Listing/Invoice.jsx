@@ -16,7 +16,7 @@ const Invoice = () => {
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-between items-center">
                         <Link className="button" to="/invoices/new">
-                            <Button className="bg-primary-purpal hover:bg-primary-purpal">Generate Invoice</Button>
+                            <Button className="bg-primary-purpal hover:bg-primary-purpal">Add Invoice</Button>
                         </Link>
                     </div>
                 </CardContent>

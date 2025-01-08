@@ -126,7 +126,7 @@ let router = createBrowserRouter([
                 Component: LofBusiness,
             },
             {
-                path: '/master-settings/processes',
+                path: '/master-settings/process',
                 Component: Process,
             },
             {

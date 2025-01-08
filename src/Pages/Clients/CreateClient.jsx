@@ -22,10 +22,8 @@ const CreateClient = () => {
         state: z.string().optional(),
         country: z.string().optional(),
         pinCode: z
-            .number({
-                message: 'Pin Code should be number',
-            })
-            .optional(),
+            .string()
+            .optional()
     })
     const navigate = useNavigate()
     const form = useForm({
@@ -36,17 +34,17 @@ const CreateClient = () => {
             city: '',
             state: '',
             country: '',
-            pinCode: null,
+            pinCode: '',
         },
     })
 
     async function onSubmit(values) {
-        try{
+        try {
             const resp = await ClientService.createClient(values)
             if (resp.data.success) {
                 navigate('/clients')
             }
-        }catch(err){}
+        } catch (err) {}
     }
 
     function onError(errors, e) {
@@ -114,7 +112,8 @@ const CreateClient = () => {
                                                         {...field}
                                                         value={field.value || ''}
                                                         onChange={(e) => {
-                                                            const value = e.target.value ? Number(e.target.value) : ''
+                                                            let value = e.target.value ? Number(e.target.value) : '';
+                                                            value = isNaN(value) ? '' : String(value)
                                                             field.onChange(value)
                                                         }}
                                                     />

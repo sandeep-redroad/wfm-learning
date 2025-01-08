@@ -1,7 +1,7 @@
 import Axios from '@/Axios'
 
 class ProjectService {
-    async getProjects(data) {
+    async getProjects(data = {}) {
         let postData = JSON.parse(JSON.stringify(data))
         const queryString = new URLSearchParams({
             ...postData.search,

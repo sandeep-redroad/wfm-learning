@@ -10,7 +10,7 @@ const ProjectColumns = () => {
         },
         {
             accessorKey: 'id',
-            header: 'ID',
+            header: 'Project Id',
         },
         {
             accessorKey: 'client',
