@@ -10,11 +10,15 @@ import { useDebounce } from 'use-debounce'
 import Constent from '@/utils/constent'
 import DataTableEnumType from '@/Enums/DataTableTypeEnum'
 import BillingEntityService from '@/Service/BillingEntityService'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { toast } from 'react-toastify'
 const BillingEntity = () => {
     const [billingEntity, setBillingEntity] = useState([])
     const [totalCount, setTotalCount] = useState(0)
     const [search, setSearch] = useState('')
     const [debouncedValue] = useDebounce(search, Constent.DEBOUNCE_DELAY)
+    const [allcheck, setAllcheck] = useState(false)
+    const [deleteId, setDeleteId] = useState([])
     const [queryParam, setQueryParam] = useState({
         page: 1,
         search: '',
@@ -54,6 +58,19 @@ const BillingEntity = () => {
         getBillingEntity()
     }, [queryParam.page, queryParam.search])
 
+    const deleteBillingentity = async () => {
+        try {
+            const resp = await BillingEntityService.deleteBillingentity(deleteId)
+            console.log('response', resp)
+            if (resp.data.success) {
+                toast.success(resp.data.message)
+                getBillingEntity()
+            }
+        } catch (err) {
+            console.log('error', err)
+        }
+    }
+
     return (
         <div className="">
             <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full">
@@ -62,6 +79,17 @@ const BillingEntity = () => {
                         <Link to="/master-settings/billing-entity/new">
                             <Button className="bg-primary-purpal hover:bg-primary-purpal">Add Billing Entity</Button>
                         </Link>
+                        <DropdownMenu className="ml-[10px] ">
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className={`ml-[10px] ${deleteId.length > 0 ? 'block' : 'hidden'}`}>
+                                    Action
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={deleteBillingentity}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </CardContent>
             </Card>
@@ -70,7 +98,15 @@ const BillingEntity = () => {
                     <div className="w-full my-2 grid grid-cols-4 mt-5">
                         <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Billing Entity" />
                     </div>
-                    <Datatable columns={BillingEntityColumns()} data={billingEntity} totalDataCount={totalCount} type={DataTableEnumType.BILLING_ENTITY} />
+                    <Datatable
+                        columns={BillingEntityColumns()}
+                        data={billingEntity}
+                        totalDataCount={totalCount}
+                        type={DataTableEnumType.BILLING_ENTITY}
+                        allcheck={allcheck}
+                        deleteId={deleteId}
+                        setDeleteId={setDeleteId}
+                    />
                 </CardContent>
             </Card>
         </div>

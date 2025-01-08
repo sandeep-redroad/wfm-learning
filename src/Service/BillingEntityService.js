@@ -19,6 +19,10 @@ class BillingEntityService{
     async updateBillingEntity(billingEntityId, data){
         return await Axios.put(`api/billing_entity/${billingEntityId}`, data)
     }
+
+    async deleteBillingentity(data){
+        return await Axios.delete('api/billing_entity',{data})
+    }
 }
 
 export default (new BillingEntityService);
