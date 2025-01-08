@@ -36,8 +36,8 @@ const SidebarMenu = {
             url: '/master-settings',
             items: [
                 {
-                    title: 'Processes',
-                    url: '/master-settings/processes',
+                    title: 'Process',
+                    url: '/master-settings/process',
                     items: [],
                 },
                 {

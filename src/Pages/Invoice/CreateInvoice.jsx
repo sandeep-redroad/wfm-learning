@@ -26,15 +26,15 @@ import BillingTypeService from '@/Service/BillingTypeService'
 
 import ClientService from '@/Service/ClientService'
 import ProcessService from '@/Service/ProcessService'
+import ProjectService from '@/Service/ProjectService'
 
 const Invoicef = () => {
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
     const [lob_processes, setLOBprocess] = useState([])
-    const [departments, setDepartment] = useState([])
+    const [projects, setProjects] = useState([])
     const [clients, setClient] = useState([])
-    const [lofBusiness, setLofBusiness] = useState([])
     const [invoice_date, setInvoiceDate] = useState(format(new Date(), Constent.DATE_FORMAT))
     const [start_date, setStartDate] = useState(format(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1), Constent.DATE_FORMAT))
     const [isbilling, setIsbilling] = useState(false)
@@ -43,10 +43,17 @@ const Invoicef = () => {
     const [process, setProcess] = useState([])
     const [billing_type, setBillingType] = useState([])
     const [noneValidatedValue, setNoneValidatedValue] = useState({
-        lob_process: '',
         client: '',
+        billingType: '',
         department: '',
         projectlead: '',
+        date: '',
+        billingFrom: '',
+        billingFromAddress: '',
+        billingTo: '',
+        billingToAddress: '',
+        billingStartDate: '',
+        billingEndDate: '',
     })
 
     const form = useForm({
@@ -58,22 +65,44 @@ const Invoicef = () => {
         },
     })
 
-    const getLofBusiness = async () => {
+    // const getLofBusiness = async () => {
+    //     try {
+    //         const resp = await LofBusinessService.getLofBusiness()
+    //         if (resp.data.success) {
+    //             setLOBprocess(resp.data.data)
+    //         }
+    //         console.log(lob_processes)
+    //     } catch (err) {}
+    // }
+
+    const getProjects = async () => {
         try {
-            const resp = await LofBusinessService.getLofBusiness()
-            if (resp.data.success) {
-                setLOBprocess(resp.data.data)
+            let queryParam = {
+                search: {
+                    client: noneValidatedValue.client,
+                    billingType: noneValidatedValue.billingType,
+                },
             }
-            console.log(lob_processes)
+            const resp = await ProjectService.getProjects(queryParam)
+            if (resp.data.success) {
+                setProjects(resp.data.data)
+            }
+            console.log('resp l : ', resp)
         } catch (err) {}
     }
 
     useEffect(() => {
-        getLofBusiness()
+        // getLofBusiness()
         getClient()
         getBillingTypes()
         getProcess()
     }, [])
+
+    useEffect(() => {
+        if (noneValidatedValue.client !== '' && noneValidatedValue.billingType !== '') {
+            getProjects()
+        }
+    }, [noneValidatedValue.client, noneValidatedValue.billingType])
 
     const getBillingTypes = async () => {
         try {
@@ -152,6 +181,7 @@ const Invoicef = () => {
                     id: newId,
                     checkbox: false,
                     enable: false,
+                    projectId: '',
                     process: '',
                     billingtype: '',
                     rate: '',
@@ -447,7 +477,7 @@ const Invoicef = () => {
                                                 </td>
                                             </tr>
                                         ) : (
-                                            rows.map((row, i) => (
+                                            rows.map((row, pi) => (
                                                 <TableRow key={row.id} name="process" className="border">
                                                     <TableCell className="border">
                                                         <Checkbox onClick={() => changeOne(row, i)} checked={row.checkbox} value={row.checkbox} />
@@ -457,15 +487,16 @@ const Invoicef = () => {
                                                     <TableCell className="border">
                                                         <div className="w-full">
                                                             <SearchableDropdown
-                                                                options={clients}
-                                                                selectedVal={row.process}
+                                                                options={projects}
+                                                                selectedVal={row.projectId}
                                                                 handleChange={(val) => {
+                                                                    console.log(val ,row)
                                                                     setRows((prev) => {
                                                                         let updatedData = []
 
                                                                         prev.map((item, i) => {
                                                                             if (item.id == row.id) {
-                                                                                prev[i]['process'] = val
+                                                                                prev[i]['projectId'] = val
                                                                             }
                                                                             updatedData.push(item)
                                                                         })
@@ -473,7 +504,9 @@ const Invoicef = () => {
                                                                     })
                                                                 }}
                                                                 placeholder="Project"
-                                                                label="client"
+                                                                label="id"
+                                                                type="inoviceProjectListing"
+                                                                className="border-none shadow-none ring-0 focus:ring-0 focus-visible:ring-0"
                                                             />
                                                         </div>
                                                     </TableCell>
@@ -498,6 +531,7 @@ const Invoicef = () => {
                                                                 }}
                                                                 placeholder="Process"
                                                                 label="process"
+                                                                className="border-none shadow-none ring-0 focus:ring-0 focus-visible:ring-0"
                                                             />
                                                         </div>
                                                     </TableCell>
@@ -512,7 +546,7 @@ const Invoicef = () => {
 
                                                                         prev.map((item, i) => {
                                                                             if (item.id == row.id) {
-                                                                                prev[i]['work_item'] = e.target.value
+                                                                                prev[i]['workItem'] = e.target.value
                                                                             }
                                                                             updatedData.push(item)
                                                                         })
@@ -532,7 +566,7 @@ const Invoicef = () => {
 
                                                                     prev.map((item, i) => {
                                                                         if (item.id == row.id) {
-                                                                            prev[i]['hours'] = e.target.value
+                                                                            prev[i]['rate'] = e.target.value
                                                                         }
                                                                         updatedData.push(item)
                                                                     })
@@ -551,7 +585,7 @@ const Invoicef = () => {
 
                                                                     prev.map((item, i) => {
                                                                         if (item.id == row.id) {
-                                                                            prev[i]['work_item'] = e.target.value
+                                                                            prev[i]['amount'] = e.target.value
                                                                         }
                                                                         updatedData.push(item)
                                                                     })

@@ -23,10 +23,8 @@ const EditClient = () => {
         state: z.string().optional(),
         country: z.string().optional(),
         pinCode: z
-            .number({
-                message: 'Pin Code should be number',
-            })
-            .optional(),
+            .string()
+            .optional()
     })
     const navigate = useNavigate()
     const form = useForm({
@@ -37,7 +35,7 @@ const EditClient = () => {
             city: '',
             state: '',
             country: '',
-            pinCode: null,
+            pinCode: '',
         },
     })
 
@@ -132,7 +130,8 @@ const EditClient = () => {
                                                         {...field}
                                                         value={field.value || ''}
                                                         onChange={(e) => {
-                                                            const value = e.target.value ? Number(e.target.value) : ''
+                                                            let value = e.target.value ? Number(e.target.value) : '';
+                                                            value = isNaN(value) ? '' : String(value)
                                                             field.onChange(value)
                                                         }}
                                                     />
