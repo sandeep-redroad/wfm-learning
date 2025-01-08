@@ -3,7 +3,7 @@ import Axios from "@/Axios";
 
 class ClientService{
 
-    async getClient(data){
+    async getClients(data = {}){
         const queryString = new URLSearchParams(data).toString();
         return await Axios.get(`api/client/get_pagination?${queryString}`)
     }

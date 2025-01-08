@@ -26,7 +26,7 @@ const Clients = () => {
     const location = useLocation()
     const getClient = async (page = 1) => {
         try {
-            const resp = await ClientService.getClient(queryParam)
+            const resp = await ClientService.getClients(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)
                 setClients(resp.data.data)
@@ -109,8 +109,7 @@ const Clients = () => {
                         allcheck={allcheck}
                         deleteId={deleteId}
                         setDeleteId={setDeleteId}
-                    />
-                </CardContent>
+                    />                </CardContent>
             </Card>
         </div>
     )

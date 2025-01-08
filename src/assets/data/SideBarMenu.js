@@ -60,6 +60,11 @@ const SidebarMenu = {
                     url: '/master-settings/employee-mapped',
                     items: [],
                 },
+                {
+                    title: 'Billing Entity',
+                    url: '/master-settings/billing-entity',
+                    items: [],
+                },
             ],
         },
     ],

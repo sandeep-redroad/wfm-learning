@@ -10,15 +10,16 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import SearchableDropdown from '../../Components/Common/SearchableDropdown'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import ProjectService from '@/Service/ProjectService'
 import { useAuth } from '@/Context/AuthContext'
 import DailyWorkLogService from '@/Service/DailyWorkLogService'
 import Constent from '@/utils/constent'
 
-const CreateDailyWorkLog = () => {
+const EditDailyWorkLog = () => {
     const navigate = useNavigate()
     const form = useForm()
+    const { dailyWorkLogId } = useParams()
     const { userInfo } = useAuth()
     const formRef = useRef(null)
     const [date, setDate] = useState(format(new Date(), Constent.DATE_FORMAT))
@@ -56,6 +57,32 @@ const CreateDailyWorkLog = () => {
         } catch (err) {}
     }
 
+    const getDailyWorkLog = async () => {
+        try {
+            const resp = await DailyWorkLogService.getDailyWork(dailyWorkLogId)
+            if (resp.data.success) {
+                if (!resp.data.data) {
+                    navigate('/daily-work-log')
+                    return
+                }
+                setProduct(resp.data.data.project)
+                setCustomFields([...resp.data.data.customFields])
+                setNoneValidatedValue((prev) => {
+                    let customFieldData = {}
+                    resp.data.data.customFields.map((fields) => {
+                        customFieldData[fields['projectExtraFiled']['_id']] = fields
+                    })
+                    return {
+                        ...prev,
+                        ...resp.data.data,
+                        date : format(resp.data.data.date, Constent.DATE_FORMAT),
+                        customFields: customFieldData,
+                    }
+                })
+            }
+        } catch (err) {}
+    }
+
     const getProject = async (projectId) => {
         try {
             const resp = await ProjectService.getProject(projectId)
@@ -74,8 +101,9 @@ const CreateDailyWorkLog = () => {
     }
 
     useEffect(() => {
+        getDailyWorkLog()
         getProjects()
-    }, [])
+    }, [dailyWorkLogId])
 
     async function onSubmit(data) {
         try {
@@ -106,7 +134,9 @@ const CreateDailyWorkLog = () => {
             let postData = JSON.parse(JSON.stringify(noneValidatedValue))
             postData['customFields'] = customFieldWithData
             postData['date'] = String(postData['date'])
-            const resp = await DailyWorkLogService.createDailyWorkLog(postData)
+            delete postData['project']
+            delete postData['created_at']
+            const resp = await DailyWorkLogService.updateDailyWorkLog(dailyWorkLogId,postData)
             if (resp.data.success) {
                 navigate('/daily-work-log')
             }
@@ -258,8 +288,8 @@ const CreateDailyWorkLog = () => {
                                                             }
                                                         })
                                                     }
+                                                    value={noneValidatedValue.workItem}
                                                     type="number"
-                                                    min="0"
                                                     placeholder="Work Items"
                                                 />
                                             </FormControl>
@@ -296,6 +326,7 @@ const CreateDailyWorkLog = () => {
                                                             }
                                                         })
                                                     }
+                                                    value={noneValidatedValue.workedHours}
                                                     type="text"
                                                     placeholder="Worked Hours"
                                                 />
@@ -323,27 +354,33 @@ const CreateDailyWorkLog = () => {
                                     <hr className="mt-[1.75rem] mb-[1.75rem]" />
                                     <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                         {customFields.map((cfield) => {
-                                            return cfield.dataType !== 'date' ? (
+                                            return cfield['projectExtraFiled'].dataType !== 'date' ? (
                                                 <FormField
                                                     control={form.control}
-                                                    name={cfield.fieldName}
+                                                    name={cfield['projectExtraFiled'].fieldName}
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <FormLabel>{cfield.label}</FormLabel>
+                                                            <FormLabel>{cfield['projectExtraFiled'].label}</FormLabel>
                                                             <FormControl>
                                                                 <Input
-                                                                    placeholder={cfield.label}
-                                                                    type={cfield.dataType}
-                                                                    value={noneValidatedValue.customFields[cfield['_id']]['value']}
+                                                                    placeholder={cfield['projectExtraFiled'].label}
+                                                                    type={cfield['projectExtraFiled'].dataType}
+                                                                    value={
+                                                                        noneValidatedValue.customFields[cfield['projectExtraFiled']['_id']]['value']
+                                                                    }
                                                                     onChange={(e) => {
                                                                         setNoneValidatedValue((prev) => {
-                                                                            prev.customFields[cfield['_id']]['value'] = e.target.value
+                                                                            prev.customFields[cfield['projectExtraFiled']['_id']]['value'] =
+                                                                                e.target.value
                                                                             return prev
                                                                         })
                                                                         setCustomFields((prev) => {
                                                                             let updatedCustomeField = []
                                                                             prev.map((val) => {
-                                                                                if (val['_id'] == cfield['_id']) {
+                                                                                if (
+                                                                                    val['projectExtraFiled']['_id'] ==
+                                                                                    cfield['projectExtraFiled']['_id']
+                                                                                ) {
                                                                                     val['value'] = e.target.value
                                                                                 }
                                                                                 updatedCustomeField.push(val)
@@ -359,10 +396,10 @@ const CreateDailyWorkLog = () => {
                                             ) : (
                                                 <FormField
                                                     control={form.control}
-                                                    name={cfield.fieldName}
+                                                    name={cfield['projectExtraFiled'].fieldName}
                                                     render={({ field }) => (
                                                         <FormItem className="flex flex-col">
-                                                            <FormLabel>{cfield.label}</FormLabel>
+                                                            <FormLabel>{cfield['projectExtraFiled'].label}</FormLabel>
                                                             <Popover>
                                                                 <PopoverTrigger asChild>
                                                                     <FormControl>
@@ -379,21 +416,25 @@ const CreateDailyWorkLog = () => {
                                                                 <PopoverContent className="w-auto p-0" align="start">
                                                                     <Calendar
                                                                         mode="single"
-                                                                        selected={cfield['value']}
+                                                                        selected={field['value']}
                                                                         onSelect={(e) => {
                                                                             setNoneValidatedValue((prev) => {
-                                                                                if (prev.customFields[cfield['_id']] !== undefined) {
-                                                                                    prev.customFields[cfield['_id']]['value'] = format(
-                                                                                        e,
-                                                                                        Constent.DATE_FORMAT
-                                                                                    )
+                                                                                if (
+                                                                                    prev.customFields[cfield['projectExtraFiled']['_id']] !==
+                                                                                    undefined
+                                                                                ) {
+                                                                                    prev.customFields[cfield['projectExtraFiled']['_id']]['value'] =
+                                                                                        format(e, Constent.DATE_FORMAT)
                                                                                 }
                                                                                 return prev
                                                                             })
                                                                             setCustomFields((prev) => {
                                                                                 let updatedCustomeField = []
                                                                                 prev.map((val) => {
-                                                                                    if (val['_id'] == cfield['_id']) {
+                                                                                    if (
+                                                                                        val['projectExtraFiled']['_id'] ==
+                                                                                        cfield['projectExtraFiled']['_id']
+                                                                                    ) {
                                                                                         val['value'] = e
                                                                                     }
                                                                                     updatedCustomeField.push(val)
@@ -421,4 +462,4 @@ const CreateDailyWorkLog = () => {
     )
 }
 
-export default CreateDailyWorkLog
+export default EditDailyWorkLog

@@ -11,11 +11,11 @@ import { toast } from 'react-toastify'
 import { Card, CardContent } from '@/components/ui/card'
 import ClientService from '@/Service/ClientService'
 
-const CreateClient = () => {
+const CreateBillingEntiy = () => {
     const formRef = useRef(null)
     const formSchema = z.object({
-        client: z.string().min(1, {
-            message: 'Client is required',
+        billingEntity: z.string().min(1, {
+            message: 'Billing Entity is required',
         }),
         address: z.string().optional(),
         city: z.string().optional(),
@@ -69,7 +69,7 @@ const CreateClient = () => {
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
-                            <Link className="button" to="/clients">
+                            <Link className="button" to="/master-settings/billing-entity">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                             </Link>
                             <Button className="bg-primary-purpal hover:bg-primary-purpal" onClick={handleSaveClick}>
@@ -87,14 +87,14 @@ const CreateClient = () => {
                                 <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                     <FormField
                                         control={form.control}
-                                        name="client"
+                                        name="billingEntity"
                                         render={({ field }) => (
                                             <FormItem className="space-y-1">
-                                                <FormLabel>Client</FormLabel>
+                                                <FormLabel>Billing Entity</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="client"
+                                                        placeholder="Billing Entity"
                                                         {...field}
                                                     />
                                                 </FormControl>
@@ -203,4 +203,4 @@ const CreateClient = () => {
     )
 }
 
-export default CreateClient
+export default CreateBillingEntiy

@@ -61,7 +61,6 @@ const Invoicef = () => {
     const getLofBusiness = async () => {
         try {
             const resp = await LofBusinessService.getLofBusiness()
-            console.log('resp', resp)
             if (resp.data.success) {
                 setLOBprocess(resp.data.data)
             }
@@ -88,7 +87,7 @@ const Invoicef = () => {
     }
     const getClient = async () => {
         try {
-            const resp = await ClientService.getClient()
+            const resp = await ClientService.getClients()
             if (resp.data.success) {
                 setClient(resp.data.data)
             }
@@ -441,7 +440,7 @@ const Invoicef = () => {
                                     <TableBody>
                                         {rows.length == 0 ? (
                                             <tr>
-                                                <td colspan="6">
+                                                <td colSpan="6">
                                                     <h6 className="text-center" style={{ margin: 0 }}>
                                                         No Data
                                                     </h6>

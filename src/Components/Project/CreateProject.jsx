@@ -46,11 +46,9 @@ const CreateProject = ({ type }) => {
     const getLofBusiness = async () => {
         try {
             const resp = await LofBusinessService.getLofBusiness()
-            console.log('resp', resp)
             if (resp.data.success) {
                 setLofBusiness(resp.data.data)
             }
-            console.log(lob_processes)
         } catch (err) {}
     }
 
@@ -68,13 +66,11 @@ const CreateProject = ({ type }) => {
             if (resp.data.success) {
                 setBillingType(resp.data.data)
             }
-        } catch (err) {
-            console.log('in billing', err)
-        }
+        } catch (err) {}
     }
     const getClient = async () => {
         try {
-            const resp = await ClientService.getClient()
+            const resp = await ClientService.getClients()
             if (resp.data.success) {
                 setClient(resp.data.data)
             }

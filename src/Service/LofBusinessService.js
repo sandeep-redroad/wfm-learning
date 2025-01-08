@@ -9,7 +9,6 @@ class LofBusinessService{
     }
 
     async createLofBusiness(data){
-        console.log("data",data)
         return await Axios.post("api/lof_business", data)
     }
     async deleteLofBusiness(data){

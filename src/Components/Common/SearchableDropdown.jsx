@@ -5,7 +5,6 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
     const [query, setQuery] = useState('')
     const [isOpen, setIsOpen] = useState(false)
     const inputRef = useRef(null)
-
     useEffect(() => {
         document.addEventListener('click', toggle)
         return () => document.removeEventListener('click', toggle)
@@ -30,10 +29,10 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
     }
 
     const filter = (options) => {
+        
         return (
             options.length > 0 &&
             options.filter((option) => {
-                
                 return option[label]?.toLowerCase().indexOf(query.toLowerCase()) > -1
             })
         )

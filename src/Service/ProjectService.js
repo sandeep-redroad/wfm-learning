@@ -17,6 +17,10 @@ class ProjectService {
     async createProject(data) {
         return await Axios.post('api/project', data)
     }
+
+    async updateProject(projectId, data) {
+        return await Axios.put(`api/project/${projectId}`, data)
+    }
 }
 
 export default new ProjectService()
