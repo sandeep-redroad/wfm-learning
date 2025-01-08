@@ -10,6 +10,7 @@ import { useLocation } from 'react-router-dom'
 import DepartmentService from '@/Service/DepartmentService'
 import { useDebounce } from 'use-debounce'
 import Constent from '@/utils/constent'
+import { toast } from 'react-toastify'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 const Departments = () => {
@@ -59,12 +60,21 @@ const Departments = () => {
         })
     }, [debouncedValue])
 
-    const deleteDepartment = () => {
+    const deleteDepartment = async () => {
         const updatedArray = department.filter((value, index) => {
             console.log('in filter', index, !deleteId.includes(value._id))
             return !deleteId.includes(value._id)
         })
-        setDepartment(updatedArray)
+        try {
+            const resp = await DepartmentService.deleteDepartment(deleteId)
+            console.log('response', resp)
+            if (resp.data.success) {
+                toast.success(resp.data.message)
+                getDepartment()
+            }
+        } catch (err) {
+            console.log('error', err)
+        }
     }
 
     return (

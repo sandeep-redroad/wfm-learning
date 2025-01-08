@@ -21,6 +21,8 @@ Axios.interceptors.response.use(
     (response) => {
         if(response.status !== 200 && response.data?.success){
             toast.success(response.data.message)
+        }else {
+            toast.success(response.status.message)
         }
         return response
     },

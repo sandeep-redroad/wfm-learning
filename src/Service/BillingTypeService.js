@@ -11,6 +11,10 @@ class BillingTypeService{
     async createBillingType(data){
         return await Axios.post("api/billingType", data)
     }
+
+    async deleteBillingType(data){
+        return await Axios.delete("api/billingType",{data})
+    }
 }
 
 export default (new BillingTypeService);

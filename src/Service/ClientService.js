@@ -11,6 +11,10 @@ class ClientService{
     async createClient(data){
         return await Axios.post("api/client", data)
     }
+
+    async deleteClients(data){
+        return await Axios.delete("api/client",{data})
+    }
 }
 
 export default (new ClientService);

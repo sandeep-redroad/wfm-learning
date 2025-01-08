@@ -11,6 +11,10 @@ class ProcessService{
     async createProcess(data){
         return await Axios.post("api/process", data)
     }
+    async deleteProcess(data){
+       
+        return await Axios.delete("api/process",{data})
+    }
 }
 
 export default (new ProcessService);

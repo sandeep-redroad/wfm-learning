@@ -11,6 +11,9 @@ class DepartmentService{
     async createDepartment(data){
         return await Axios.post("api/department", data)
     }
+    async deleteDepartment(data){
+        return await Axios.delete("api/department",{data})
+    }
 }
 
 export default (new DepartmentService);

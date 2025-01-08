@@ -456,7 +456,7 @@ const Invoicef = () => {
                                                     <TableCell className="border">{row.id}</TableCell>
 
                                                     <TableCell className="border">
-                                                        <div className="w-full">
+                                                        <div className="w-full border-none">
                                                             <SearchableDropdown
                                                                 options={clients}
                                                                 selectedVal={row.process}
@@ -475,12 +475,13 @@ const Invoicef = () => {
                                                                 }}
                                                                 placeholder="Project"
                                                                 label="client"
+                                                                className="border-none"
                                                             />
                                                         </div>
                                                     </TableCell>
 
                                                     <TableCell className="border">
-                                                        <div className="w-full">
+                                                        <div className="w-full border-none">
                                                             <SearchableDropdown
                                                                 options={process}
                                                                 selectedVal={row.process}
@@ -499,6 +500,7 @@ const Invoicef = () => {
                                                                 }}
                                                                 placeholder="Process"
                                                                 label="process"
+                                                                className="border-none"
                                                             />
                                                         </div>
                                                     </TableCell>

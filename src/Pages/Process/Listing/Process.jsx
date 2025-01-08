@@ -11,14 +11,8 @@ import { useLocation } from 'react-router-dom'
 import ProcessService from '@/Service/ProcessService'
 import { useDebounce } from 'use-debounce'
 import Constent from '@/utils/constent'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-   
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { toast } from 'react-toastify'
 
 const Process = () => {
     const [process, setProcess] = useState([])
@@ -27,7 +21,7 @@ const Process = () => {
     const location = useLocation()
     const [search, setSearch] = useState('')
     const [debouncedValue] = useDebounce(search, Constent.DEBOUNCE_DELAY)
-   
+
     const [allcheck, setAllcheck] = useState(false)
     const [deleteId, setDeleteId] = useState([])
 
@@ -66,13 +60,22 @@ const Process = () => {
         })
     }, [debouncedValue])
 
-  
-    const deleteProcess = () => {
+    const deleteProcess = async () => {
         const updatedArray = process.filter((value, index) => {
             console.log('in filter', index, !deleteId.includes(value._id))
             return !deleteId.includes(value._id)
         })
-        setProcess(updatedArray)
+
+        try {
+            const resp = await ProcessService.deleteProcess(deleteId)
+            console.log('response', resp)
+            if (resp.data.success) {
+                toast.success(resp.data.message)
+                getProcess()
+            }
+        } catch (err) {
+            console.log('error', err)
+        }
     }
     const handleSearch = (e) => {
         console.log('e : ', e)

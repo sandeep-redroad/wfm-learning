@@ -12,6 +12,7 @@ import { useDebounce } from 'use-debounce'
 import Constent from '@/utils/constent'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 const Billing = () => {
@@ -61,12 +62,21 @@ const Billing = () => {
         })
     }, [debouncedValue])
 
-    const deleteBillingType = () => {
+    const deleteBillingType = async () => {
         const updatedArray = billingTypes.filter((value, index) => {
             console.log('in filter', index, !deleteId.includes(value._id))
             return !deleteId.includes(value._id)
         })
-        setBillingTypes(updatedArray)
+        try {
+            const resp = await BillingTypeService.deleteBillingType(deleteId)
+            console.log('response', resp)
+            if (resp.data.success) {
+                toast.success(resp.data.message)
+                getBillingTypes()
+            }
+        } catch (err) {
+            console.log('error', err)
+        }
     }
 
     return (

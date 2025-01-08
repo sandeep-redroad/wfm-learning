@@ -11,6 +11,7 @@ import Constent from '@/utils/constent'
 import LofBusinessColumn from './LofBusinessColumn'
 import CreateLofBusiness from '../CreateLofBusiness'
 import LofBusinessService from '@/Service/LofBusinessService'
+import { toast } from 'react-toastify'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 const LofBusiness = () => {
@@ -59,12 +60,21 @@ const LofBusiness = () => {
         })
     }, [debouncedValue])
 
-    const deleteLofbuisness = () => {
+    const deleteLofbuisness = async () => {
         const updatedArray = Lof_business.filter((value, index) => {
             console.log('in filter', index, !deleteId.includes(value._id))
             return !deleteId.includes(value._id)
         })
-        setLof(updatedArray)
+        try {
+            const resp = await LofBusinessService.deleteLofBusiness(deleteId)
+            console.log('response', resp)
+            if (resp.data.success) {
+                toast.success(resp.data.message)
+                getLofBusiness()
+            }
+        } catch (err) {
+            console.log('error', err)
+        }
     }
 
     return (
