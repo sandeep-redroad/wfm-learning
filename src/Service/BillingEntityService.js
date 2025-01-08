@@ -12,12 +12,12 @@ class BillingEntityService{
         return await Axios.post("api/billing_entity", data)
     }
 
-    async getBillingEntity(clientId){
-        return await Axios.get(`api/billing_entity/${clientId}`)
+    async getBillingEntity(billingEntityId){
+        return await Axios.get(`api/billing_entity/${billingEntityId}`)
     }
 
-    async updateBillingEntity(clientId, data){
-        return await Axios.put(`api/billing_entity/${clientId}`, data)
+    async updateBillingEntity(billingEntityId, data){
+        return await Axios.put(`api/billing_entity/${billingEntityId}`, data)
     }
 }
 

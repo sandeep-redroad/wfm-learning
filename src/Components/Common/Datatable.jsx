@@ -49,6 +49,9 @@ const Datatable = ({ columns, data, totalDataCount,type,allcheck ,setDeleteId,de
         if(DataTableEnumType.DAILY_WORK_LOG == type){
             navigate(`/daily-work-log/${row.id}`)
         }
+        if(DataTableEnumType.BILLING_ENTITY == type){
+            navigate(`/master-settings/billing-entity/${row.billingEntity}`)
+        }
     }
 
     const handleCheckboxChange=(event, row)=>{

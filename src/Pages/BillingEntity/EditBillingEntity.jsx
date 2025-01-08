@@ -9,44 +9,49 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Textarea } from '@/Components/ui/textarea'
 import { toast } from 'react-toastify'
 import { Card, CardContent } from '@/components/ui/card'
-import ClientService from '@/Service/ClientService'
+import BillingEntityService from '@/Service/BillingEntityService'
 
 const EditBillingEntiy = () => {
-    const { clientId } = useParams()
+    const { billingEntityId } = useParams()
     const formRef = useRef(null)
     const formSchema = z.object({
-        client: z.string().min(1, {
-            message: 'Client is required',
-        }),
+        billingEntity: z
+            .string({
+                message: 'Billing Entity is required',
+            })
+            .min(1, {
+                message: 'Billing Entity is required',
+            }),
         address: z.string().optional(),
         city: z.string().optional(),
         state: z.string().optional(),
         country: z.string().optional(),
         pinCode: z
-            .number({
-                message: 'Pin Code should be number',
-            })
-            .optional(),
+            .string()
+            .optional()
+            .transform((val) => {
+                return val && !isNaN(Number(val)) ? Number(val) : ''
+            }),
     })
     const navigate = useNavigate()
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            client: '',
+            billingEntity: '',
             address: '',
             city: '',
             state: '',
             country: '',
-            pinCode: null,
+            pinCode: '',
         },
     })
 
-    const getClient = async () => {
-        const resp = await ClientService.getClient(clientId)
+    const getBillingEntity = async () => {
+        const resp = await BillingEntityService.getBillingEntity(billingEntityId)
         if (resp.data.success) {
             if (!resp.data.data) {
-                toast.error('Client Not Found')
-                navigate('/clients')
+                toast.error('Billing Entity Not Found')
+                navigate('/master-settings/billing-entity')
                 return
             }
             form.reset({ ...resp.data.data })
@@ -54,14 +59,15 @@ const EditBillingEntiy = () => {
     }
 
     useEffect(() => {
-        getClient()
-    }, [clientId])
+        getBillingEntity()
+    }, [billingEntityId])
 
     async function onSubmit(values) {
         try {
-            const resp = await ClientService.updateClient(clientId, values)
+            values['pinCode'] = values['pinCode'] == '' ? null : values['pinCode']
+            const resp = await BillingEntityService.updateBillingEntity(billingEntityId, values)
             if (resp.data.success) {
-                navigate('/clients')
+                navigate('/master-settings/billing-entity')
             }
         } catch (err) {}
     }
@@ -87,7 +93,7 @@ const EditBillingEntiy = () => {
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
-                            <Link className="button" to="/clients">
+                            <Link className="button" to="/master-settings/billing-entity">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                             </Link>
                             <Button className="bg-primary-purpal hover:bg-primary-purpal" onClick={handleSaveClick}>
@@ -105,14 +111,14 @@ const EditBillingEntiy = () => {
                                 <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                     <FormField
                                         control={form.control}
-                                        name="client"
+                                        name="billingEntity"
                                         render={({ field }) => (
                                             <FormItem className="space-y-1">
-                                                <FormLabel>Client</FormLabel>
+                                                <FormLabel>Billing Entity</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="client"
+                                                        placeholder="Billing entity"
                                                         {...field}
                                                     />
                                                 </FormControl>
@@ -132,7 +138,8 @@ const EditBillingEntiy = () => {
                                                         {...field}
                                                         value={field.value || ''}
                                                         onChange={(e) => {
-                                                            const value = e.target.value ? Number(e.target.value) : ''
+                                                            let value = e.target.value ? Number(e.target.value) : ''
+                                                            value = isNaN(value) ? '' : String(value)
                                                             field.onChange(value)
                                                         }}
                                                     />

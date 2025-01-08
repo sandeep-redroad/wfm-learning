@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 
-const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeholder, field, className }) => {
+const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeholder, field, className, type = '' }) => {
     const [query, setQuery] = useState('')
     const [isOpen, setIsOpen] = useState(false)
     const inputRef = useRef(null)
@@ -29,7 +29,6 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
     }
 
     const filter = (options) => {
-        
         return (
             options.length > 0 &&
             options.filter((option) => {
@@ -64,14 +63,21 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
 
             <div className={`options ${isOpen ? 'open' : ''}`}>
                 {options.length > 0 ? (
-                   filter(options).map((option, index) => {
+                    filter(options).map((option, index) => {
                         return (
                             <div
                                 onClick={() => selectOption(option)}
                                 className={`option ${option[label] === selectedVal ? 'selected' : ''}`}
                                 key={`${index}`}
                             >
-                                {option[label]}
+                                {type == 'inoviceProjectListing' ? (
+                                    <div className='flex flex-col text-left uppercase'>
+                                        <span className=' font-bold'>{option[label]}</span>
+                                        <span>{option["process"]}</span>
+                                    </div>
+                                ) : (
+                                    <span>{option[label]}</span>
+                                )}
                             </div>
                         )
                     })

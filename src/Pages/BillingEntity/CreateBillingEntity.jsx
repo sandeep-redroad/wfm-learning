@@ -9,23 +9,25 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Textarea } from '@/Components/ui/textarea'
 import { toast } from 'react-toastify'
 import { Card, CardContent } from '@/components/ui/card'
-import ClientService from '@/Service/ClientService'
+import BillingEntityService from '@/Service/BillingEntityService'
 
 const CreateBillingEntiy = () => {
     const formRef = useRef(null)
     const formSchema = z.object({
-        billingEntity: z.string().min(1, {
-            message: 'Billing Entity is required',
-        }),
+        billingEntity: z
+            .string({
+                message: 'Billing Entity is required',
+            })
+            .min(1, {
+                message: 'Billing Entity is required',
+            }),
         address: z.string().optional(),
         city: z.string().optional(),
         state: z.string().optional(),
         country: z.string().optional(),
-        pinCode: z
-            .number({
-                message: 'Pin Code should be number',
-            })
-            .optional(),
+        pinCode: z.string().optional().transform((val) => {
+            return val && !isNaN(Number(val)) ? Number(val) : '';
+        }),
     })
     const navigate = useNavigate()
     const form = useForm({
@@ -36,21 +38,23 @@ const CreateBillingEntiy = () => {
             city: '',
             state: '',
             country: '',
-            pinCode: null,
+            pinCode: '',
         },
     })
 
     async function onSubmit(values) {
-        try{
-            const resp = await ClientService.createClient(values)
+        try {
+            values['pinCode'] = values['pinCode'] == "" ? null : values['pinCode'];
+            const resp = await BillingEntityService.createBillingEntity(values)
             if (resp.data.success) {
-                navigate('/clients')
+                navigate('/master-settings/billing-entity')
             }
-        }catch(err){}
+        } catch (err) {}
     }
 
     function onError(errors, e) {
         const errorKeys = Object.keys(errors)
+        console.log('errors : ', errors, e)
         if (errorKeys.length > 0 && errors[errorKeys[0]]?.message) {
             toast.error(errors[errorKeys[0]].message)
         } else {
@@ -114,7 +118,8 @@ const CreateBillingEntiy = () => {
                                                         {...field}
                                                         value={field.value || ''}
                                                         onChange={(e) => {
-                                                            const value = e.target.value ? Number(e.target.value) : ''
+                                                            let value = e.target.value ? Number(e.target.value) : '';
+                                                            value = isNaN(value) ? '' : String(value)
                                                             field.onChange(value)
                                                         }}
                                                     />
