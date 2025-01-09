@@ -6,6 +6,7 @@ import { format } from 'date-fns'
 import { Card, CardContent } from '@/components/ui/card'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -15,6 +16,10 @@ import ProjectService from '@/Service/ProjectService'
 import { useAuth } from '@/Context/AuthContext'
 import DailyWorkLogService from '@/Service/DailyWorkLogService'
 import Constent from '@/utils/constent'
+import { Checkbox } from '@/Components/ui/checkbox'
+import assets from '@/assets/assets'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select'
+import DummyTable from '@/Components/Common/DummyTable'
 
 const CreateDailyWorkLog = () => {
     const navigate = useNavigate()
@@ -25,6 +30,7 @@ const CreateDailyWorkLog = () => {
     const [product, setProduct] = useState(null)
     const [projects, setProjects] = useState([])
     const [customFields, setCustomFields] = useState([])
+    const [extraFieldRecord, setExtraFieldRecord] = useState([])
     const [noneValidatedValue, setNoneValidatedValue] = useState({
         employeeEmail: '',
         employeeName: '',
@@ -47,6 +53,24 @@ const CreateDailyWorkLog = () => {
         }
     }, [userInfo])
 
+    const addRow = () => {
+        setExtraFieldRecord((prev) => {
+            const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
+            let newFields = {}
+            customFields.map((val) => {
+                newFields = {
+                    id: newId,
+                    checkbox: false,
+                    label: val.label,
+                    dataType: val.dataType,
+                    fieldName: val.fieldName,
+                    value: '',
+                }
+            })
+            return [...prev, newFields]
+        })
+    }
+
     const getProjects = async () => {
         try {
             const resp = await ProjectService.getProjects({})
@@ -61,13 +85,7 @@ const CreateDailyWorkLog = () => {
             const resp = await ProjectService.getProject(projectId)
             if (resp.data.success) {
                 setProduct(resp.data.data)
-                resp.data.data.customFields.map((fields) => {
-                    noneValidatedValue.customFields[fields['_id']] = {
-                        projectExtraFiledId: fields['_id'],
-                        label: fields['label'],
-                        value: '',
-                    }
-                })
+
                 setCustomFields(resp.data.data.customFields)
             }
         } catch (err) {}
@@ -138,285 +156,294 @@ const CreateDailyWorkLog = () => {
                 </CardContent>
             </Card>
 
-            <Card className="p-0 m-3 mt-[2.55rem]">
-                <CardContent className="m-0 p-3">
-                    <Form {...form}>
-                        <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="p-4 lg:ps-5">
-                            <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                <FormField
-                                    control={form.control}
-                                    name="employeeEmail"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Employee Email</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Employee Email" value={noneValidatedValue.employeeEmail} disabled={true} />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
+            <div className='overflow-auto mt-[2.1rem]'>
+                <Card className="p-0 m-3">
+                    <CardContent className="m-0 p-3">
+                        <Form {...form}>
+                            <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="p-4 lg:ps-5">
+                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
+                                    <FormField
+                                        control={form.control}
+                                        name="employeeEmail"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Employee Email</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Employee Email" value={noneValidatedValue.employeeEmail} disabled={true} />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                <FormField
-                                    control={form.control}
-                                    name="employeeName"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Employee Name</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="employeeName" value={noneValidatedValue.employeeName} disabled={true} />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="projectId"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Project Id</FormLabel>
-                                            <div className="w-full">
-                                                <SearchableDropdown
-                                                    options={projects}
-                                                    selectedVal={noneValidatedValue.projectId}
-                                                    handleChange={(val) => {
-                                                        getProject(val)
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                projectId: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="Project Id"
-                                                    label="id"
-                                                />
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="date"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel>Date</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button variant={'outline'} disabled={true} className="w-full pl-3 text-left font-normal">
-                                                            {noneValidatedValue.date ? format(noneValidatedValue.date, Constent.DATE_FORMAT) : date}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={noneValidatedValue.date}
-                                                        onSelect={(e) => {
+                                    <FormField
+                                        control={form.control}
+                                        name="employeeName"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Employee Name</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="employeeName" value={noneValidatedValue.employeeName} disabled={true} />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="projectId"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Project Id</FormLabel>
+                                                <div className="w-full">
+                                                    <SearchableDropdown
+                                                        options={projects}
+                                                        selectedVal={noneValidatedValue.projectId}
+                                                        handleChange={(val) => {
+                                                            getProject(val)
                                                             setNoneValidatedValue((prev) => {
                                                                 return {
                                                                     ...prev,
-                                                                    date: format(e, Constent.DATE_FORMAT),
+                                                                    projectId: val,
                                                                 }
                                                             })
                                                         }}
-                                                        initialFocus
+                                                        placeholder="Project Id"
+                                                        label="id"
                                                     />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </FormItem>
-                                    )}
-                                />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="date"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-col">
+                                                <FormLabel>Date</FormLabel>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <FormControl>
+                                                            <Button variant={'outline'} disabled={true} className="w-full pl-3 text-left font-normal">
+                                                                {noneValidatedValue.date
+                                                                    ? format(noneValidatedValue.date, Constent.DATE_FORMAT)
+                                                                    : date}
+                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                            </Button>
+                                                        </FormControl>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0" align="start">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={noneValidatedValue.date}
+                                                            onSelect={(e) => {
+                                                                setNoneValidatedValue((prev) => {
+                                                                    return {
+                                                                        ...prev,
+                                                                        date: format(e, Constent.DATE_FORMAT),
+                                                                    }
+                                                                })
+                                                            }}
+                                                            initialFocus
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                <FormField
-                                    control={form.control}
-                                    name="client"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Client</FormLabel>
-                                            <FormControl>
-                                                <Input {...field} placeholder="client" value={product?.client ?? ''} disabled={true} />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
+                                    <FormField
+                                        control={form.control}
+                                        name="client"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Client</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} placeholder="client" value={product?.client ?? ''} disabled={true} />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                <FormField
-                                    control={form.control}
-                                    name="workItem"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Work Items</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    onChange={(e) =>
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                workItem: e.target.value,
-                                                            }
-                                                        })
-                                                    }
-                                                    type="number"
-                                                    min="0"
-                                                    placeholder="Work Items"
-                                                />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
+                                    <FormField
+                                        control={form.control}
+                                        name="workItem"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Work Items</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        onChange={(e) =>
+                                                            setNoneValidatedValue((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    workItem: e.target.value,
+                                                                }
+                                                            })
+                                                        }
+                                                        type="number"
+                                                        min="0"
+                                                        placeholder="Work Items"
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                <FormField
-                                    control={form.control}
-                                    name="process"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Process</FormLabel>
-                                            <FormControl>
-                                                <Input {...field} placeholder="process" value={product?.process ?? ''} disabled={true} />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="workedHours"
-                                    onOpenAutoFocus={(e) => e.preventDefault()}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Worked Hours</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    onChange={(e) =>
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                workedHours: e.target.value,
-                                                            }
-                                                        })
-                                                    }
-                                                    type="text"
-                                                    placeholder="Worked Hours"
-                                                />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
+                                    <FormField
+                                        control={form.control}
+                                        name="process"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Process</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} placeholder="process" value={product?.process ?? ''} disabled={true} />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="workedHours"
+                                        onOpenAutoFocus={(e) => e.preventDefault()}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Worked Hours</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        onChange={(e) =>
+                                                            setNoneValidatedValue((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    workedHours: e.target.value,
+                                                                }
+                                                            })
+                                                        }
+                                                        type="text"
+                                                        placeholder="Worked Hours"
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                <FormField
-                                    className="w-full"
-                                    control={form.control}
-                                    name="billingType"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Billing Type</FormLabel>
-                                            <FormControl>
-                                                <Input {...field} placeholder="Billing Type" value={product?.billingType ?? ''} disabled={true} />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                            {customFields.length > 0 && (
-                                <>
-                                    <hr className="mt-[1.75rem] mb-[1.75rem]" />
-                                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                        {customFields.map((cfield) => {
-                                            return cfield.dataType !== 'date' ? (
-                                                <FormField
-                                                    control={form.control}
-                                                    name={cfield.fieldName}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>{cfield.label}</FormLabel>
-                                                            <FormControl>
-                                                                <Input
-                                                                    placeholder={cfield.label}
-                                                                    type={cfield.dataType}
-                                                                    value={noneValidatedValue.customFields[cfield['_id']]['value']}
-                                                                    onChange={(e) => {
-                                                                        setNoneValidatedValue((prev) => {
-                                                                            prev.customFields[cfield['_id']]['value'] = e.target.value
-                                                                            return prev
-                                                                        })
-                                                                        setCustomFields((prev) => {
-                                                                            let updatedCustomeField = []
-                                                                            prev.map((val) => {
-                                                                                if (val['_id'] == cfield['_id']) {
-                                                                                    val['value'] = e.target.value
-                                                                                }
-                                                                                updatedCustomeField.push(val)
-                                                                            })
-                                                                            return updatedCustomeField
-                                                                        })
-                                                                    }}
-                                                                />
-                                                            </FormControl>
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            ) : (
-                                                <FormField
-                                                    control={form.control}
-                                                    name={cfield.fieldName}
-                                                    render={({ field }) => (
-                                                        <FormItem className="flex flex-col">
-                                                            <FormLabel>{cfield.label}</FormLabel>
-                                                            <Popover>
-                                                                <PopoverTrigger asChild>
-                                                                    <FormControl>
-                                                                        <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                                            {cfield['value'] ? (
-                                                                                format(cfield['value'], Constent.DATE_FORMAT)
-                                                                            ) : (
-                                                                                <span>Pick a date</span>
-                                                                            )}
-                                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                                        </Button>
-                                                                    </FormControl>
-                                                                </PopoverTrigger>
-                                                                <PopoverContent className="w-auto p-0" align="start">
-                                                                    <Calendar
-                                                                        mode="single"
-                                                                        selected={cfield['value']}
-                                                                        onSelect={(e) => {
-                                                                            setNoneValidatedValue((prev) => {
-                                                                                if (prev.customFields[cfield['_id']] !== undefined) {
-                                                                                    prev.customFields[cfield['_id']]['value'] = format(
-                                                                                        e,
-                                                                                        Constent.DATE_FORMAT
-                                                                                    )
-                                                                                }
-                                                                                return prev
-                                                                            })
-                                                                            setCustomFields((prev) => {
-                                                                                let updatedCustomeField = []
-                                                                                prev.map((val) => {
-                                                                                    if (val['_id'] == cfield['_id']) {
-                                                                                        val['value'] = e
-                                                                                    }
-                                                                                    updatedCustomeField.push(val)
-                                                                                })
-                                                                                return updatedCustomeField
-                                                                            })
-                                                                        }}
-                                                                        initialFocus
-                                                                    />
-                                                                </PopoverContent>
-                                                            </Popover>
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            )
-                                        })}
+                                    <FormField
+                                        className="w-full"
+                                        control={form.control}
+                                        name="billingType"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Billing Type</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} placeholder="Billing Type" value={product?.billingType ?? ''} disabled={true} />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                {customFields.length > 0 && (
+                                    <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem]">
+                                        <div style={{ width: 'calc(100vw - 370px)', maxHeight :"400px", overflow:"auto" }}>
+                                            <div className="relative w-full rounded-lg" >
+                                                <div>
+                                                    <div className="flex min-w-max bg-gray-100 border-b" style={{ position: 'sticky', top: '0px' }}>
+                                                        <div className="p-4 w-20 font-medium text-gray-700 border-r last:border-r-0">
+                                                            <Checkbox />
+                                                        </div>
+                                                        <div className="p-4 w-20 font-medium text-gray-700 border-r last:border-r-0">Sr.No</div>
+                                                        {customFields.map((row, i) => (
+                                                            <div key={i} className="p-4 w-48 font-medium text-gray-700 border-r last:border-r-0">
+                                                                {row.label}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    <div className={`min-w-max ${extraFieldRecord.length === 0 ? "flex justify-center" : ''}`}>
+                                                        {extraFieldRecord.length === 0 ? (
+                                                            <tr>
+                                                                <td colSpan={customFields.length + 2}>
+                                                                    <div className="text-center py-4">No Data</div>
+                                                                </td>
+                                                            </tr>
+                                                        ) : (
+                                                            extraFieldRecord.map((row, i) => (
+                                                                <div key={i} className="flex border-b last:border-b-0 hover:bg-gray-50">
+                                                                    <div className="p-1 w-20 border-r">
+                                                                        <Checkbox className="mx-3 my-1" onClick={() => console.log('ds')} />
+                                                                    </div>
+                                                                    <div className="p-1 w-20 border-r flex justify-start items-center"><span className='py-1 px-3'>{row.id}</span></div>
+                                                                    {customFields.map((field) => (
+                                                                        <div className="p-1 w-48 border-r">
+                                                                            <div className="w-full">
+                                                                                <Input
+                                                                                    placeholder="label"
+                                                                                    type={field.dataType}
+                                                                                    onChange={(e) => {
+                                                                                        setExtraFieldRecord((prev) => {
+                                                                                            const updatedData = prev.map((item) => {
+                                                                                                if (item.id === row.id) {
+                                                                                                    return { ...item, label: e.target.value }
+                                                                                                }
+                                                                                                return item
+                                                                                            })
+                                                                                            return updatedData
+                                                                                        })
+                                                                                    }}
+                                                                                    className="border-none shadow-none focus-visible:ring-0 w-full"
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            ))
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <Button
+                                            type="button"
+                                            className=""
+                                            onClick={addRow}
+                                            style={{
+                                                padding: '0px 10px',
+                                                height: '28px',
+                                                backgroundColor: '#808080d6',
+                                            }}
+                                        >
+                                            Add Row
+                                        </Button>
+                                        {false &&
+                                        rows.filter((row) => {
+                                            return row.checkbox
+                                        }).length > 0 ? (
+                                            <Button
+                                                type="button"
+                                                className="bg-primary-red ml-1"
+                                                // onClick={() => deleteone()}
+                                                style={{ padding: '0px 10px', height: '28px' }}
+                                            >
+                                                Delete
+                                            </Button>
+                                        ) : (
+                                            ''
+                                        )}
+
+                                        {false && rows.length > 0 && (
+                                            <Button
+                                                type="button"
+                                                className="bg-primary-red ml-1"
+                                                // onClick={deleteAll}
+                                                style={{ padding: '0px 10px', height: '28px' }}
+                                            >
+                                                Delete All
+                                            </Button>
+                                        )}
                                     </div>
-                                </>
-                            )}
-                        </form>
-                    </Form>
-                </CardContent>
-            </Card>
+                                )}
+                            </form>
+                        </Form>
+                    </CardContent>
+                </Card>
+            </div>
         </>
     )
 }

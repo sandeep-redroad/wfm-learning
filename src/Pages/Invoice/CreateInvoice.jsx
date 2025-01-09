@@ -256,296 +256,317 @@ const Invoicef = () => {
                     </div>
                 </CardContent>
             </Card>
-            <Card className="p-0 m-3">
-                <CardContent className="m-0 p-3">
-                    <Form {...form} className="">
-                        <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="p-4 lg:ps-5">
-                            <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                <FormField
-                                    control={form.control}
-                                    name="client"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Client</FormLabel>
-                                            <div className="full">
-                                                <SearchableDropdown
-                                                    options={clients}
-                                                    selectedVal={noneValidatedValue.client}
-                                                    handleChange={(val) => {
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                client: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="Client"
-                                                    label="client"
-                                                />
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="invoice_date"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel>Invoice Date</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {field.value ? format(field.value, Constent.DATE_FORMAT) : invoice_date}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={noneValidatedValue.invoice_date}
-                                                        onSelect={(e) => {
+            <div className="overflow-auto">
+                <Card className="p-0 m-3">
+                    <CardContent className="m-0 p-3">
+                        <Form {...form} className="">
+                            <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="p-4 lg:ps-5">
+                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
+                                    <FormField
+                                        control={form.control}
+                                        name="client"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Client</FormLabel>
+                                                <div className="full">
+                                                    <SearchableDropdown
+                                                        options={clients}
+                                                        selectedVal={noneValidatedValue.client}
+                                                        handleChange={(val) => {
                                                             setNoneValidatedValue((prev) => {
                                                                 return {
                                                                     ...prev,
-                                                                    invoice_date: e,
+                                                                    client: val,
                                                                 }
                                                             })
                                                         }}
-                                                        initialFocus
+                                                        placeholder="Client"
+                                                        label="client"
                                                     />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </FormItem>
-                                    )}
-                                />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                <FormField
-                                    className="w-full"
-                                    control={form.control}
-                                    name="billingType"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Billing Type</FormLabel>
-                                            <div className="full">
-                                                <SearchableDropdown
-                                                    options={billing_type}
-                                                    selectedVal={noneValidatedValue.billingType}
-                                                    handleChange={(val) => {
-                                                        handlebillingChange(val)
-                                                        setNoneValidatedValue((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                billingType: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    label="billingType"
-                                                    placeholder="Billing Type"
-                                                />
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem] mt-[20px]">
-                                <FormField
-                                    control={form.control}
-                                    name="billing_from"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Billing From</FormLabel>
-                                            <div className="w-full">
-                                                <Textarea placeholder="billing from" className="resize-none" row="1" />
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
+                                    <FormField
+                                        control={form.control}
+                                        name="invoice_date"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-col">
+                                                <FormLabel>Invoice Date</FormLabel>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <FormControl>
+                                                            <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
+                                                                {field.value ? format(field.value, Constent.DATE_FORMAT) : invoice_date}
+                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                            </Button>
+                                                        </FormControl>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0" align="start">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={noneValidatedValue.invoice_date}
+                                                            onSelect={(e) => {
+                                                                setNoneValidatedValue((prev) => {
+                                                                    return {
+                                                                        ...prev,
+                                                                        invoice_date: e,
+                                                                    }
+                                                                })
+                                                            }}
+                                                            initialFocus
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                <FormField
-                                    control={form.control}
-                                    name="billing_to"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Billing To</FormLabel>
-                                            <div className="w-full">
-                                                <Textarea placeholder="billing to" className="resize-none" row="1" />
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="start_date"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel>Start Date</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {noneValidatedValue.start_date
-                                                                ? format(noneValidatedValue.start_date, Constent.DATE_FORMAT)
-                                                                : start_date}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={noneValidatedValue.start_date}
-                                                        onSelect={(e) => {
+                                    <FormField
+                                        className="w-full"
+                                        control={form.control}
+                                        name="billingType"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Billing Type</FormLabel>
+                                                <div className="full">
+                                                    <SearchableDropdown
+                                                        options={billing_type}
+                                                        selectedVal={noneValidatedValue.billingType}
+                                                        handleChange={(val) => {
+                                                            handlebillingChange(val)
                                                             setNoneValidatedValue((prev) => {
                                                                 return {
                                                                     ...prev,
-                                                                    start_date: e,
+                                                                    billingType: val,
                                                                 }
                                                             })
                                                         }}
-                                                        initialFocus
+                                                        label="billingType"
+                                                        placeholder="Billing Type"
                                                     />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </FormItem>
-                                    )}
-                                />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem] mt-[20px]">
+                                    <FormField
+                                        control={form.control}
+                                        name="billing_from"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Billing From</FormLabel>
+                                                <div className="w-full">
+                                                    <Textarea placeholder="billing from" className="resize-none" row="1" />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                <FormField
-                                    control={form.control}
-                                    name="end_date"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel>End Date</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {noneValidatedValue.end_date
-                                                                ? format(noneValidatedValue.end_date, Constent.DATE_FORMAT)
-                                                                : end_date}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={noneValidatedValue.end_date}
-                                                        onSelect={(e) => {
-                                                            setNoneValidatedValue((prev) => {
-                                                                return {
-                                                                    ...prev,
-                                                                    end_date: e,
-                                                                }
-                                                            })
-                                                        }}
-                                                        initialFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                            <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow className="border">
-                                            <TableHead className="w-[35px] border">
-                                                <Checkbox onClick={changeAll} value={checkAll} checked={checkAll} />
-                                            </TableHead>
-                                            <TableHead className="w-[50px] border">Sr.No</TableHead>
-                                            <TableHead className="w-[300px] border">Project</TableHead>
-                                            <TableHead className="w-[300px] border">Process</TableHead>
+                                    <FormField
+                                        control={form.control}
+                                        name="billing_to"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Billing To</FormLabel>
+                                                <div className="w-full">
+                                                    <Textarea placeholder="billing to" className="resize-none" row="1" />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                            <TableHead className="w-[100px] border">{isbilling ? 'Charts' : 'Hours'}</TableHead>
-                                            <TableHead className="w-[150px] border">{isbilling ? 'Rate per chart' : 'Rate per hour'}</TableHead>
-                                            <TableHead className="w-[100px] border">Amount</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {rows.length == 0 ? (
-                                            <tr>
-                                                <td colSpan="6">
-                                                    <h6 className="text-center" style={{ margin: 0 }}>
-                                                        No Data
-                                                    </h6>
-                                                </td>
-                                            </tr>
-                                        ) : (
-                                            rows.map((row, pi) => (
-                                                <TableRow key={row.id} name="process" className="border">
-                                                    <TableCell className="border">
-                                                        <Checkbox onClick={() => changeOne(row, i)} checked={row.checkbox} value={row.checkbox} />
-                                                    </TableCell>
-                                                    <TableCell className="border">{row.id}</TableCell>
+                                    <FormField
+                                        control={form.control}
+                                        name="start_date"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-col">
+                                                <FormLabel>Start Date</FormLabel>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <FormControl>
+                                                            <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
+                                                                {noneValidatedValue.start_date
+                                                                    ? format(noneValidatedValue.start_date, Constent.DATE_FORMAT)
+                                                                    : start_date}
+                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                            </Button>
+                                                        </FormControl>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0" align="start">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={noneValidatedValue.start_date}
+                                                            onSelect={(e) => {
+                                                                setNoneValidatedValue((prev) => {
+                                                                    return {
+                                                                        ...prev,
+                                                                        start_date: e,
+                                                                    }
+                                                                })
+                                                            }}
+                                                            initialFocus
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                                    <TableCell className="border">
-                                                        <div className="w-full border-none">
-                                                            <SearchableDropdown
-                                                                options={projects}
-                                                                selectedVal={row.projectId}
-                                                                handleChange={(val) => {
-                                                                    console.log(val ,row)
-                                                                    setRows((prev) => {
-                                                                        let updatedData = []
+                                    <FormField
+                                        control={form.control}
+                                        name="end_date"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-col">
+                                                <FormLabel>End Date</FormLabel>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <FormControl>
+                                                            <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
+                                                                {noneValidatedValue.end_date
+                                                                    ? format(noneValidatedValue.end_date, Constent.DATE_FORMAT)
+                                                                    : end_date}
+                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                            </Button>
+                                                        </FormControl>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0" align="start">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={noneValidatedValue.end_date}
+                                                            onSelect={(e) => {
+                                                                setNoneValidatedValue((prev) => {
+                                                                    return {
+                                                                        ...prev,
+                                                                        end_date: e,
+                                                                    }
+                                                                })
+                                                            }}
+                                                            initialFocus
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="border">
+                                                <TableHead className="w-[35px] border">
+                                                    <Checkbox onClick={changeAll} value={checkAll} checked={checkAll} />
+                                                </TableHead>
+                                                <TableHead className="w-[50px] border">Sr.No</TableHead>
+                                                <TableHead className="w-[300px] border">Project</TableHead>
+                                                <TableHead className="w-[300px] border">Process</TableHead>
 
-                                                                        prev.map((item, i) => {
-                                                                            if (item.id == row.id) {
-                                                                                prev[i]['projectId'] = val
-                                                                            }
-                                                                            updatedData.push(item)
+                                                <TableHead className="w-[100px] border">{isbilling ? 'Charts' : 'Hours'}</TableHead>
+                                                <TableHead className="w-[150px] border">{isbilling ? 'Rate per chart' : 'Rate per hour'}</TableHead>
+                                                <TableHead className="w-[100px] border">Amount</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {rows.length == 0 ? (
+                                                <tr>
+                                                    <td colSpan="6">
+                                                        <h6 className="text-center" style={{ margin: 0 }}>
+                                                            No Data
+                                                        </h6>
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                rows.map((row, pi) => (
+                                                    <TableRow key={row.id} name="process" className="border">
+                                                        <TableCell className="border">
+                                                            <Checkbox onClick={() => changeOne(row, i)} checked={row.checkbox} value={row.checkbox} />
+                                                        </TableCell>
+                                                        <TableCell className="border">{row.id}</TableCell>
+
+                                                        <TableCell className="border">
+                                                            <div className="w-full border-none">
+                                                                <SearchableDropdown
+                                                                    options={projects}
+                                                                    selectedVal={row.projectId}
+                                                                    handleChange={(val) => {
+                                                                        console.log(val, row)
+                                                                        setRows((prev) => {
+                                                                            let updatedData = []
+
+                                                                            prev.map((item, i) => {
+                                                                                if (item.id == row.id) {
+                                                                                    prev[i]['projectId'] = val
+                                                                                }
+                                                                                updatedData.push(item)
+                                                                            })
+                                                                            return updatedData
                                                                         })
-                                                                        return updatedData
-                                                                    })
-                                                                }}
-                                                                placeholder="Project"
-                                                                label="client"
-                                                                className="border-none"
-                                                            />
-                                                        </div>
-                                                    </TableCell>
+                                                                    }}
+                                                                    placeholder="Project"
+                                                                    label="client"
+                                                                    className="border-none"
+                                                                />
+                                                            </div>
+                                                        </TableCell>
 
-                                                    <TableCell className="border">
-                                                        <div className="w-full border-none">
-                                                            <SearchableDropdown
-                                                                options={process}
-                                                                selectedVal={row.process}
-                                                                handleChange={(val) => {
-                                                                    setRows((prev) => {
-                                                                        let updatedData = []
+                                                        <TableCell className="border">
+                                                            <div className="w-full border-none">
+                                                                <SearchableDropdown
+                                                                    options={process}
+                                                                    selectedVal={row.process}
+                                                                    handleChange={(val) => {
+                                                                        setRows((prev) => {
+                                                                            let updatedData = []
 
-                                                                        prev.map((item, i) => {
-                                                                            if (item.id == row.id) {
-                                                                                prev[i]['process'] = val
-                                                                            }
-                                                                            updatedData.push(item)
+                                                                            prev.map((item, i) => {
+                                                                                if (item.id == row.id) {
+                                                                                    prev[i]['process'] = val
+                                                                                }
+                                                                                updatedData.push(item)
+                                                                            })
+                                                                            return updatedData
                                                                         })
-                                                                        return updatedData
-                                                                    })
-                                                                }}
-                                                                placeholder="Process"
-                                                                label="process"
-                                                                className="border-none"
-                                                            />
-                                                        </div>
-                                                    </TableCell>
+                                                                    }}
+                                                                    placeholder="Process"
+                                                                    label="process"
+                                                                    className="border-none"
+                                                                />
+                                                            </div>
+                                                        </TableCell>
 
-                                                    <TableCell className="border">
-                                                        <div className="flex items-center space-x-2 justify-center">
+                                                        <TableCell className="border">
+                                                            <div className="flex items-center space-x-2 justify-center">
+                                                                <Input
+                                                                    placeholder="Hours"
+                                                                    onChange={(e) => {
+                                                                        setRows((prev) => {
+                                                                            let updatedData = []
+
+                                                                            prev.map((item, i) => {
+                                                                                if (item.id == row.id) {
+                                                                                    prev[i]['workItem'] = e.target.value
+                                                                                }
+                                                                                updatedData.push(item)
+                                                                            })
+                                                                            return updatedData
+                                                                        })
+                                                                    }}
+                                                                    className="border-none shadow-none"
+                                                                />
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
                                                             <Input
-                                                                placeholder="Hours"
+                                                                placeholder="Rate"
                                                                 onChange={(e) => {
                                                                     setRows((prev) => {
                                                                         let updatedData = []
 
                                                                         prev.map((item, i) => {
                                                                             if (item.id == row.id) {
-                                                                                prev[i]['workItem'] = e.target.value
+                                                                                prev[i]['rate'] = e.target.value
                                                                             }
                                                                             updatedData.push(item)
                                                                         })
@@ -554,162 +575,143 @@ const Invoicef = () => {
                                                                 }}
                                                                 className="border-none shadow-none"
                                                             />
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Input
-                                                            placeholder="Rate"
-                                                            onChange={(e) => {
-                                                                setRows((prev) => {
-                                                                    let updatedData = []
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Input
+                                                                placeholder="Amount"
+                                                                onChange={(e) => {
+                                                                    setRows((prev) => {
+                                                                        let updatedData = []
 
-                                                                    prev.map((item, i) => {
-                                                                        if (item.id == row.id) {
-                                                                            prev[i]['rate'] = e.target.value
-                                                                        }
-                                                                        updatedData.push(item)
+                                                                        prev.map((item, i) => {
+                                                                            if (item.id == row.id) {
+                                                                                prev[i]['amount'] = e.target.value
+                                                                            }
+                                                                            updatedData.push(item)
+                                                                        })
+                                                                        return updatedData
                                                                     })
-                                                                    return updatedData
-                                                                })
-                                                            }}
-                                                            className="border-none shadow-none"
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Input
-                                                            placeholder="Amount"
-                                                            onChange={(e) => {
-                                                                setRows((prev) => {
-                                                                    let updatedData = []
+                                                                }}
+                                                                className="border-none shadow-none"
+                                                            />
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                    <Button
+                                        type="button"
+                                        className=""
+                                        onClick={addRow}
+                                        style={{
+                                            padding: '0px 10px',
+                                            height: '28px',
+                                            backgroundColor: '#808080d6',
+                                        }}
+                                    >
+                                        Add Row
+                                    </Button>
 
-                                                                    prev.map((item, i) => {
-                                                                        if (item.id == row.id) {
-                                                                            prev[i]['amount'] = e.target.value
-                                                                        }
-                                                                        updatedData.push(item)
-                                                                    })
-                                                                    return updatedData
-                                                                })
-                                                            }}
-                                                            className="border-none shadow-none"
-                                                        />
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))
+                                    {!checkAll &&
+                                    rows.filter((row) => {
+                                        return row.checkbox
+                                    }).length > 0 ? (
+                                        <Button
+                                            type="button"
+                                            className="bg-primary-red ml-1"
+                                            onClick={() => deleteone()}
+                                            style={{ padding: '0px 10px', height: '28px' }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    ) : (
+                                        ''
+                                    )}
+
+                                    {checkAll && rows.length > 0 && (
+                                        <Button
+                                            type="button"
+                                            className="bg-primary-red ml-1"
+                                            onClick={deleteAll}
+                                            style={{ padding: '0px 10px', height: '28px' }}
+                                        >
+                                            Delete All
+                                        </Button>
+                                    )}
+                                    {/* </Card> */}
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
+                                    <FormField
+                                        control={form.control}
+                                        name="note"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Note</FormLabel>
+                                                <FormControl>
+                                                    <Textarea placeholder="You can write your note here" className="resize-none" row="1" />
+                                                </FormControl>
+                                            </FormItem>
                                         )}
-                                    </TableBody>
-                                </Table>
-                                <Button
-                                    type="button"
-                                    className=""
-                                    onClick={addRow}
-                                    style={{
-                                        padding: '0px 10px',
-                                        height: '28px',
-                                        backgroundColor: '#808080d6',
-                                    }}
-                                >
-                                    Add Row
-                                </Button>
+                                    />
 
-                                {!checkAll &&
-                                rows.filter((row) => {
-                                    return row.checkbox
-                                }).length > 0 ? (
-                                    <Button
-                                        type="button"
-                                        className="bg-primary-red ml-1"
-                                        onClick={() => deleteone()}
-                                        style={{ padding: '0px 10px', height: '28px' }}
-                                    >
-                                        Delete
-                                    </Button>
-                                ) : (
-                                    ''
-                                )}
+                                    <FormField
+                                        control={form.control}
+                                        name="headcount"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Total Amount</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Total Amount" {...field} />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        className="w-full"
+                                        control={form.control}
+                                        name="status"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Status</FormLabel>
+                                                <div className="w-full">
+                                                    <Select name="status" defaultValue={'Pending'} className=" w-full">
+                                                        <FormControl>
+                                                            <SelectTrigger className="shadow-none  w-full">
+                                                                <SelectValue placeholder="Select Status" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="Pending">Pending</SelectItem>
+                                                            <SelectItem value="Paid">Paid</SelectItem>
 
-                                {checkAll && rows.length > 0 && (
-                                    <Button
-                                        type="button"
-                                        className="bg-primary-red ml-1"
-                                        onClick={deleteAll}
-                                        style={{ padding: '0px 10px', height: '28px' }}
-                                    >
-                                        Delete All
-                                    </Button>
-                                )}
-                                {/* </Card> */}
-                            </div>
+                                                            <SelectItem value="Partially Paid">Partially Paid</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
 
-                            <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                <FormField
-                                    control={form.control}
-                                    name="note"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Note</FormLabel>
-                                            <FormControl>
-                                                <Textarea placeholder="You can write your note here" className="resize-none" row="1" />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="headcount"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Total Amount</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Total Amount" {...field} />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    className="w-full"
-                                    control={form.control}
-                                    name="status"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Status</FormLabel>
-                                            <div className="w-full">
-                                                <Select name="status" defaultValue={'Pending'} className=" w-full">
-                                                    <FormControl>
-                                                        <SelectTrigger className="shadow-none  w-full">
-                                                            <SelectValue placeholder="Select Status" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        <SelectItem value="Pending">Pending</SelectItem>
-                                                        <SelectItem value="Paid">Paid</SelectItem>
-
-                                                        <SelectItem value="Partially Paid">Partially Paid</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="headcount"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Amount Paid</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Amount Paid" {...field} />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                        </form>
-                    </Form>
-                </CardContent>
-            </Card>
+                                    <FormField
+                                        control={form.control}
+                                        name="headcount"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Amount Paid</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Amount Paid" {...field} />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                            </form>
+                        </Form>
+                    </CardContent>
+                </Card>
+            </div>
         </>
     )
 }
