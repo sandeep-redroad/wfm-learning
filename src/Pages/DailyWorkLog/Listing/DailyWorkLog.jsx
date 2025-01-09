@@ -188,15 +188,8 @@ const DailyWorkLog = () => {
                             </Popover>
                         </div>
                     </div>
-                    <Datatable
-                        columns={DailyWorkLogColumns()}
-                        data={dailyWorkLogs}
-                        totalDataCount={totalCount}
-                        type={DataTableEnumType.DAILY_WORK_LOG}
-                        allcheck={allcheck}
-                        deleteId={deleteId}
-                        setDeleteId={setDeleteId}
-                    />
+                    <Datatable columns={DailyWorkLogColumns()} data={dailyWorkLogs} totalDataCount={totalCount} type={DataTableEnumType.DAILY_WORK_LOG} />
+                    
                 </CardContent>
             </Card>
         </div>

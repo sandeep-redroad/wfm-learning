@@ -21,9 +21,7 @@ const CreateClient = () => {
         city: z.string().optional(),
         state: z.string().optional(),
         country: z.string().optional(),
-        pinCode: z
-            .string()
-            .optional()
+        pinCode: z.string().optional(),
     })
     const navigate = useNavigate()
     const form = useForm({
@@ -63,7 +61,7 @@ const CreateClient = () => {
     }
     return (
         <div>
-            <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full z-10">
+            <Card className="p-0 mb-[15px] mx-0 rounded-none sticky top-16 w-full z-10">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
@@ -77,80 +75,23 @@ const CreateClient = () => {
                     </div>
                 </CardContent>
             </Card>
-            <Card className="p-0 m-3 mt-[3rem]">
-                <CardContent className="m-0 p-3">
-                    <Form {...form}>
-                        <form ref={formRef} onSubmit={form.handleSubmit(onSubmit, onError)} className="p-4 lg:ps-5">
-                            <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
-                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                    <FormField
-                                        control={form.control}
-                                        name="client"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-1">
-                                                <FormLabel>Client</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="client"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="pinCode"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-1">
-                                                <FormLabel>Pin Code</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Pin Code"
-                                                        {...field}
-                                                        value={field.value || ''}
-                                                        onChange={(e) => {
-                                                            let value = e.target.value ? Number(e.target.value) : '';
-                                                            value = isNaN(value) ? '' : String(value)
-                                                            field.onChange(value)
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem] my-[1.75rem">
-                                    <FormField
-                                        control={form.control}
-                                        name="address"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-1">
-                                                <FormLabel>Address</FormLabel>
-                                                <FormControl>
-                                                    <Textarea
-                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Address"
-                                                        {...field}
-                                                        rows="6"
-                                                    ></Textarea>
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
+            <div className="overflow-auto mt-[4.1rem]">
+                <Card className="p-0 m-3">
+                    <CardContent className="m-0 p-3">
+                        <Form {...form}>
+                            <form ref={formRef} onSubmit={form.handleSubmit(onSubmit, onError)} className="p-4 lg:ps-5">
+                                <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
+                                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                         <FormField
                                             control={form.control}
-                                            name="city"
+                                            name="client"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-1">
-                                                    <FormLabel>City</FormLabel>
+                                                    <FormLabel>Client</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                            placeholder="City"
+                                                            placeholder="client"
                                                             {...field}
                                                         />
                                                     </FormControl>
@@ -159,14 +100,91 @@ const CreateClient = () => {
                                         />
                                         <FormField
                                             control={form.control}
-                                            name="state"
+                                            name="pinCode"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-1">
-                                                    <FormLabel>State</FormLabel>
+                                                    <FormLabel>Pin Code</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                            placeholder="State"
+                                                            placeholder="Pin Code"
+                                                            {...field}
+                                                            value={field.value || ''}
+                                                            onChange={(e) => {
+                                                                let value = e.target.value ? Number(e.target.value) : ''
+                                                                value = isNaN(value) ? '' : String(value)
+                                                                field.onChange(value)
+                                                            }}
+                                                        />
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem] my-[1.75rem">
+                                        <FormField
+                                            control={form.control}
+                                            name="address"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-1">
+                                                    <FormLabel>Address</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                            placeholder="Address"
+                                                            {...field}
+                                                            rows="6"
+                                                        ></Textarea>
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
+                                            <FormField
+                                                control={form.control}
+                                                name="city"
+                                                render={({ field }) => (
+                                                    <FormItem className="space-y-1">
+                                                        <FormLabel>City</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                                placeholder="City"
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="state"
+                                                render={({ field }) => (
+                                                    <FormItem className="space-y-1">
+                                                        <FormLabel>State</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                                placeholder="State"
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
+                                        <FormField
+                                            control={form.control}
+                                            name="country"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-1">
+                                                    <FormLabel>Country</FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                            placeholder="Country"
                                                             {...field}
                                                         />
                                                     </FormControl>
@@ -175,29 +193,11 @@ const CreateClient = () => {
                                         />
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                    <FormField
-                                        control={form.control}
-                                        name="country"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-1">
-                                                <FormLabel>Country</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Country"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                            </div>
-                        </form>
-                    </Form>
-                </CardContent>
-            </Card>
+                            </form>
+                        </Form>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     )
 }

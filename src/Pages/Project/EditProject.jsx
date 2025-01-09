@@ -385,280 +385,257 @@ const EditProject = ({ type }) => {
                     </div>
                 </CardContent>
             </Card>
-            <Card className="p-0 m-3 ">
-                <CardContent className="m-0 p-3">
-                    <Form {...form}>
-                        <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="p-4 lg:ps-5">
-                            <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                <FormField
-                                    control={form.control}
-                                    name="client"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Client</FormLabel>
-                                            <div className="w-full">
-                                                <SearchableDropdown
-                                                    options={clients}
-                                                    selectedVal={projectFields.client}
-                                                    handleChange={(val) => {
-                                                        setProjectFields((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                client: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="Client"
-                                                    label="client"
-                                                />
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    className="w-full"
-                                    control={form.control}
-                                    name="status"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Status</FormLabel>
-                                            <div className="w-full">
-                                                <Select
-                                                    value={projectFields.status}
-                                                    onValueChange={(val) => {
-                                                        setProjectFields((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                status: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    defaultValue={projectFields.status}
-                                                >
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {assets.ProjectStatusData.map((status) => (
-                                                            <SelectItem key={status.key} value={status.key}>
-                                                                {status.value}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="lob_process"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>LOF Business</FormLabel>
-                                            <div className="w-full">
-                                                <SearchableDropdown
-                                                    options={lofBusiness}
-                                                    selectedVal={projectFields.lofBusiness}
-                                                    handleChange={(val) => {
-                                                        setProjectFields((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                lofBusiness: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="LOB Process"
-                                                    label="lofBusiness"
-                                                />
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="date"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel>Date</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                            {projectFields.date ? format(projectFields.date, Constent.DATE_FORMAT) : today}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={projectFields.date}
-                                                        onSelect={(e) => {
-                                                            setProjectFields((prev) => {
-                                                                return {
-                                                                    ...prev,
-                                                                    date: e,
-                                                                }
-                                                            })
-                                                        }}
-                                                        initialFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="process"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Process</FormLabel>
-                                            <div className="full">
-                                                <SearchableDropdown
-                                                    options={process}
-                                                    selectedVal={projectFields.process}
-                                                    handleChange={(val) => {
-                                                        setProjectFields((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                process: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="Process"
-                                                    label="process"
-                                                />
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="department"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Department</FormLabel>
-                                            <div className="full">
-                                                <SearchableDropdown
-                                                    options={departments}
-                                                    selectedVal={projectFields.department}
-                                                    handleChange={(val) => {
-                                                        setProjectFields((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                department: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    label="department"
-                                                    placeholder="Department"
-                                                />
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    className="w-full"
-                                    control={form.control}
-                                    name="billingType"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Billing Type</FormLabel>
-                                            <div className="full">
-                                                <SearchableDropdown
-                                                    options={billing_type}
-                                                    selectedVal={projectFields.billingType}
-                                                    handleChange={(val) => {
-                                                        setProjectFields((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                billingType: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    label="billingType"
-                                                    placeholder="Billing Type"
-                                                />
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="projectLead"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Project Lead</FormLabel>
-                                            <div className="w-full">
-                                                <SearchableDropdown
-                                                    options={projectleads}
-                                                    selectedVal={projectFields.projectLead}
-                                                    handleChange={(val) => {
-                                                        setProjectFields((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                projectLead: val,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="Project Lead"
-                                                    label="name"
-                                                />
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <div>
+            <div className="overflow-auto">
+                <Card className="p-0 m-3 ">
+                    <CardContent className="m-0 p-3">
+                        <Form {...form}>
+                            <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="p-4 lg:ps-5">
+                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                     <FormField
                                         control={form.control}
-                                        name="rate"
+                                        name="client"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Rate</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder="rate"
-                                                        value={projectFields.rate}
-                                                        onChange={(e) => {
+                                                <FormLabel>Client</FormLabel>
+                                                <div className="w-full">
+                                                    <SearchableDropdown
+                                                        options={clients}
+                                                        selectedVal={projectFields.client}
+                                                        handleChange={(val) => {
                                                             setProjectFields((prev) => {
                                                                 return {
                                                                     ...prev,
-                                                                    rate: e.target.value,
+                                                                    client: val,
                                                                 }
                                                             })
                                                         }}
+                                                        placeholder="Client"
+                                                        label="client"
                                                     />
-                                                </FormControl>
+                                                </div>
                                             </FormItem>
                                         )}
                                     />
-                                    {projectFields.billingType == 'Per Workitem Transactional' && (
+                                    <FormField
+                                        className="w-full"
+                                        control={form.control}
+                                        name="status"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Status</FormLabel>
+                                                <div className="w-full">
+                                                    <Select
+                                                        value={projectFields.status}
+                                                        onValueChange={(val) => {
+                                                            setProjectFields((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    status: val,
+                                                                }
+                                                            })
+                                                        }}
+                                                        defaultValue={projectFields.status}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {assets.ProjectStatusData.map((status) => (
+                                                                <SelectItem key={status.key} value={status.key}>
+                                                                    {status.value}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="lob_process"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>LOF Business</FormLabel>
+                                                <div className="w-full">
+                                                    <SearchableDropdown
+                                                        options={lofBusiness}
+                                                        selectedVal={projectFields.lofBusiness}
+                                                        handleChange={(val) => {
+                                                            setProjectFields((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    lofBusiness: val,
+                                                                }
+                                                            })
+                                                        }}
+                                                        placeholder="LOB Process"
+                                                        label="lofBusiness"
+                                                    />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="date"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-col">
+                                                <FormLabel>Date</FormLabel>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <FormControl>
+                                                            <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
+                                                                {projectFields.date ? format(projectFields.date, Constent.DATE_FORMAT) : today}
+                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                            </Button>
+                                                        </FormControl>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0" align="start">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={projectFields.date}
+                                                            onSelect={(e) => {
+                                                                setProjectFields((prev) => {
+                                                                    return {
+                                                                        ...prev,
+                                                                        date: e,
+                                                                    }
+                                                                })
+                                                            }}
+                                                            initialFocus
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="process"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Process</FormLabel>
+                                                <div className="full">
+                                                    <SearchableDropdown
+                                                        options={process}
+                                                        selectedVal={projectFields.process}
+                                                        handleChange={(val) => {
+                                                            setProjectFields((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    process: val,
+                                                                }
+                                                            })
+                                                        }}
+                                                        placeholder="Process"
+                                                        label="process"
+                                                    />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="department"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Department</FormLabel>
+                                                <div className="full">
+                                                    <SearchableDropdown
+                                                        options={departments}
+                                                        selectedVal={projectFields.department}
+                                                        handleChange={(val) => {
+                                                            setProjectFields((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    department: val,
+                                                                }
+                                                            })
+                                                        }}
+                                                        label="department"
+                                                        placeholder="Department"
+                                                    />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        className="w-full"
+                                        control={form.control}
+                                        name="billingType"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Billing Type</FormLabel>
+                                                <div className="full">
+                                                    <SearchableDropdown
+                                                        options={billing_type}
+                                                        selectedVal={projectFields.billingType}
+                                                        handleChange={(val) => {
+                                                            setProjectFields((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    billingType: val,
+                                                                }
+                                                            })
+                                                        }}
+                                                        label="billingType"
+                                                        placeholder="Billing Type"
+                                                    />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="projectLead"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Project Lead</FormLabel>
+                                                <div className="w-full">
+                                                    <SearchableDropdown
+                                                        options={projectleads}
+                                                        selectedVal={projectFields.projectLead}
+                                                        handleChange={(val) => {
+                                                            setProjectFields((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    projectLead: val,
+                                                                }
+                                                            })
+                                                        }}
+                                                        placeholder="Project Lead"
+                                                        label="name"
+                                                    />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <div>
                                         <FormField
                                             control={form.control}
-                                            name="timePerWorkItem"
+                                            name="rate"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Time per WorkItem</FormLabel>
+                                                    <FormLabel>Rate</FormLabel>
                                                     <FormControl>
                                                         <Input
-                                                            placeholder="minutes"
-                                                            value={projectFields.timePerWorkItem}
+                                                            placeholder="rate"
+                                                            value={projectFields.rate}
                                                             onChange={(e) => {
                                                                 setProjectFields((prev) => {
                                                                     return {
                                                                         ...prev,
-                                                                        timePerWorkItem: e.target.value,
+                                                                        rate: e.target.value,
                                                                     }
                                                                 })
                                                             }}
@@ -667,397 +644,424 @@ const EditProject = ({ type }) => {
                                                 </FormItem>
                                             )}
                                         />
+                                        {projectFields.billingType == 'Per Workitem Transactional' && (
+                                            <FormField
+                                                control={form.control}
+                                                name="timePerWorkItem"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Time per WorkItem</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                placeholder="minutes"
+                                                                value={projectFields.timePerWorkItem}
+                                                                onChange={(e) => {
+                                                                    setProjectFields((prev) => {
+                                                                        return {
+                                                                            ...prev,
+                                                                            timePerWorkItem: e.target.value,
+                                                                        }
+                                                                    })
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        )}
+                                    </div>
+
+                                    <FormField
+                                        control={form.control}
+                                        name="comments"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Comments</FormLabel>
+                                                <FormControl>
+                                                    <Textarea
+                                                        value={projectFields.comments}
+                                                        onChange={(e) => {
+                                                            setProjectFields((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    comments: e.target.value,
+                                                                }
+                                                            })
+                                                        }}
+                                                        placeholder="comments "
+                                                        className="resize-none"
+                                                        rows="4.5"
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="border">
+                                                <TableHead className="w-[35px] border">
+                                                    <Checkbox onClick={changeAll} value={checkAll} checked={checkAll} />
+                                                </TableHead>
+                                                <TableHead className="w-[50px] border">Sr.No</TableHead>
+
+                                                <TableHead className="w-[300px] border">Label</TableHead>
+
+                                                <TableHead className="w-[200px] border">Data Type</TableHead>
+                                                <TableHead className="w-[200px] border">Field Name</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {rows.length == 0 ? (
+                                                <tr>
+                                                    <td colSpan="6">
+                                                        <h6 className="text-center" style={{ margin: 0 }}>
+                                                            No Data
+                                                        </h6>
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                rows.map((row, i) => {
+                                                    return (
+                                                        !row.deleteForProject && (
+                                                            <TableRow key={row.id} name="customfields" className="border">
+                                                                <TableCell className="border">
+                                                                    <Checkbox
+                                                                        onClick={() => changeOne(row, i)}
+                                                                        checked={row.checkbox}
+                                                                        value={row.checkbox}
+                                                                    />
+                                                                </TableCell>
+                                                                <TableCell className="border">{row.id}</TableCell>
+
+                                                                <TableCell className="border">
+                                                                    <div className="w-full">
+                                                                        <Input
+                                                                            placeholder="label"
+                                                                            onChange={(e) => {
+                                                                                setRows((prev) => {
+                                                                                    let updatedData = []
+
+                                                                                    prev.map((item, i) => {
+                                                                                        if (item.id == row.id) {
+                                                                                            prev[i]['label'] = e.target.value
+                                                                                        }
+                                                                                        updatedData.push(item)
+                                                                                    })
+                                                                                    return updatedData
+                                                                                })
+                                                                            }}
+                                                                            value={row.label}
+                                                                            onBlur={(e) => handle_label_Change(e, row.id)}
+                                                                            className="border-none shadow-none"
+                                                                        />
+                                                                    </div>
+                                                                </TableCell>
+
+                                                                <TableCell className="border">
+                                                                    <div className="flex items-center space-x-2 justify-center">
+                                                                        <Select
+                                                                            onValueChange={(value) =>
+                                                                                setRows((prev) => {
+                                                                                    let updatedData = []
+
+                                                                                    prev.map((item, i) => {
+                                                                                        if (item.id == row.id) {
+                                                                                            prev[i]['dataType'] = value
+                                                                                        }
+                                                                                        updatedData.push(item)
+                                                                                    })
+                                                                                    return updatedData
+                                                                                })
+                                                                            }
+                                                                            value={row.dataType}
+                                                                            defaultValue={row.dataType}
+                                                                            className="border-none w-full"
+                                                                        >
+                                                                            <SelectTrigger className="border-none">
+                                                                                <SelectValue placeholder="Data Type" />
+                                                                            </SelectTrigger>
+                                                                            <SelectContent>
+                                                                                {assets.DataTypes.map((value) => (
+                                                                                    <SelectItem key={value.key} value={value.key}>
+                                                                                        {value.value}
+                                                                                    </SelectItem>
+                                                                                ))}
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    </div>
+                                                                </TableCell>
+                                                                <TableCell className="border">
+                                                                    <Input
+                                                                        placeholder="Field Name"
+                                                                        name="fieldName"
+                                                                        value={row.fieldName}
+                                                                        className="border-none shadow-none"
+                                                                        disabled={true}
+                                                                    />
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        )
+                                                    )
+                                                })
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                    <Button
+                                        type="button"
+                                        className=""
+                                        onClick={addRow}
+                                        style={{
+                                            padding: '0px 10px',
+                                            height: '28px',
+                                            backgroundColor: '#808080d6',
+                                        }}
+                                    >
+                                        Add Row
+                                    </Button>
+
+                                    {!checkAll &&
+                                    rows.filter((row) => {
+                                        return row.checkbox
+                                    }).length > 0 ? (
+                                        <Button
+                                            type="button"
+                                            className="bg-primary-red ml-1"
+                                            onClick={() => deleteone()}
+                                            style={{ padding: '0px 10px', height: '28px' }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    ) : (
+                                        ''
+                                    )}
+
+                                    {checkAll && rows.length > 0 && (
+                                        <Button
+                                            type="button"
+                                            className="bg-primary-red ml-1"
+                                            onClick={deleteAll}
+                                            style={{ padding: '0px 10px', height: '28px' }}
+                                        >
+                                            Delete All
+                                        </Button>
+                                    )}
+                                </div>
+                                <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
+                                    <h3 className="font-medium mb-6">History</h3>
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="border">
+                                                <TableHead className="w-[35px] border">
+                                                    <Checkbox onClick={change_history_All} value={checkhisotryAll} checked={checkhisotryAll} />
+                                                </TableHead>
+                                                <TableHead className="w-[50px] border">Sr.No</TableHead>
+
+                                                <TableHead className=" border">Status</TableHead>
+                                                <TableHead className="w-[200px] border">Start Date</TableHead>
+                                                <TableHead className="w-[200px] border">End Date</TableHead>
+                                                <TableHead className=" border">Comments</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {historyrows.length == 0 ? (
+                                                <tr>
+                                                    <td colSpan="6">
+                                                        <h6 className="text-center" style={{ margin: 0 }}>
+                                                            No Data
+                                                        </h6>
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                historyrows.map((historyrow, i) => (
+                                                    <TableRow key={historyrows.id} name="history" className="border">
+                                                        <TableCell className="border">
+                                                            <Checkbox
+                                                                onClick={() => change_history_One(historyrow, i)}
+                                                                checked={historyrow.checkbox}
+                                                                value={historyrow.checkbox}
+                                                            />
+                                                        </TableCell>
+                                                        <TableCell className="border">{historyrow.id}</TableCell>
+                                                        <TableCell className="border">
+                                                            <Select
+                                                                name="hstatus"
+                                                                onValueChange={(value) =>
+                                                                    setHistoryrows((prev) => {
+                                                                        let updatedData = []
+
+                                                                        prev.map((item, i) => {
+                                                                            if (item.id == historyrow.id) {
+                                                                                prev[i]['label'] = value
+                                                                            }
+                                                                            updatedData.push(item)
+                                                                        })
+                                                                        return updatedData
+                                                                    })
+                                                                }
+                                                                defaultValue={historyrows.label}
+                                                                className="border-none w-full"
+                                                            >
+                                                                <FormControl>
+                                                                    <SelectTrigger className="border-none shadow-none  w-full">
+                                                                        <SelectValue placeholder="Select Status" />
+                                                                    </SelectTrigger>
+                                                                </FormControl>
+                                                                <SelectContent>
+                                                                    <SelectItem value="Active">Active</SelectItem>
+                                                                    <SelectItem value="Inactive">Inactive</SelectItem>
+
+                                                                    <SelectItem value="On Hold">On Hold</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </TableCell>
+
+                                                        <TableCell className="border">
+                                                            <div className="w-full">
+                                                                <Popover>
+                                                                    <PopoverTrigger asChild>
+                                                                        <Button
+                                                                            variant={'outline'}
+                                                                            className="w-full justify-start text-left font-normal border-none"
+                                                                        >
+                                                                            {historyrow.startdate
+                                                                                ? format(historyrow.startdate, Constent.DATE_FORMAT)
+                                                                                : ''}
+                                                                        </Button>
+                                                                    </PopoverTrigger>
+                                                                    <PopoverContent className="w-auto p-0 " align="start">
+                                                                        <Calendar
+                                                                            mode="single"
+                                                                            key={historyrow.startdate}
+                                                                            selected={historyrow.startdate}
+                                                                            onSelect={(e) => {
+                                                                                setHistoryrows((prev) => {
+                                                                                    let updatedData = []
+
+                                                                                    prev.map((item, i) => {
+                                                                                        if (item.id == historyrow.id) {
+                                                                                            prev[i]['startdate'] = e
+                                                                                        }
+                                                                                        updatedData.push(item)
+                                                                                    })
+                                                                                    return updatedData
+                                                                                })
+                                                                            }}
+                                                                            initialFocus
+                                                                        />
+                                                                    </PopoverContent>
+                                                                </Popover>
+                                                            </div>
+                                                        </TableCell>
+
+                                                        <TableCell className="border">
+                                                            <div className="flex items-center space-x-2 justify-center">
+                                                                <Popover>
+                                                                    <PopoverTrigger asChild>
+                                                                        <Button
+                                                                            variant={'outline'}
+                                                                            className="w-full justify-start text-left font-normal border-none"
+                                                                        >
+                                                                            {historyrow.enddate
+                                                                                ? format(historyrow.enddate, Constent.DATE_FORMAT)
+                                                                                : ''}
+                                                                        </Button>
+                                                                    </PopoverTrigger>
+                                                                    <PopoverContent className="w-auto p-0" align="start">
+                                                                        <Calendar
+                                                                            key={historyrow.enddate}
+                                                                            mode="single"
+                                                                            selected={historyrow.enddate}
+                                                                            onSelect={(e) => {
+                                                                                setHistoryrows((prev) => {
+                                                                                    let updatedData = []
+
+                                                                                    prev.map((item, i) => {
+                                                                                        if (item.id == historyrow.id) {
+                                                                                            prev[i]['enddate'] = e
+                                                                                        }
+                                                                                        updatedData.push(item)
+                                                                                    })
+                                                                                    return updatedData
+                                                                                })
+                                                                            }}
+                                                                        />
+                                                                    </PopoverContent>
+                                                                </Popover>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Input
+                                                                placeholder=" Comments"
+                                                                onChange={(e) => {
+                                                                    setHistoryrows((prev) => {
+                                                                        let updatedData = []
+
+                                                                        prev.map((item, i) => {
+                                                                            if (item.id == historyrow.id) {
+                                                                                prev[i]['hours'] = e.target.value
+                                                                            }
+                                                                            updatedData.push(item)
+                                                                        })
+                                                                        return updatedData
+                                                                    })
+                                                                }}
+                                                                className="border-none shadow-none"
+                                                            />
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                    <Button
+                                        type="button"
+                                        className=""
+                                        onClick={addHistoryrow}
+                                        style={{
+                                            padding: '0px 10px',
+                                            height: '28px',
+                                            backgroundColor: '#808080d6',
+                                        }}
+                                    >
+                                        Add Row
+                                    </Button>
+
+                                    {!checkhisotryAll &&
+                                    historyrows.filter((historyrow) => {
+                                        return historyrow.checkbox
+                                    }).length > 0 ? (
+                                        <Button
+                                            type="button"
+                                            className="bg-primary-red ml-1"
+                                            onClick={() => delete_history_one()}
+                                            style={{ padding: '0px 10px', height: '28px' }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    ) : (
+                                        ''
+                                    )}
+
+                                    {checkhisotryAll && historyrows.length > 0 && (
+                                        <Button
+                                            type="button"
+                                            className="bg-primary-red ml-1"
+                                            onClick={delete_history_All}
+                                            style={{ padding: '0px 10px', height: '28px' }}
+                                        >
+                                            Delete All
+                                        </Button>
                                     )}
                                 </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="comments"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Comments</FormLabel>
-                                            <FormControl>
-                                                <Textarea
-                                                    value={projectFields.comments}
-                                                    onChange={(e) => {
-                                                        setProjectFields((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                comments: e.target.value,
-                                                            }
-                                                        })
-                                                    }}
-                                                    placeholder="comments "
-                                                    className="resize-none"
-                                                    rows="4.5"
-                                                />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                            <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow className="border">
-                                            <TableHead className="w-[35px] border">
-                                                <Checkbox onClick={changeAll} value={checkAll} checked={checkAll} />
-                                            </TableHead>
-                                            <TableHead className="w-[50px] border">Sr.No</TableHead>
-
-                                            <TableHead className="w-[300px] border">Label</TableHead>
-
-                                            <TableHead className="w-[200px] border">Data Type</TableHead>
-                                            <TableHead className="w-[200px] border">Field Name</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {rows.length == 0 ? (
-                                            <tr>
-                                                <td colSpan="6">
-                                                    <h6 className="text-center" style={{ margin: 0 }}>
-                                                        No Data
-                                                    </h6>
-                                                </td>
-                                            </tr>
-                                        ) : (
-                                            rows.map((row, i) => {
-                                                return (
-                                                    !row.deleteForProject && (
-                                                        <TableRow key={row.id} name="customfields" className="border">
-                                                            <TableCell className="border">
-                                                                <Checkbox
-                                                                    onClick={() => changeOne(row, i)}
-                                                                    checked={row.checkbox}
-                                                                    value={row.checkbox}
-                                                                />
-                                                            </TableCell>
-                                                            <TableCell className="border">{row.id}</TableCell>
-
-                                                            <TableCell className="border">
-                                                                <div className="w-full">
-                                                                    <Input
-                                                                        placeholder="label"
-                                                                        onChange={(e) => {
-                                                                            setRows((prev) => {
-                                                                                let updatedData = []
-
-                                                                                prev.map((item, i) => {
-                                                                                    if (item.id == row.id) {
-                                                                                        prev[i]['label'] = e.target.value
-                                                                                    }
-                                                                                    updatedData.push(item)
-                                                                                })
-                                                                                return updatedData
-                                                                            })
-                                                                        }}
-                                                                        value={row.label}
-                                                                        onBlur={(e) => handle_label_Change(e, row.id)}
-                                                                        className="border-none shadow-none"
-                                                                    />
-                                                                </div>
-                                                            </TableCell>
-
-                                                            <TableCell className="border">
-                                                                <div className="flex items-center space-x-2 justify-center">
-                                                                    <Select
-                                                                        onValueChange={(value) =>
-                                                                            setRows((prev) => {
-                                                                                let updatedData = []
-
-                                                                                prev.map((item, i) => {
-                                                                                    if (item.id == row.id) {
-                                                                                        prev[i]['dataType'] = value
-                                                                                    }
-                                                                                    updatedData.push(item)
-                                                                                })
-                                                                                return updatedData
-                                                                            })
-                                                                        }
-                                                                        value={row.dataType}
-                                                                        defaultValue={row.dataType}
-                                                                        className="border-none w-full"
-                                                                    >
-                                                                        <SelectTrigger className="border-none">
-                                                                            <SelectValue placeholder="Data Type" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            {assets.DataTypes.map((value) => (
-                                                                                <SelectItem key={value.key} value={value.key}>
-                                                                                    {value.value}
-                                                                                </SelectItem>
-                                                                            ))}
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
-                                                            </TableCell>
-                                                            <TableCell className="border">
-                                                                <Input
-                                                                    placeholder="Field Name"
-                                                                    name="fieldName"
-                                                                    value={row.fieldName}
-                                                                    className="border-none shadow-none"
-                                                                    disabled={true}
-                                                                />
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    )
-                                                )
-                                            })
-                                        )}
-                                    </TableBody>
-                                </Table>
-                                <Button
-                                    type="button"
-                                    className=""
-                                    onClick={addRow}
-                                    style={{
-                                        padding: '0px 10px',
-                                        height: '28px',
-                                        backgroundColor: '#808080d6',
-                                    }}
-                                >
-                                    Add Row
-                                </Button>
-
-                                {!checkAll &&
-                                rows.filter((row) => {
-                                    return row.checkbox
-                                }).length > 0 ? (
-                                    <Button
-                                        type="button"
-                                        className="bg-primary-red ml-1"
-                                        onClick={() => deleteone()}
-                                        style={{ padding: '0px 10px', height: '28px' }}
-                                    >
-                                        Delete
-                                    </Button>
-                                ) : (
-                                    ''
-                                )}
-
-                                {checkAll && rows.length > 0 && (
-                                    <Button
-                                        type="button"
-                                        className="bg-primary-red ml-1"
-                                        onClick={deleteAll}
-                                        style={{ padding: '0px 10px', height: '28px' }}
-                                    >
-                                        Delete All
-                                    </Button>
-                                )}
-                            </div>
-                            <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
-                                <h3 className="font-medium mb-6">History</h3>
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow className="border">
-                                            <TableHead className="w-[35px] border">
-                                                <Checkbox onClick={change_history_All} value={checkhisotryAll} checked={checkhisotryAll} />
-                                            </TableHead>
-                                            <TableHead className="w-[50px] border">Sr.No</TableHead>
-
-                                            <TableHead className=" border">Status</TableHead>
-                                            <TableHead className="w-[200px] border">Start Date</TableHead>
-                                            <TableHead className="w-[200px] border">End Date</TableHead>
-                                            <TableHead className=" border">Comments</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {historyrows.length == 0 ? (
-                                            <tr>
-                                                <td colSpan="6">
-                                                    <h6 className="text-center" style={{ margin: 0 }}>
-                                                        No Data
-                                                    </h6>
-                                                </td>
-                                            </tr>
-                                        ) : (
-                                            historyrows.map((historyrow, i) => (
-                                                <TableRow key={historyrows.id} name="history" className="border">
-                                                    <TableCell className="border">
-                                                        <Checkbox
-                                                            onClick={() => change_history_One(historyrow, i)}
-                                                            checked={historyrow.checkbox}
-                                                            value={historyrow.checkbox}
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell className="border">{historyrow.id}</TableCell>
-                                                    <TableCell className="border">
-                                                        <Select
-                                                            name="hstatus"
-                                                            onValueChange={(value) =>
-                                                                setHistoryrows((prev) => {
-                                                                    let updatedData = []
-
-                                                                    prev.map((item, i) => {
-                                                                        if (item.id == historyrow.id) {
-                                                                            prev[i]['label'] = value
-                                                                        }
-                                                                        updatedData.push(item)
-                                                                    })
-                                                                    return updatedData
-                                                                })
-                                                            }
-                                                            defaultValue={historyrows.label}
-                                                            className="border-none w-full"
-                                                        >
-                                                            <FormControl>
-                                                                <SelectTrigger className="border-none shadow-none  w-full">
-                                                                    <SelectValue placeholder="Select Status" />
-                                                                </SelectTrigger>
-                                                            </FormControl>
-                                                            <SelectContent>
-                                                                <SelectItem value="Active">Active</SelectItem>
-                                                                <SelectItem value="Inactive">Inactive</SelectItem>
-
-                                                                <SelectItem value="On Hold">On Hold</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
-                                                    </TableCell>
-
-                                                    <TableCell className="border">
-                                                        <div className="w-full">
-                                                            <Popover>
-                                                                <PopoverTrigger asChild>
-                                                                    <Button
-                                                                        variant={'outline'}
-                                                                        className="w-full justify-start text-left font-normal border-none"
-                                                                    >
-                                                                        {historyrow.startdate
-                                                                            ? format(historyrow.startdate, Constent.DATE_FORMAT)
-                                                                            : ''}
-                                                                    </Button>
-                                                                </PopoverTrigger>
-                                                                <PopoverContent className="w-auto p-0 " align="start">
-                                                                    <Calendar
-                                                                        mode="single"
-                                                                        key={historyrow.startdate}
-                                                                        selected={historyrow.startdate}
-                                                                        onSelect={(e) => {
-                                                                            setHistoryrows((prev) => {
-                                                                                let updatedData = []
-
-                                                                                prev.map((item, i) => {
-                                                                                    if (item.id == historyrow.id) {
-                                                                                        prev[i]['startdate'] = e
-                                                                                    }
-                                                                                    updatedData.push(item)
-                                                                                })
-                                                                                return updatedData
-                                                                            })
-                                                                        }}
-                                                                        initialFocus
-                                                                    />
-                                                                </PopoverContent>
-                                                            </Popover>
-                                                        </div>
-                                                    </TableCell>
-
-                                                    <TableCell className="border">
-                                                        <div className="flex items-center space-x-2 justify-center">
-                                                            <Popover>
-                                                                <PopoverTrigger asChild>
-                                                                    <Button
-                                                                        variant={'outline'}
-                                                                        className="w-full justify-start text-left font-normal border-none"
-                                                                    >
-                                                                        {historyrow.enddate ? format(historyrow.enddate, Constent.DATE_FORMAT) : ''}
-                                                                    </Button>
-                                                                </PopoverTrigger>
-                                                                <PopoverContent className="w-auto p-0" align="start">
-                                                                    <Calendar
-                                                                        key={historyrow.enddate}
-                                                                        mode="single"
-                                                                        selected={historyrow.enddate}
-                                                                        onSelect={(e) => {
-                                                                            setHistoryrows((prev) => {
-                                                                                let updatedData = []
-
-                                                                                prev.map((item, i) => {
-                                                                                    if (item.id == historyrow.id) {
-                                                                                        prev[i]['enddate'] = e
-                                                                                    }
-                                                                                    updatedData.push(item)
-                                                                                })
-                                                                                return updatedData
-                                                                            })
-                                                                        }}
-                                                                    />
-                                                                </PopoverContent>
-                                                            </Popover>
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Input
-                                                            placeholder=" Comments"
-                                                            onChange={(e) => {
-                                                                setHistoryrows((prev) => {
-                                                                    let updatedData = []
-
-                                                                    prev.map((item, i) => {
-                                                                        if (item.id == historyrow.id) {
-                                                                            prev[i]['hours'] = e.target.value
-                                                                        }
-                                                                        updatedData.push(item)
-                                                                    })
-                                                                    return updatedData
-                                                                })
-                                                            }}
-                                                            className="border-none shadow-none"
-                                                        />
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))
-                                        )}
-                                    </TableBody>
-                                </Table>
-                                <Button
-                                    type="button"
-                                    className=""
-                                    onClick={addHistoryrow}
-                                    style={{
-                                        padding: '0px 10px',
-                                        height: '28px',
-                                        backgroundColor: '#808080d6',
-                                    }}
-                                >
-                                    Add Row
-                                </Button>
-
-                                {!checkhisotryAll &&
-                                historyrows.filter((historyrow) => {
-                                    return historyrow.checkbox
-                                }).length > 0 ? (
-                                    <Button
-                                        type="button"
-                                        className="bg-primary-red ml-1"
-                                        onClick={() => delete_history_one()}
-                                        style={{ padding: '0px 10px', height: '28px' }}
-                                    >
-                                        Delete
-                                    </Button>
-                                ) : (
-                                    ''
-                                )}
-
-                                {checkhisotryAll && historyrows.length > 0 && (
-                                    <Button
-                                        type="button"
-                                        className="bg-primary-red ml-1"
-                                        onClick={delete_history_All}
-                                        style={{ padding: '0px 10px', height: '28px' }}
-                                    >
-                                        Delete All
-                                    </Button>
-                                )}
-                            </div>
-
-                            <div className="grid  gap-x-[3rem] gap-y-[1.75rem]"></div>
-                        </form>
-                    </Form>
-                </CardContent>
-            </Card>
+                                <div className="grid  gap-x-[3rem] gap-y-[1.75rem]"></div>
+                            </form>
+                        </Form>
+                    </CardContent>
+                </Card>
+            </div>
         </>
     )
 }
