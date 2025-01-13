@@ -31,6 +31,7 @@ const CreateProject = ({ type }) => {
     const navigate = useNavigate()
     const [checkAll, setcheckAll] = useState(false)
     const [checkhisotryAll, setchechistorykAll] = useState(false)
+    const [checkdescAll, setcheckdescAll] = useState(false)
     const [rows, setRows] = useState([])
     const [historyrows, setHistoryrows] = useState([])
     const formRef = useRef(null)
@@ -41,6 +42,7 @@ const CreateProject = ({ type }) => {
     const [projectleads, setProjectLead] = useState([{ id: 11, name: 'sandeep' }])
     const [process, setProcess] = useState([])
     const [billing_type, setBillingType] = useState([])
+    const [desc,setDesc]=useState([])
     const form = useForm()
 
     const getLofBusiness = async () => {
@@ -185,9 +187,31 @@ const CreateProject = ({ type }) => {
         })
     }
 
+    const adddescRow = () => {
+        setDesc((prev) => {
+            const newId = prev.length > 0 ? parseInt(prev[prev.length - 1].id) + 1 : 1
+
+            return [
+                ...prev,
+                {
+                    id: newId,
+                    description:''
+                },
+            ]
+        })
+    }
+    const deletedescone = (id) => {
+        const updatedrows = desc.filter((row) => !row.checkbox)
+        let newdata = updatedrows.length > 0 ? updatedrows : []
+        setDesc(() => newdata)
+    }
+    const deletedescAll = () => {
+        setDesc([])
+    }
+
     const addRow = () => {
         setRows((prev) => {
-            const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
+            const newId = prev.length > 0 ? parseInt(prev[prev.length - 1].id) + 1 : 1
 
             return [
                 ...prev,
@@ -238,6 +262,37 @@ const CreateProject = ({ type }) => {
         setcheckAll((prev) => isChecked)
 
         setRows((prev) => {
+            let updatedData = []
+
+            prev.map((item, i) => {
+                prev[i]['checkbox'] = isChecked
+                updatedData.push(item)
+            })
+
+            return updatedData
+        })
+    }
+
+
+    const changedescOne = (row) => {
+        setDesc((prev) => {
+            let updatedData = []
+
+            prev.map((item, i) => {
+                if (item.id == row.id) {
+                    prev[i]['checkbox'] = !prev[i]['checkbox']
+                }
+                updatedData.push(item)
+            })
+            return updatedData
+        })
+    }
+
+    const changedescAll = () => {
+        let isChecked = !checkdescAll
+        setcheckdescAll((prev) => isChecked)
+
+        setDesc((prev) => {
             let updatedData = []
 
             prev.map((item, i) => {
@@ -439,7 +494,7 @@ const CreateProject = ({ type }) => {
                                                             mode="single"
                                                             selected={projectFields.date}
                                                             onSelect={(e) => {
-                                                                setProjectFields((prev) => {
+                                                                ((prev) => {
                                                                     return {
                                                                         ...prev,
                                                                         date: e,
@@ -505,7 +560,62 @@ const CreateProject = ({ type }) => {
                                             </FormItem>
                                         )}
                                     />
-
+                                    <FormField
+                                        control={form.control}
+                                        name="note"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Billing To</FormLabel>
+                                                <SearchableDropdown
+                                                    options={departments}
+                                                    selectedVal={projectFields.department}
+                                                    handleChange={(val) => {
+                                                        getProject(val)
+                                                        setProjectFields((prev) => {
+                                                            return {
+                                                                ...prev,
+                                                                project: val,
+                                                            }
+                                                        })
+                                                    }}
+                                                    placeholder="Billing To"
+                                                    label="billing_to"
+                                                    className="mb-5"
+                                                />
+                                                <FormControl>
+                                                    <Textarea placeholder="Billing To" className="resize-none" row="1" />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="note"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Billing From</FormLabel>
+                                                <SearchableDropdown
+                                                    options={departments}
+                                                    selectedVal={projectFields.project}
+                                                    handleChange={(val) => {
+                                                        getProject(val)
+                                                        setProjectFields((prev) => {
+                                                            return {
+                                                                ...prev,
+                                                                project: val,
+                                                            }
+                                                        })
+                                                    }}
+                                                    placeholder="Billing From"
+                                                    label="billing_from"
+                                                    className="mb-5"
+                                                />
+                                                <FormControl>
+                                                    <Textarea placeholder="Billing From" className="resize-none" row="1" />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
                                     <FormField
                                         className="w-full"
                                         control={form.control}
@@ -566,8 +676,8 @@ const CreateProject = ({ type }) => {
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>
-                                                        {projectFields.billingType == 'Per Workitem Transactional'
-                                                            ? 'Rate Per WorkItem'
+                                                        {projectFields.billingType == 'Hourly transactional'
+                                                            ? 'Rate Per Chart'
                                                             : 'Rate Per Hour'}
                                                     </FormLabel>
                                                     <FormControl>
@@ -588,13 +698,13 @@ const CreateProject = ({ type }) => {
                                                 </FormItem>
                                             )}
                                         />
-                                        {projectFields.billingType == 'Per Workitem Transactional' && (
+                                        {projectFields.billingType == 'Hourly transactional' && (
                                             <FormField
                                                 control={form.control}
                                                 name="timePerWorkItem"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Time per WorkItem</FormLabel>
+                                                        <FormLabel>Time taken per Chart (in minutes)</FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 placeholder="minutes"
@@ -614,32 +724,36 @@ const CreateProject = ({ type }) => {
                                             />
                                         )}
                                     </div>
-
                                     <FormField
                                         control={form.control}
-                                        name="comments"
+                                        name="note"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Comments</FormLabel>
+                                                <FormLabel>Note</FormLabel>
+                                                <SearchableDropdown
+                                                    options={departments}
+                                                    selectedVal={projectFields.project}
+                                                    handleChange={(val) => {
+                                                        getProject(val)
+                                                        setProjectFields((prev) => {
+                                                            return {
+                                                                ...prev,
+                                                                project: val,
+                                                            }
+                                                        })
+                                                    }}
+                                                    placeholder="Note"
+                                                    label="note"
+                                                    className="mb-5"
+                                                />
                                                 <FormControl>
-                                                    <Textarea
-                                                        value={projectFields.comments}
-                                                        onChange={(e) => {
-                                                            setProjectFields((prev) => {
-                                                                return {
-                                                                    ...prev,
-                                                                    comments: e.target.value,
-                                                                }
-                                                            })
-                                                        }}
-                                                        placeholder="comments "
-                                                        className="resize-none"
-                                                        rows="4.5"
-                                                    />
+                                                    <Textarea placeholder="Note" className="resize-none" row="1" />
                                                 </FormControl>
                                             </FormItem>
                                         )}
                                     />
+
+                                    
                                 </div>
 
                                 <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
@@ -651,7 +765,7 @@ const CreateProject = ({ type }) => {
                                                 </TableHead>
                                                 <TableHead className="w-[50px] border">Sr.No</TableHead>
 
-                                                <TableHead className="w-[300px] border">Label</TableHead>
+                                                <TableHead className="w-[300px] border">Field Label</TableHead>
 
                                                 <TableHead className="w-[200px] border">Data Type</TableHead>
                                                 <TableHead className="w-[200px] border">Field Name</TableHead>
@@ -777,6 +891,95 @@ const CreateProject = ({ type }) => {
                                             type="button"
                                             className="bg-primary-red ml-1"
                                             onClick={deleteAll}
+                                            style={{ padding: '0px 10px', height: '28px' }}
+                                        >
+                                            Delete All
+                                        </Button>
+                                    )}
+                                </div>
+
+                                <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="border">
+                                                <TableHead className="w-[35px] border">
+                                                    <Checkbox onClick={changedescAll} value={checkdescAll} checked={checkdescAll} />
+                                                </TableHead>
+                                                <TableHead className="w-[50px] border">Sr.No</TableHead>
+
+                                                <TableHead className="w-[300px] border">Description</TableHead>
+
+                                                
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {desc.length == 0 ? (
+                                                <tr>
+                                                    <td colSpan="6">
+                                                        <h6 className="text-center" style={{ margin: 0 }}>
+                                                            No Data
+                                                        </h6>
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                desc.map((row, i) => (
+                                                    <TableRow key={row.id} name="customfields" className="border">
+                                                        <TableCell className="border">
+                                                            <Checkbox onClick={() => changedescOne(row, i)} checked={row.checkbox} value={row.checkbox} />
+                                                        </TableCell>
+                                                        <TableCell className="border">{row.id}</TableCell>
+
+                                                 
+
+                                                        
+                                                        <TableCell className="border">
+                                                            <Input
+                                                                placeholder="Description"
+                                                                name="description"
+                                                                value={row.description}
+                                                                className="border-none shadow-none"
+                                                                disabled={true}
+                                                            />
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                    <Button
+                                        type="button"
+                                        className=""
+                                        onClick={adddescRow}
+                                        style={{
+                                            padding: '0px 10px',
+                                            height: '28px',
+                                            backgroundColor: '#808080d6',
+                                        }}
+                                    >
+                                        Add Row
+                                    </Button>
+
+                                    {!checkdescAll &&
+                                    desc.filter((row) => {
+                                        return row.checkbox
+                                    }).length > 0 ? (
+                                        <Button
+                                            type="button"
+                                            className="bg-primary-red ml-1"
+                                            onClick={() => deletedescone()}
+                                            style={{ padding: '0px 10px', height: '28px' }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    ) : (
+                                        ''
+                                    )}
+
+                                    {checkdescAll && desc.length > 0 && (
+                                        <Button
+                                            type="button"
+                                            className="bg-primary-red ml-1"
+                                            onClick={deletedescAll}
                                             style={{ padding: '0px 10px', height: '28px' }}
                                         >
                                             Delete All
