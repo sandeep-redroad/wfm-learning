@@ -10,6 +10,8 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
         return () => document.removeEventListener('click', toggle)
     }, [])
 
+    console.log("options",label,options)
+
     const selectOption = (option) => {
         setQuery(() => '')
         handleChange(option[label])

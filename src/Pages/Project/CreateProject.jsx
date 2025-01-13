@@ -2,7 +2,7 @@ import { React, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'react-toastify'
-import { CalendarIcon } from 'lucide-react'
+import { CalendarIcon, CloudCog } from 'lucide-react'
 import { format } from 'date-fns'
 
 import { Calendar } from '@/components/ui/calendar'
@@ -26,6 +26,7 @@ import LofBusinessService from '@/Service/LofBusinessService'
 import ProjectService from '@/Service/ProjectService'
 import { lowerFirstChar } from '@/utils/helper'
 import Constent from '@/utils/constent'
+import ClientAddressService from '@/Service/ClientAddressService'
 
 const CreateProject = ({ type }) => {
     const navigate = useNavigate()
@@ -41,8 +42,9 @@ const CreateProject = ({ type }) => {
     const [lofBusiness, setLofBusiness] = useState([])
     const [projectleads, setProjectLead] = useState([{ id: 11, name: 'sandeep' }])
     const [process, setProcess] = useState([])
+    const [billingTo, setBillingTo] = useState([])
     const [billing_type, setBillingType] = useState([])
-    const [desc,setDesc]=useState([])
+    const [desc, setDesc] = useState([])
     const form = useForm()
 
     const getLofBusiness = async () => {
@@ -75,6 +77,7 @@ const CreateProject = ({ type }) => {
             const resp = await ClientService.getClients()
             if (resp.data.success) {
                 setClient(resp.data.data)
+             
             }
         } catch (err) {}
     }
@@ -84,6 +87,16 @@ const CreateProject = ({ type }) => {
             const resp = await ProcessService.getProcess()
             if (resp.data.success) {
                 setProcess(resp.data.data)
+            }
+        } catch (err) {}
+    }
+
+    const getClientAddress = async (data) => {
+        try {
+            const resp = await ClientAddressService.getClientAddresses(data)
+            if (resp.data.success) {
+                console.log(resp.data.success)
+                setBillingTo(resp.data.data)
             }
         } catch (err) {}
     }
@@ -108,6 +121,10 @@ const CreateProject = ({ type }) => {
         comments: '',
         date: today,
         status: 'Active',
+        billingTo:'',
+        billingFrom:'',
+      
+
     })
 
     async function onSubmit(data) {
@@ -195,7 +212,7 @@ const CreateProject = ({ type }) => {
                 ...prev,
                 {
                     id: newId,
-                    description:''
+                    description: '',
                 },
             ]
         })
@@ -272,7 +289,6 @@ const CreateProject = ({ type }) => {
             return updatedData
         })
     }
-
 
     const changedescOne = (row) => {
         setDesc((prev) => {
@@ -379,7 +395,7 @@ const CreateProject = ({ type }) => {
                     </div>
                 </CardContent>
             </Card>
-            <div className="p-3" style={{height : "calc(100vh - 125px)"}}>
+            <div className="p-3" style={{ height: 'calc(100vh - 125px)' }}>
                 <Card className="h-full overflow-card-scroll w-full m-0 overflow-auto">
                     <CardContent className="m-0 p-2 max-h-full">
                         <Form {...form}>
@@ -396,6 +412,9 @@ const CreateProject = ({ type }) => {
                                                         options={clients}
                                                         selectedVal={projectFields.client}
                                                         handleChange={(val) => {
+                                                            getClientAddress({"search":{
+                                                                "client":val
+                                                            }})
                                                             setProjectFields((prev) => {
                                                                 return {
                                                                     ...prev,
@@ -494,12 +513,12 @@ const CreateProject = ({ type }) => {
                                                             mode="single"
                                                             selected={projectFields.date}
                                                             onSelect={(e) => {
-                                                                ((prev) => {
+                                                                ;(prev) => {
                                                                     return {
                                                                         ...prev,
                                                                         date: e,
                                                                     }
-                                                                })
+                                                                }
                                                             }}
                                                             initialFocus
                                                         />
@@ -562,28 +581,29 @@ const CreateProject = ({ type }) => {
                                     />
                                     <FormField
                                         control={form.control}
-                                        name="note"
+                                        name="contactPerson"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Billing To</FormLabel>
                                                 <SearchableDropdown
-                                                    options={departments}
-                                                    selectedVal={projectFields.department}
+                                                    options={billingTo}
+                                                    selectedVal={billingTo.contactPerson}
                                                     handleChange={(val) => {
-                                                        getProject(val)
+                                                       // getProject(val)
+                                                       console.log("in billingto",val);
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                project: val,
+                                                                billingTo: val,
                                                             }
                                                         })
                                                     }}
                                                     placeholder="Billing To"
-                                                    label="billing_to"
+                                                    label="contactPerson"
                                                     className="mb-5"
                                                 />
                                                 <FormControl>
-                                                    <Textarea placeholder="Billing To" className="resize-none" row="1" />
+                                                    <Textarea placeholder="Billing To" className="resize-none" row="1" value={billingTo.contactPerson} />
                                                 </FormControl>
                                             </FormItem>
                                         )}
@@ -676,9 +696,7 @@ const CreateProject = ({ type }) => {
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>
-                                                        {projectFields.billingType == 'Hourly transactional'
-                                                            ? 'Rate Per Chart'
-                                                            : 'Rate Per Hour'}
+                                                        {projectFields.billingType == 'Hourly transactional' ? 'Rate Per Chart' : 'Rate Per Hour'}
                                                     </FormLabel>
                                                     <FormControl>
                                                         <Input
@@ -752,8 +770,6 @@ const CreateProject = ({ type }) => {
                                             </FormItem>
                                         )}
                                     />
-
-                                    
                                 </div>
 
                                 <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
@@ -908,8 +924,6 @@ const CreateProject = ({ type }) => {
                                                 <TableHead className="w-[50px] border">Sr.No</TableHead>
 
                                                 <TableHead className="w-[300px] border">Description</TableHead>
-
-                                                
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
@@ -925,13 +939,14 @@ const CreateProject = ({ type }) => {
                                                 desc.map((row, i) => (
                                                     <TableRow key={row.id} name="customfields" className="border">
                                                         <TableCell className="border">
-                                                            <Checkbox onClick={() => changedescOne(row, i)} checked={row.checkbox} value={row.checkbox} />
+                                                            <Checkbox
+                                                                onClick={() => changedescOne(row, i)}
+                                                                checked={row.checkbox}
+                                                                value={row.checkbox}
+                                                            />
                                                         </TableCell>
                                                         <TableCell className="border">{row.id}</TableCell>
 
-                                                 
-
-                                                        
                                                         <TableCell className="border">
                                                             <Input
                                                                 placeholder="Description"

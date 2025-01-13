@@ -4,7 +4,11 @@ import Axios from "@/Axios";
 class ClientAddressService{
 
     async getClientAddresses(data = {}){
-        const queryString = new URLSearchParams(data).toString();
+        let postData = JSON.parse(JSON.stringify(data))
+        const queryString = new URLSearchParams({
+            ...postData.search,
+            page: postData.page ?? 1,
+        }).toString()
         return await Axios.get(`api/client_address/get_pagination?${queryString}`)
     }
 
