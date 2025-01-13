@@ -12,9 +12,10 @@ import Constent from '@/utils/constent'
 import { toast } from 'react-toastify'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import DataTableEnumType from '@/Enums/DataTableTypeEnum'
+import NoteService from '@/Service/NoteService'
 
 const Notes = () => {
-    const [clients, setClients] = useState([])
+    const [notes, setNotes] = useState([])
     const [totalCount, setTotalCount] = useState(0)
     const [search, setSearch] = useState('')
     const [debouncedValue] = useDebounce(search, Constent.DEBOUNCE_DELAY)
@@ -25,12 +26,12 @@ const Notes = () => {
         search: '',
     })
     const location = useLocation()
-    const getClient = async (page = 1) => {
+    const getNotes = async (page = 1) => {
         try {
-            const resp = await ClientService.getClients(queryParam)
+            const resp = await NoteService.getNotes(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)
-                setClients(resp.data.data)
+                setNotes(resp.data.data)
             }
         } catch (err) {}
     }
@@ -55,7 +56,7 @@ const Notes = () => {
     }, [debouncedValue])
 
     useEffect(() => {
-        // getClient()
+        getNotes()
     }, [queryParam.page, queryParam.search])
 
     const deleteClients = async () => {
@@ -64,12 +65,12 @@ const Notes = () => {
             return !deleteId.includes(value._id)
         })
         try {
-            const resp = await ClientService.deleteClients(deleteId)
-            console.log('response', resp)
-            if (resp.data.success) {
-                toast.success(resp.data.message)
-                // getClient()
-            }
+            // const resp = await ClientService.deleteClients(deleteId)
+            // console.log('response', resp)
+            // if (resp.data.success) {
+            //     toast.success(resp.data.message)
+            //     // getClient()
+            // }
         } catch (err) {
             console.log('error', err)
         }
@@ -102,12 +103,12 @@ const Notes = () => {
                 <Card className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
                     <CardContent className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
                         <div className="w-full my-2 grid grid-cols-4 gap-3 mb-3">
-                            <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="note" />
-                            <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="description" />
+                            <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Title" />
+                            {/* <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="description" /> */}
                         </div>
                         <Datatable
                             columns={NoteColumns()}
-                            data={clients}
+                            data={notes}
                             totalDataCount={totalCount}
                             allcheck={allcheck}
                             deleteId={deleteId}
