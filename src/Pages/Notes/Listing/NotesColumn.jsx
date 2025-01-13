@@ -1,6 +1,6 @@
 
 let memoizedColumns = []
-const BillingEntityColumns = () => {
+const NoteColumns = () => {
     if (memoizedColumns.length > 0) {
         return memoizedColumns
     }
@@ -10,15 +10,11 @@ const BillingEntityColumns = () => {
             header: 'Sr. No.',
         },
         {
-            accessorKey: 'contactPerson',
-            header: 'Contact Person',
-        },
-        {
-            accessorKey: 'designation',
-            header: 'Designation',
+            accessorKey: 'noteName',
+            header: 'Note Name',
         }
     ]
     return memoizedColumns
 }
 
-export default BillingEntityColumns;
+export default NoteColumns;

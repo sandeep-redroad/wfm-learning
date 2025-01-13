@@ -36,6 +36,16 @@ const SidebarMenu = {
             url: '/master-settings',
             items: [
                 {
+                    title: 'Client Address',
+                    url: '/master-settings/client-address',
+                    items: [],
+                },
+                {
+                    title: 'Notes',
+                    url: '/master-settings/notes',
+                    items: [],
+                },
+                {
                     title: 'Process',
                     url: '/master-settings/process',
                     items: [],

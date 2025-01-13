@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { CalendarIcon } from 'lucide-react'
-import { format } from 'date-fns'
 import { Card, CardContent } from '@/components/ui/card'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -20,10 +19,14 @@ import { Checkbox } from '@/Components/ui/checkbox'
 import assets from '@/assets/assets'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select'
 import DummyTable from '@/Components/Common/DummyTable'
+import { format } from 'date-fns'
+
+import { cn } from '@/lib/utils'
 
 const CreateDailyWorkLog = () => {
     const navigate = useNavigate()
     const form = useForm()
+    // const [date, setDate] = React.useState<Date>()
     const { userInfo } = useAuth()
     const formRef = useRef(null)
     const [date, setDate] = useState(format(new Date(), Constent.DATE_FORMAT))
@@ -141,7 +144,7 @@ const CreateDailyWorkLog = () => {
 
     return (
         <>
-            <Card className="p-0 mb-[15px] mx-0 rounded-none sticky top-16 w-full z-10">
+            <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
@@ -156,9 +159,9 @@ const CreateDailyWorkLog = () => {
                 </CardContent>
             </Card>
 
-            <div className='overflow-auto mt-[2.1rem]'>
-                <Card className="p-0 m-3">
-                    <CardContent className="m-0 p-3">
+            <div className="p-3" style={{height : "calc(100vh - 125px)"}}>
+                <Card className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
+                    <CardContent className="m-0 p-2 max-h-full">
                         <Form {...form}>
                             <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="p-4 lg:ps-5">
                                 <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
@@ -340,22 +343,22 @@ const CreateDailyWorkLog = () => {
                                     />
                                 </div>
                                 {customFields.length > 0 && (
-                                    <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem]">
-                                        <div style={{ width: 'calc(100vw - 370px)', maxHeight :"400px", overflow:"auto" }}>
-                                            <div className="relative w-full rounded-lg" >
+                                    <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] border rounded-md pb-2">
+                                        <div style={{ width: 'calc(100vw - 370px)', maxHeight: '400px', overflow: 'auto', marginBottom:"2px" }}>
+                                            <div className="relative w-full rounded-lg">
                                                 <div>
                                                     <div className="flex min-w-max bg-gray-100 border-b" style={{ position: 'sticky', top: '0px' }}>
-                                                        <div className="p-4 w-20 font-medium text-gray-700 border-r last:border-r-0">
-                                                            <Checkbox />
+                                                        <div className="p-1 py-2 w-20 font-medium text-gray-700 border-r last:border-r-0">
+                                                            <Checkbox className="mx-3 my-1" />
                                                         </div>
-                                                        <div className="p-4 w-20 font-medium text-gray-700 border-r last:border-r-0">Sr.No</div>
+                                                        <div className="p-1 w-20 py-2 font-medium text-gray-700 text-center border-r last:border-r-0">Sr.No</div>
                                                         {customFields.map((row, i) => (
-                                                            <div key={i} className="p-4 w-48 font-medium text-gray-700 border-r last:border-r-0">
+                                                            <div key={i} className="p-1 py-2 w-48 font-medium text-center text-gray-700 border-r last:border-r-0">
                                                                 {row.label}
                                                             </div>
                                                         ))}
                                                     </div>
-                                                    <div className={`min-w-max ${extraFieldRecord.length === 0 ? "flex justify-center" : ''}`}>
+                                                    <div className={`min-w-max ${extraFieldRecord.length === 0 ? 'flex justify-center' : ''}`}>
                                                         {extraFieldRecord.length === 0 ? (
                                                             <tr>
                                                                 <td colSpan={customFields.length + 2}>
@@ -368,26 +371,56 @@ const CreateDailyWorkLog = () => {
                                                                     <div className="p-1 w-20 border-r">
                                                                         <Checkbox className="mx-3 my-1" onClick={() => console.log('ds')} />
                                                                     </div>
-                                                                    <div className="p-1 w-20 border-r flex justify-start items-center"><span className='py-1 px-3'>{row.id}</span></div>
+                                                                    <div className="p-1 w-20 border-r flex justify-start items-center">
+                                                                        <span className="py-1 px-3">{row.id}</span>
+                                                                    </div>
                                                                     {customFields.map((field) => (
                                                                         <div className="p-1 w-48 border-r">
                                                                             <div className="w-full">
-                                                                                <Input
-                                                                                    placeholder="label"
-                                                                                    type={field.dataType}
-                                                                                    onChange={(e) => {
-                                                                                        setExtraFieldRecord((prev) => {
-                                                                                            const updatedData = prev.map((item) => {
-                                                                                                if (item.id === row.id) {
-                                                                                                    return { ...item, label: e.target.value }
-                                                                                                }
-                                                                                                return item
+                                                                                {field.dataType == 'date' ? (
+                                                                                    <Popover>
+                                                                                        <PopoverTrigger asChild>
+                                                                                            <Button
+                                                                                                variant={'outline'}
+                                                                                                className={cn(
+                                                                                                    'w-full border-0 shadow-none justify-start text-left font-normal bg-transparent',
+                                                                                                    !date && 'text-muted-foreground'
+                                                                                                )}
+                                                                                            >
+                                                                                                {date ? (
+                                                                                                    format(date, Constent.DATE_FORMAT)
+                                                                                                ) : (
+                                                                                                    <span>Pick a date</span>
+                                                                                                )}
+                                                                                            </Button>
+                                                                                        </PopoverTrigger>
+                                                                                        <PopoverContent className="w-auto p-0" align="start">
+                                                                                            <Calendar
+                                                                                                mode="single"
+                                                                                                selected={date}
+                                                                                                onSelect={setDate}
+                                                                                                initialFocus
+                                                                                            />
+                                                                                        </PopoverContent>
+                                                                                    </Popover>
+                                                                                ) : (
+                                                                                    <Input
+                                                                                        placeholder={field.label}
+                                                                                        type={field.dataType}
+                                                                                        onChange={(e) => {
+                                                                                            setExtraFieldRecord((prev) => {
+                                                                                                const updatedData = prev.map((item) => {
+                                                                                                    if (item.id === row.id) {
+                                                                                                        return { ...item, label: e.target.value }
+                                                                                                    }
+                                                                                                    return item
+                                                                                                })
+                                                                                                return updatedData
                                                                                             })
-                                                                                            return updatedData
-                                                                                        })
-                                                                                    }}
-                                                                                    className="border-none shadow-none focus-visible:ring-0 w-full"
-                                                                                />
+                                                                                        }}
+                                                                                        className="border-none shadow-none focus-visible:ring-0 w-full"
+                                                                                    />
+                                                                                )}
                                                                             </div>
                                                                         </div>
                                                                     ))}
@@ -398,10 +431,10 @@ const CreateDailyWorkLog = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <Button
                                             type="button"
-                                            className=""
+                                            className="mx-2"
                                             onClick={addRow}
                                             style={{
                                                 padding: '0px 10px',

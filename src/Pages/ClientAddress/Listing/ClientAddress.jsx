@@ -1,38 +1,36 @@
 import React, { useEffect, useState } from 'react'
-import { Dialog, DialogTrigger } from '@/Components/ui/dialog'
 import { Button } from '@/Components/ui/button'
-
 import Datatable from '@/Components/Common/Datatable'
+import ClientAddressColumns from './ClientAddressColumn'
+import assets from '@/assets/assets'
 import { Input } from '@/Components/ui/input'
+import { Link, useLocation } from 'react-router-dom'
 import { Card, CardContent } from '@/components/ui/card'
-import { useLocation } from 'react-router-dom'
+import ClientAddressService from '@/Service/ClientAddressService'
 import { useDebounce } from 'use-debounce'
 import Constent from '@/utils/constent'
-import LofBusinessColumn from './LofBusinessColumn'
-import CreateLofBusiness from '../CreateLofBusiness'
-import LofBusinessService from '@/Service/LofBusinessService'
 import { toast } from 'react-toastify'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import DataTableEnumType from '@/Enums/DataTableTypeEnum'
 
-const LofBusiness = () => {
-    const [Lof_business, setLof] = useState([])
+const ClientAddress = () => {
+    const [clientAddress, setClientAddress] = useState([])
     const [totalCount, setTotalCount] = useState(0)
     const [search, setSearch] = useState('')
+    const [debouncedValue] = useDebounce(search, Constent.DEBOUNCE_DELAY)
     const [allcheck, setAllcheck] = useState(false)
     const [deleteId, setDeleteId] = useState([])
     const [queryParam, setQueryParam] = useState({
         page: 1,
         search: '',
     })
-    const [debouncedValue] = useDebounce(search, Constent.DEBOUNCE_DELAY)
-    const [isOpen, setIsOpen] = useState(false)
     const location = useLocation()
-    const getLofBusiness = async () => {
+    const getClientAddress = async (page = 1) => {
         try {
-            const resp = await LofBusinessService.getLofBusiness(queryParam)
+            const resp = await ClientAddressService.getClientAddresses(queryParam)
             if (resp.data.success) {
                 setTotalCount(resp.data.pagination.totalRecords)
-                setLof(resp.data.data)
+                setClientAddress(resp.data.data)
             }
         } catch (err) {}
     }
@@ -48,10 +46,6 @@ const LofBusiness = () => {
     }, [location.search])
 
     useEffect(() => {
-        getLofBusiness()
-    }, [queryParam.page, queryParam.search])
-
-    useEffect(() => {
         setQueryParam((prev) => {
             return {
                 ...prev,
@@ -60,17 +54,21 @@ const LofBusiness = () => {
         })
     }, [debouncedValue])
 
-    const deleteLofbuisness = async () => {
-        const updatedArray = Lof_business.filter((value, index) => {
+    useEffect(() => {
+        getClientAddress()
+    }, [queryParam.page, queryParam.search])
+
+    const deleteClientAddress = async () => {
+        const updatedArray = clients.filter((value, index) => {
             console.log('in filter', index, !deleteId.includes(value._id))
             return !deleteId.includes(value._id)
         })
         try {
-            const resp = await LofBusinessService.deleteLofBusiness(deleteId)
+            const resp = await ClientAddressService.deleteClientAddress(deleteId)
             console.log('response', resp)
             if (resp.data.success) {
                 toast.success(resp.data.message)
-                getLofBusiness()
+                getClientAddress()
             }
         } catch (err) {
             console.log('error', err)
@@ -82,12 +80,10 @@ const LofBusiness = () => {
             <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-between items-center">
-                        <Dialog open={isOpen} onOpenChange={() => setIsOpen((prev) => !prev)}>
-                            <DialogTrigger>
-                                <Button className="bg-primary-purpal hover:bg-primary-purpal">Add LOF Business</Button>
-                            </DialogTrigger>
-                            <CreateLofBusiness getLofBusiness={getLofBusiness} setIsOpen={setIsOpen} />
-                        </Dialog>
+                        <Link to="/master-settings/client-address/new">
+                            <Button className="bg-primary-purpal hover:bg-primary-purpal">Add Client Address</Button>
+                        </Link>
+
                         <DropdownMenu className="ml-[10px] ">
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" className={`ml-[10px] ${deleteId.length > 0 ? 'block' : 'hidden'}`}>
@@ -96,31 +92,34 @@ const LofBusiness = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={deleteLofbuisness}>Delete</DropdownMenuItem>
+                                <DropdownMenuItem onClick={deleteClientAddress}>Delete</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
                 </CardContent>
             </Card>
             <div className="p-3" style={{ height: 'calc(100vh - 125px)' }}>
-            <Card className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
-                <CardContent className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
-                    <div className="w-full my-2 grid grid-cols-4 gap-3 mb-3">
-                        <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Lof Business" />
-                    </div>
-                    <Datatable
-                        columns={LofBusinessColumn()}
-                        data={Lof_business}
-                        totalDataCount={totalCount}
-                        allcheck={allcheck}
-                        deleteId={deleteId}
-                        setDeleteId={setDeleteId}
-                    />
-                </CardContent>
-            </Card>
+                <Card className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
+                    <CardContent className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
+                        <div className="w-full my-2 grid grid-cols-4 gap-3 mb-3">
+                            <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Name" />
+                            <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Designation" />
+                            <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Client" />
+                        </div>
+                        <Datatable
+                            columns={ClientAddressColumns()}
+                            data={clientAddress}
+                            totalDataCount={totalCount}
+                            allcheck={allcheck}
+                            deleteId={deleteId}
+                            setDeleteId={setDeleteId}
+                            type={DataTableEnumType.CLIENT_ADDRESS}
+                        />
+                    </CardContent>
+                </Card>
             </div>
         </>
     )
 }
 
-export default LofBusiness
+export default ClientAddress

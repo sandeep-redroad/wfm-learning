@@ -79,8 +79,8 @@ const Project = () => {
     }
 
     return (
-        <div>
-            <Card className="p-0 mb-2 mx-0 rounded-none sticky top-16 w-full">
+        <>
+            <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-between items-center">
                         <Link className="button" to="/projects/new">
@@ -100,24 +100,26 @@ const Project = () => {
                     </div>
                 </CardContent>
             </Card>
-            <Card className="p-0 m-3 mt-[4.5rem]">
-                <CardContent className="m-0 p-3 overflow-y-auto">
-                    <div className="w-full my-2 grid grid-cols-5 gap-3">
-                        <Input type="text" onChange={(e) => setSearchId(e.target.value)} placeholder="ID" />
-                        <Input type="text" onChange={(e) => setSearchClient(e.target.value)} placeholder="Project Client" />
-                    </div>
-                    <Datatable
-                        columns={ProjectColumns()}
-                        data={projects}
-                        totalDataCount={totalCount}
-                        type={DataTableEnumType.PROJECT}
-                        allcheck={allcheck}
-                        deleteId={deleteId}
-                        setDeleteId={setDeleteId}
-                    />
-                </CardContent>
-            </Card>
-        </div>
+            <div className="p-3" style={{ height: 'calc(100vh - 125px)' }}>
+                <Card className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
+                    <CardContent className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
+                        <div className="w-full my-2 grid grid-cols-5 gap-3 mb-3">
+                            <Input type="text" onChange={(e) => setSearchId(e.target.value)} placeholder="ID" />
+                            <Input type="text" onChange={(e) => setSearchClient(e.target.value)} placeholder="Project Client" />
+                        </div>
+                        <Datatable
+                            columns={ProjectColumns()}
+                            data={projects}
+                            totalDataCount={totalCount}
+                            type={DataTableEnumType.PROJECT}
+                            allcheck={allcheck}
+                            deleteId={deleteId}
+                            setDeleteId={setDeleteId}
+                        />
+                    </CardContent>
+                </Card>
+            </div>
+        </>
     )
 }
 

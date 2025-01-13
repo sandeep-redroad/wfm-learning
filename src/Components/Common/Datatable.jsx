@@ -7,16 +7,15 @@ import Constent from '@/utils/constent'
 import { format } from 'date-fns'
 import { Checkbox } from '../ui/checkbox'
 
-const Datatable = ({ columns, data, totalDataCount,type,allcheck ,setDeleteId,deleteId}) => {
-    const checkboxRef = useRef(null); 
+const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId, deleteId }) => {
+    const checkboxRef = useRef(null)
     const location = useLocation()
     const navigate = useNavigate()
     const searchParams = new URLSearchParams(location.search)
     const pageSize = Constent.PAGINATION_SIZE
     const currentPage = parseInt(searchParams.get('page') || 1)
     const tbodyRef = useRef(null)
-    const [isScrollable, setIsScrollable] = useState(false);
-    const [rowsDelete,setRowsDelete]=useState([])
+    const [isScrollable, setIsScrollable] = useState(false)
     const table = useReactTable({
         data,
         columns,
@@ -24,7 +23,6 @@ const Datatable = ({ columns, data, totalDataCount,type,allcheck ,setDeleteId,de
         manualPagination: true,
         rowCount: pageSize,
     })
-    
 
     useEffect(() => {
         const checkIfScrollable = () => {
@@ -40,58 +38,55 @@ const Datatable = ({ columns, data, totalDataCount,type,allcheck ,setDeleteId,de
         }
     }, [])
 
-    const handleRedirect = (row) =>{
-        if(DataTableEnumType.PROJECT == type){
+    const handleRedirect = (row) => {
+        if (DataTableEnumType.PROJECT == type) {
             navigate(`/projects/${row.id}`)
         }
-        if(DataTableEnumType.CLIENT == type){
+        if (DataTableEnumType.CLIENT == type) {
             navigate(`/clients/${row.client}`)
         }
-        if(DataTableEnumType.DAILY_WORK_LOG == type){
+        if (DataTableEnumType.DAILY_WORK_LOG == type) {
             navigate(`/daily-work-log/${row.id}`)
         }
-        if(DataTableEnumType.BILLING_ENTITY == type){
+        if (DataTableEnumType.BILLING_ENTITY == type) {
             navigate(`/master-settings/billing-entity/${row.billingEntity}`)
+        }
+        if (DataTableEnumType.CLIENT_ADDRESS == type) {
+            navigate(`/master-settings/billing-entity/${row.contactPerson}`)
         }
     }
 
-    const handleCheckboxChange=(event, row)=>{
-        if(event){
-            console.log("in event",event)
+    const handleCheckboxChange = (event, row) => {
+        if (event) {
+            console.log('in event', event)
             if (!deleteId?.includes(row._id)) {
-                setDeleteId(prevDeleteId => [...prevDeleteId, row._id]);
-               
-              } 
-           }else{
-            console.log("in else",event)
+                setDeleteId((prevDeleteId) => [...prevDeleteId, row._id])
+            }
+        } else {
+            console.log('in else', event)
             if (deleteId?.includes(row._id)) {
                 // If the ID is already in the deleteId array, pop it
-                setDeleteId(prevDeleteId => prevDeleteId.filter(item => item !== row._id));
-              }
-           }
-              console.log("in one check",deleteId);
-        
-       
-       
-
+                setDeleteId((prevDeleteId) => prevDeleteId.filter((item) => item !== row._id))
+            }
+        }
+        console.log('in one check', deleteId)
     }
 
-    const handleCheckboxClick=(event)=>{
-        event.stopPropagation();
+    const handleCheckboxClick = (event) => {
+        event.stopPropagation()
     }
-    const handleAllChange=(event,rows)=>{
-        console.log("in handleAll change",rows);
-       if(event){
-        rows.map((row,index)=>{
-            if (!deleteId.includes(row.original._id)) {
-                setDeleteId(prevDeleteId => [...prevDeleteId, row.original._id]);
-               
-              } 
-        })
-       }else{
-        setDeleteId([]);
-       }
-        console.log("in one check",deleteId);
+    const handleAllChange = (event, rows) => {
+        console.log('in handleAll change', rows)
+        if (event) {
+            rows.map((row, index) => {
+                if (!deleteId.includes(row.original._id)) {
+                    setDeleteId((prevDeleteId) => [...prevDeleteId, row.original._id])
+                }
+            })
+        } else {
+            setDeleteId([])
+        }
+        console.log('in one check', deleteId)
         // if(event){
         //     for(let i=0;i<id;i++){
         //         rowsDelete.push(i)
@@ -100,95 +95,109 @@ const Datatable = ({ columns, data, totalDataCount,type,allcheck ,setDeleteId,de
         // }
         // console.log(event)
         // onAllCheckboxChange(event)
-       
     }
- 
 
     return (
-        <div className="rounded-md">
-            <table
-                className="text-left w-full text-sm"
+        <div className="gap-y-[1.75rem] border rounded-md pb-2">
+            <div
+                className='overflow-card-scroll'
                 style={{
-                    borderCollapse: 'separate',
-                    borderSpacing: '0 3px',
-                    width: '100%',
-                    tableLayout: 'fixed',
+                    maxHeight: "calc(100vh - 350px)",
+                    overflow: 'auto',
+                    marginBottom: '2px',
                 }}
             >
-                <thead className="bg-black flex w-full">
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <tr className="flex w-full shadow-md border border-black px-1" style={{ width: isScrollable ? 'calc(100% - 17px)' : '100%' }}>
-                            {headerGroup.headers.map((header) => {
-                                return (
-                                    <>
-                                        {header.id == 'sl' ? (
-                                            <th
-                                                key={header.id}
-                                                className=" flex justify-start items-center h-10 align-middle text-white font-medium text-justify px-3 w-20"
-                                            >
-                                                {/* <input type="checkbox" className='peer h-4 w-4 shrink-0 rounded-sm border border-neutral-200 shadow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-neutral-900 data-[state=checked]:text-neutral-50 dark:border-neutral-50 dark:focus-visible:ring-neutral-300 dark:data-[state=checked]:bg-neutral-50 dark:data-[state=checked]:text-neutral-900'/> */}
-                                                <Checkbox id="terms" onCheckedChange={(event)=>handleAllChange(event,table.getRowModel().rows)} />
-                                            </th>
-                                        ) : (
-                                            <th
-                                                key={header.id}
-                                                className="w-1/6 flex justify-start items-center h-10 align-middle text-white font-medium text-justify px-3"
-                                            >
-                                                {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                                            </th>
-                                        )}
-                                    </>
-                                )
-                            })}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody ref={tbodyRef} className={`flex flex-col  overflow-y-auto w-full`} style={{ height: 'calc(100vh - 22rem)' }}>
-                    {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row, pI) => (
-                            <tr
-                                className="flex w-full border-b my-2 shadow-md cursor-pointer px-1"
-                                onClick={() => handleRedirect(row.original)}
-                            >
-                                {row.getVisibleCells().map((cell) => (
-                                    <td
-                                        className={`p-1 px-3 flex justify-start items-center ${
-                                            cell.column.id === 'sl' ? 'w-20' : 'w-1/6'
-                                        }`}
-                                    >
-                                        {DataTableEnumType.PROJECT == type ? (
-                                            cell.column.id === 'sl' ? (
-                                                allcheck?(<Checkbox onCheckedChange={(event)=>handleCheckboxChange(event, row.original)} checked={allcheck}/>):(<Checkbox onClick={(event)=>handleCheckboxClick(event)}  onCheckedChange={(event)=>handleCheckboxChange(event,row.original)}checked={deleteId?.includes(row.original._id)}/>)
-                                            ) : cell.column.id === 'status' ? (
-                                                <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
-                                            ) : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
-                                                <>{format(flexRender(cell.column.columnDef.cell, cell.getContext()), Constent.DATE_FORMAT)}</>
-                                            ) : (
-                                                <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
-                                            )
-                                        ) : cell.column.id === 'sl' ? (
-                                          allcheck?(<Checkbox onCheckedChange={(event)=>handleCheckboxChange(event, row.original)} checked={allcheck}/>):(<Checkbox onClick={(event)=>handleCheckboxClick(event)}  onCheckedChange={(event)=>handleCheckboxChange(event, row.original)}  checked={deleteId?.includes(row.original._id)}/>)
-                                        ) : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
-                                            <>{format(cell.getValue(), Constent.DATE_FORMAT)}</>
-                                        ) : (
-                                            <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
-                                        )}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))
-                    ) : (
-                        <tr className="flex w-full justify-center mb-4">
-                            <td className="p-4 w-1/4">No results.</td>
-                        </tr>
-                    )}
-                    {/* {!isScrollable && (
-                        <div className="flex justify-end items-end">
-                            <PaginationWithLinks totalCount={totalDataCount} />
+                <div className="relative w-full rounded-lg">
+                    <div>
+                        <div className="flex min-w-max bg-gray-100 border-b" style={{ position: 'sticky', top: '0px', width: '100%' }}>
+                            {table.getHeaderGroups().map((headerGroup) =>
+                                headerGroup.headers.map((header) => {
+                                    return header.id == 'sl' ? (
+                                        <div key={header.id} className="p-1 py-2 w-20 font-medium text-gray-700 border-r last:border-r-0">
+                                            <Checkbox
+                                                className="mx-3 my-1"
+                                                onCheckedChange={(event) => handleAllChange(event, table.getRowModel().rows)}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div key={header.id} className="p-1 flex-1 py-2 font-medium text-gray-700 border-r last:border-r-0">
+                                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                        </div>
+                                    )
+                                })
+                            )}
                         </div>
-                    )} */}
-                </tbody>
-            </table>
+                        <div className={`min-w-max ${table.getRowModel().rows?.length === 0 ? 'flex justify-center' : ''}`}>
+                            {table.getRowModel().rows?.length === 0 ? (
+                                <tr>
+                                    <td colSpan={table.getRowModel().rows?.length + 2}>
+                                        <div className="text-center py-4">No Data</div>
+                                    </td>
+                                </tr>
+                            ) : table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row, pI) => (
+                                    <div
+                                        key={pI}
+                                        className="flex border-b  hover:bg-gray-50"
+                                        onClick={() => handleRedirect(row.original)}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <div className={`p-1 border-r last:border-r-0 ${cell.column.id === 'sl' ? 'w-20' : 'flex-1'}`}>
+                                                {DataTableEnumType.PROJECT == type ? (
+                                                    cell.column.id === 'sl' ? (
+                                                        allcheck ? (
+                                                            <Checkbox
+                                                            className="mx-3 my-1"
+                                                                onCheckedChange={(event) => handleCheckboxChange(event, row.original)}
+                                                                checked={allcheck}
+                                                            />
+                                                        ) : (
+                                                            <Checkbox
+                                                            className="mx-3 my-1"
+                                                                onClick={(event) => handleCheckboxClick(event)}
+                                                                onCheckedChange={(event) => handleCheckboxChange(event, row.original)}
+                                                                checked={deleteId?.includes(row.original._id)}
+                                                            />
+                                                        )
+                                                    ) : cell.column.id === 'status' ? (
+                                                        <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
+                                                    ) : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
+                                                        <>{format(flexRender(cell.column.columnDef.cell, cell.getContext()), Constent.DATE_FORMAT)}</>
+                                                    ) : (
+                                                        <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
+                                                    )
+                                                ) : cell.column.id === 'sl' ? (
+                                                    allcheck ? (
+                                                        <Checkbox
+                                                        className="mx-3 my-1"
+                                                            onCheckedChange={(event) => handleCheckboxChange(event, row.original)}
+                                                            checked={allcheck}
+                                                        />
+                                                    ) : (
+                                                        <Checkbox
+                                                        className="mx-3 my-1"
+                                                            onClick={(event) => handleCheckboxClick(event)}
+                                                            onCheckedChange={(event) => handleCheckboxChange(event, row.original)}
+                                                            checked={deleteId?.includes(row.original._id)}
+                                                        />
+                                                    )
+                                                ) : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
+                                                    <>{format(cell.getValue(), Constent.DATE_FORMAT)}</>
+                                                ) : (
+                                                    <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                ))
+                            ) : (
+                                <h1>Not found</h1>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="flex justify-end items-end">
                 <PaginationWithLinks totalCount={totalDataCount} />
             </div>

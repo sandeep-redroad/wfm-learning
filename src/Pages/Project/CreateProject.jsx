@@ -365,7 +365,7 @@ const CreateProject = ({ type }) => {
 
     return (
         <>
-            <Card className="p-0 mb-[44px] mx-0 rounded-none sticky top-16 w-full z-10">
+            <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
@@ -379,9 +379,9 @@ const CreateProject = ({ type }) => {
                     </div>
                 </CardContent>
             </Card>
-            <div className="overflow-auto">
-                <Card className="p-0 m-3 ">
-                    <CardContent className="m-0 p-3">
+            <div className="p-3" style={{height : "calc(100vh - 125px)"}}>
+                <Card className="h-full overflow-card-scroll w-full m-0 overflow-auto">
+                    <CardContent className="m-0 p-2 max-h-full">
                         <Form {...form}>
                             <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="p-4 lg:ps-5">
                                 <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
@@ -1193,8 +1193,6 @@ const CreateProject = ({ type }) => {
                                         </Button>
                                     )}
                                 </div>
-
-                                <div className="grid  gap-x-[3rem] gap-y-[1.75rem]"></div>
                             </form>
                         </Form>
                     </CardContent>

@@ -114,8 +114,8 @@ const DailyWorkLog = () => {
     }
 
     return (
-        <div>
-            <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full">
+        <>
+            <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-between items-center">
                         <Link className="button" to="/daily-work-log/new">
@@ -135,64 +135,75 @@ const DailyWorkLog = () => {
                     </div>
                 </CardContent>
             </Card>
-            <Card className="p-0 m-3  mt-[4.5rem]">
-                <CardContent className="m-0 p-3 overflow-y-auto">
-                    <div className="w-full my-2 grid grid-cols-7 gap-3">
-                        <Input type="text" onChange={(e) => setSearchProjectId(e.target.value)} value={searchProjectId} placeholder="Project Id" />
-                        <Input type="text" onChange={(e) => setSearchClient(e.target.value)} value={searchClient} placeholder="Client" />
-                        <Input
-                            type="text"
-                            onChange={(e) => setSearchEmployeeName(e.target.value)}
-                            value={searchEmployeeName}
-                            placeholder="Employee Name"
-                        />
-                        <Input type="text" onChange={(e) => setSearchProcess(e.target.value)} value={searchProcess} placeholder="Process" />
-                        <Input
-                            type="text"
-                            onChange={(e) => setSearchBillingType(e.target.value)}
-                            value={searchBillingType}
-                            placeholder="Billing Type"
-                        />
-                        <div className={cn('grid gap-2')}>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        id="date"
-                                        variant={'outline'}
-                                        className={cn('justify-start text-left font-normal', !date && 'text-muted-foreground')}
-                                    >
-                                        <CalendarIcon />
-                                        {date?.from ? (
-                                            date.to ? (
-                                                <>
-                                                    {format(date.from, Constent.DATE_FORMAT)} to {format(date.to, Constent.DATE_FORMAT)}
-                                                </>
+            <div className="p-3" style={{ height: 'calc(100vh - 125px)' }}>
+                <Card className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
+                    <CardContent className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
+                        <div className="w-full my-2 grid grid-cols-7 gap-3 mb-3">
+                            <Input
+                                type="text"
+                                onChange={(e) => setSearchProjectId(e.target.value)}
+                                value={searchProjectId}
+                                placeholder="Project Id"
+                            />
+                            <Input type="text" onChange={(e) => setSearchClient(e.target.value)} value={searchClient} placeholder="Client" />
+                            <Input
+                                type="text"
+                                onChange={(e) => setSearchEmployeeName(e.target.value)}
+                                value={searchEmployeeName}
+                                placeholder="Employee Name"
+                            />
+                            <Input type="text" onChange={(e) => setSearchProcess(e.target.value)} value={searchProcess} placeholder="Process" />
+                            <Input
+                                type="text"
+                                onChange={(e) => setSearchBillingType(e.target.value)}
+                                value={searchBillingType}
+                                placeholder="Billing Type"
+                            />
+                            <div className={cn('grid gap-2')}>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            id="date"
+                                            variant={'outline'}
+                                            className={cn('justify-start text-left font-normal', !date && 'text-muted-foreground')}
+                                        >
+                                            <CalendarIcon />
+                                            {date?.from ? (
+                                                date.to ? (
+                                                    <>
+                                                        {format(date.from, Constent.DATE_FORMAT)} to {format(date.to, Constent.DATE_FORMAT)}
+                                                    </>
+                                                ) : (
+                                                    format(date.from, Constent.DATE_FORMAT)
+                                                )
                                             ) : (
-                                                format(date.from, Constent.DATE_FORMAT)
-                                            )
-                                        ) : (
-                                            <span>Pick a date</span>
-                                        )}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        initialFocus
-                                        mode="range"
-                                        defaultMonth={date?.from}
-                                        selected={date}
-                                        onSelect={setDate}
-                                        numberOfMonths={1}
-                                    />
-                                </PopoverContent>
-                            </Popover>
+                                                <span>Pick a date</span>
+                                            )}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            initialFocus
+                                            mode="range"
+                                            defaultMonth={date?.from}
+                                            selected={date}
+                                            onSelect={setDate}
+                                            numberOfMonths={1}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
                         </div>
-                    </div>
-                    <Datatable columns={DailyWorkLogColumns()} data={dailyWorkLogs} totalDataCount={totalCount} type={DataTableEnumType.DAILY_WORK_LOG} />
-                    
-                </CardContent>
-            </Card>
-        </div>
+                        <Datatable
+                            columns={DailyWorkLogColumns()}
+                            data={dailyWorkLogs}
+                            totalDataCount={totalCount}
+                            type={DataTableEnumType.DAILY_WORK_LOG}
+                        />
+                    </CardContent>
+                </Card>
+            </div>
+        </>
     )
 }
 

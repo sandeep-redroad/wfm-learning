@@ -15,6 +15,14 @@ class ClientService{
     async deleteClients(data){
         return await Axios.delete("api/client",{data})
     }
+
+    async getClient(clientId){
+        return await Axios.get(`api/client/${clientId}`)
+    }
+
+    async updateClient(clientId, data){
+        return await Axios.put(`api/client/${clientId}`, data)
+    }
 }
 
 export default (new ClientService);
