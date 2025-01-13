@@ -26,6 +26,7 @@ import LofBusinessService from '@/Service/LofBusinessService'
 import ProjectService from '@/Service/ProjectService'
 import { lowerFirstChar } from '@/utils/helper'
 import Constent from '@/utils/constent'
+import NoteService from '@/Service/NoteService'
 
 const CreateProject = ({ type }) => {
     const navigate = useNavigate()
@@ -41,6 +42,7 @@ const CreateProject = ({ type }) => {
     const [lofBusiness, setLofBusiness] = useState([])
     const [projectleads, setProjectLead] = useState([{ id: 11, name: 'sandeep' }])
     const [process, setProcess] = useState([])
+    const [notes, setNotes] = useState([])
     const [billing_type, setBillingType] = useState([])
     const [desc,setDesc]=useState([])
     const form = useForm()
@@ -88,12 +90,22 @@ const CreateProject = ({ type }) => {
         } catch (err) {}
     }
 
+    const getNotes = async () => {
+        try {
+            const resp = await NoteService.getNotes()
+            if (resp.data.success) {
+                setNotes(resp.data.data)
+            }
+        } catch (err) {}
+    }
+
     useEffect(() => {
         getLofBusiness()
         getDepartment()
         getClient()
         getBillingTypes()
         getProcess()
+        getNotes()
     }, [])
 
     const [projectFields, setProjectFields] = useState({
@@ -106,6 +118,8 @@ const CreateProject = ({ type }) => {
         rate: '',
         timePerWorkItem: '',
         comments: '',
+        note: '',
+        noteDescription: '',
         date: today,
         status: 'Active',
     })
@@ -676,7 +690,7 @@ const CreateProject = ({ type }) => {
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>
-                                                        {projectFields.billingType == 'Hourly transactional'
+                                                        {projectFields.billingType == 'Hourly transactional' || projectFields.billingType == 'Hourly Transactional'
                                                             ? 'Rate Per Chart'
                                                             : 'Rate Per Hour'}
                                                     </FormLabel>
@@ -698,7 +712,7 @@ const CreateProject = ({ type }) => {
                                                 </FormItem>
                                             )}
                                         />
-                                        {projectFields.billingType == 'Hourly transactional' && (
+                                        {projectFields.billingType == 'Hourly transactional' || projectFields.billingType == 'Hourly Transactional' && (
                                             <FormField
                                                 control={form.control}
                                                 name="timePerWorkItem"
@@ -731,23 +745,24 @@ const CreateProject = ({ type }) => {
                                             <FormItem>
                                                 <FormLabel>Note</FormLabel>
                                                 <SearchableDropdown
-                                                    options={departments}
-                                                    selectedVal={projectFields.project}
+                                                    options={notes}
+                                                    selectedVal={projectFields.note}
                                                     handleChange={(val) => {
-                                                        getProject(val)
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                project: val,
+                                                                note: val.title,
+                                                                noteDescription: val.description,
                                                             }
                                                         })
                                                     }}
                                                     placeholder="Note"
-                                                    label="note"
+                                                    label="title"
                                                     className="mb-5"
+                                                    type='note'
                                                 />
                                                 <FormControl>
-                                                    <Textarea placeholder="Note" className="resize-none" row="1" />
+                                                    <Textarea placeholder="Note Description" value={projectFields.noteDescription} className="resize-none" row="1" />
                                                 </FormControl>
                                             </FormItem>
                                         )}
@@ -938,7 +953,6 @@ const CreateProject = ({ type }) => {
                                                                 name="description"
                                                                 value={row.description}
                                                                 className="border-none shadow-none"
-                                                                disabled={true}
                                                             />
                                                         </TableCell>
                                                     </TableRow>

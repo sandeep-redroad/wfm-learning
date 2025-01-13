@@ -10,8 +10,8 @@ const NoteColumns = () => {
             header: 'Sr. No.',
         },
         {
-            accessorKey: 'noteName',
-            header: 'Note Name',
+            accessorKey: 'title',
+            header: 'Title',
         }
     ]
     return memoizedColumns

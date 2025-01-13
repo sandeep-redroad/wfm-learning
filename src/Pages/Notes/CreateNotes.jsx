@@ -9,38 +9,40 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Textarea } from '@/Components/ui/textarea'
 import { toast } from 'react-toastify'
 import { Card, CardContent } from '@/components/ui/card'
-import ClientService from '@/Service/ClientService'
+import NoteService from '@/Service/NoteService'
 
 const CreateNotes = () => {
     const formRef = useRef(null)
     const formSchema = z.object({
-        client: z.string().min(1, {
-            message: 'Client is required',
-        }),
-        address: z.string().optional(),
-        city: z.string().optional(),
-        state: z.string().optional(),
-        country: z.string().optional(),
-        pinCode: z.string().optional(),
+        title: z
+            .string({
+                message: 'Title is required',
+            })
+            .min(1, {
+                message: 'Title is required',
+            }),
+        description: z
+            .string({
+                message: 'Description is required',
+            })
+            .min(1, {
+                message: 'Description is required',
+            }),
     })
     const navigate = useNavigate()
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            client: '',
-            address: '',
-            city: '',
-            state: '',
-            country: '',
-            pinCode: '',
+            title: '',
+            description: '',
         },
     })
 
     async function onSubmit(values) {
         try {
-            const resp = await ClientService.createClient(values)
+            const resp = await NoteService.createNote(values)
             if (resp.data.success) {
-                navigate('/clients')
+                navigate('/master-settings/notes')
             }
         } catch (err) {}
     }
@@ -75,23 +77,23 @@ const CreateNotes = () => {
                     </div>
                 </CardContent>
             </Card>
-            <div className="p-3" style={{height : "calc(100vh - 125px)"}}>
+            <div className="p-3" style={{ height: 'calc(100vh - 125px)' }}>
                 <Card className="h-full overflow-card-scroll w-full m-0 overflow-auto">
                     <CardContent className="m-0 p-2 max-h-full">
                         <Form {...form}>
                             <form ref={formRef} onSubmit={form.handleSubmit(onSubmit, onError)} className="p-4 lg:ps-5">
                                 <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
                                     <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                    <FormField
+                                        <FormField
                                             control={form.control}
-                                            name="noteName"
+                                            name="title"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-1">
-                                                    <FormLabel>Note Name</FormLabel>
+                                                    <FormLabel>Title</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                            placeholder="Note Name"
+                                                            placeholder="Title"
                                                             {...field}
                                                         />
                                                     </FormControl>
@@ -102,7 +104,7 @@ const CreateNotes = () => {
                                     <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem] my-[1.75rem">
                                         <FormField
                                             control={form.control}
-                                            name="address"
+                                            name="description"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-1">
                                                     <FormLabel>Description</FormLabel>
@@ -117,7 +119,6 @@ const CreateNotes = () => {
                                                 </FormItem>
                                             )}
                                         />
-                                        
                                     </div>
                                 </div>
                             </form>

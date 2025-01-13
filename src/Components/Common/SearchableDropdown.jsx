@@ -5,6 +5,7 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
     const [query, setQuery] = useState('')
     const [isOpen, setIsOpen] = useState(false)
     const inputRef = useRef(null)
+    
     useEffect(() => {
         document.addEventListener('click', toggle)
         return () => document.removeEventListener('click', toggle)
@@ -12,7 +13,11 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
 
     const selectOption = (option) => {
         setQuery(() => '')
-        handleChange(option[label])
+        if(type == 'note'){
+            handleChange(option)
+        }else{
+            handleChange(option[label])
+        }
 
         setIsOpen((isOpen) => !isOpen)
     }
@@ -75,9 +80,14 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
                                         <span className=' font-bold'>{option[label]}</span>
                                         <span>{option["process"]}</span>
                                     </div>
-                                ) : (
-                                    <span>{option[label]}</span>
-                                )}
+                                ) : type == "projectFromInvoice" ? (
+                                    <div className='flex flex-col text-left uppercase'>
+                                        <span>{option['id']}</span>
+                                        <span className='ml-2 text-gray-300'>{option['process']}</span>
+                                        <span className='ml-2 text-gray-300'>{option['billingType']}</span>
+                                    </div>
+                                    
+                                ): <span>{option[label]}</span>}
                             </div>
                         )
                     })
