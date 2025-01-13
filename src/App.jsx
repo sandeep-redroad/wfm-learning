@@ -33,6 +33,10 @@ import EditDailyWorkLog from './Pages/DailyWorkLog/EditDailyWorkLog'
 import BillingEntity from './Pages/BillingEntity/Listing/BillingEntity'
 import CreateBillingEntiy from './Pages/BillingEntity/CreateBillingEntity'
 import EditBillingEntiy from './Pages/BillingEntity/EditBillingEntity'
+import ClientAddress from './Pages/ClientAddress/Listing/ClientAddress'
+import CreateClientAddress from './Pages/ClientAddress/CreateClientAddress'
+import Notes from './Pages/Notes/Listing/Notes'
+import CreateNotes from './Pages/Notes/CreateNotes'
 let router = createBrowserRouter([
     {
         path: '/login',
@@ -112,6 +116,26 @@ let router = createBrowserRouter([
             {
                 path: '/clients/new',
                 Component: CreateClient,
+            },
+            {
+                path: '/master-settings/client-address',
+                Component: ClientAddress,
+            },
+            {
+                path: '/master-settings/client-address/new',
+                Component: CreateClientAddress,
+            },
+            {
+                path: '/master-settings/client-address/:contactId',
+                Component: CreateClientAddress,
+            },
+            {
+                path: '/master-settings/notes',
+                Component: Notes,
+            },
+            {
+                path: '/master-settings/notes/new',
+                Component: CreateNotes,
             },
             {
                 path: '/master-settings/billing',

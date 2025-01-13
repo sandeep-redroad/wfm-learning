@@ -14,25 +14,30 @@ import BillingEntityService from '@/Service/BillingEntityService'
 const CreateBillingEntiy = () => {
     const formRef = useRef(null)
     const formSchema = z.object({
-        billingEntity: z
+        contactPerson: z
             .string({
-                message: 'Billing Entity is required',
+                message: 'Contact Person is required',
             })
             .min(1, {
-                message: 'Billing Entity is required',
+                message: 'Contact Person is required',
             }),
+        designation: z.string().optional(),
         address: z.string().optional(),
         city: z.string().optional(),
         state: z.string().optional(),
         country: z.string().optional(),
-        pinCode: z.string().optional().transform((val) => {
-            return val && !isNaN(Number(val)) ? Number(val) : '';
-        }),
+        pinCode: z
+            .string()
+            .optional()
+            .transform((val) => {
+                return val && !isNaN(Number(val)) ? Number(val) : ''
+            }),
     })
     const navigate = useNavigate()
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            contactPerson: '',
             client: '',
             address: '',
             city: '',
@@ -44,7 +49,7 @@ const CreateBillingEntiy = () => {
 
     async function onSubmit(values) {
         try {
-            values['pinCode'] = values['pinCode'] == "" ? null : values['pinCode'];
+            values['pinCode'] = values['pinCode'] == '' ? null : values['pinCode']
             const resp = await BillingEntityService.createBillingEntity(values)
             if (resp.data.success) {
                 navigate('/master-settings/billing-entity')
@@ -68,8 +73,8 @@ const CreateBillingEntiy = () => {
         }
     }
     return (
-        <div>
-            <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full z-10">
+        <>
+            <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
@@ -83,22 +88,23 @@ const CreateBillingEntiy = () => {
                     </div>
                 </CardContent>
             </Card>
-            <Card className="p-0 m-3 mt-[3rem]">
-                <CardContent className="m-0 p-3">
+            <div className="p-3" style={{height : "calc(100vh - 125px)"}}>
+            <Card className="h-full overflow-card-scroll w-full m-0 overflow-auto">
+                <CardContent className="m-0 p-2 max-h-full">
                     <Form {...form}>
                         <form ref={formRef} onSubmit={form.handleSubmit(onSubmit, onError)} className="p-4 lg:ps-5">
                             <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
                                 <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                     <FormField
                                         control={form.control}
-                                        name="billingEntity"
+                                        name="contactPerson"
                                         render={({ field }) => (
                                             <FormItem className="space-y-1">
-                                                <FormLabel>Billing Entity</FormLabel>
+                                                <FormLabel>Contact Person</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Billing Entity"
+                                                        placeholder="Contact Person"
                                                         {...field}
                                                     />
                                                 </FormControl>
@@ -107,21 +113,15 @@ const CreateBillingEntiy = () => {
                                     />
                                     <FormField
                                         control={form.control}
-                                        name="pinCode"
+                                        name="designation"
                                         render={({ field }) => (
                                             <FormItem className="space-y-1">
-                                                <FormLabel>Pin Code</FormLabel>
+                                                <FormLabel>Designation</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Pin Code"
+                                                        placeholder="Designation"
                                                         {...field}
-                                                        value={field.value || ''}
-                                                        onChange={(e) => {
-                                                            let value = e.target.value ? Number(e.target.value) : '';
-                                                            value = isNaN(value) ? '' : String(value)
-                                                            field.onChange(value)
-                                                        }}
                                                     />
                                                 </FormControl>
                                             </FormItem>
@@ -198,13 +198,36 @@ const CreateBillingEntiy = () => {
                                             </FormItem>
                                         )}
                                     />
+                                    <FormField
+                                        control={form.control}
+                                        name="pinCode"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-1">
+                                                <FormLabel>Pin Code</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                        placeholder="Pin Code"
+                                                        {...field}
+                                                        value={field.value || ''}
+                                                        onChange={(e) => {
+                                                            let value = e.target.value ? Number(e.target.value) : ''
+                                                            value = isNaN(value) ? '' : String(value)
+                                                            field.onChange(value)
+                                                        }}
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
                                 </div>
                             </div>
                         </form>
                     </Form>
                 </CardContent>
             </Card>
-        </div>
+            </div>
+        </>
     )
 }
 

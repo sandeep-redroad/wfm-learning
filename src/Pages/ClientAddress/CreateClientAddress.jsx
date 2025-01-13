@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -9,11 +9,20 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Textarea } from '@/Components/ui/textarea'
 import { toast } from 'react-toastify'
 import { Card, CardContent } from '@/components/ui/card'
+import ClientAddressService from '@/Service/ClientAddressService'
 import ClientService from '@/Service/ClientService'
+import SearchableDropdown from '@/Components/Common/SearchableDropdown'
 
-const CreateClient = () => {
+const CreateClientAddress = () => {
+    const [clients, setClients] = useState([])
     const formRef = useRef(null)
     const formSchema = z.object({
+        contactPerson: z.string().min(1, {
+            message: 'Contact Person is required',
+        }),
+        designation: z.string().min(1, {
+            message: 'designation is required',
+        }),
         client: z.string().min(1, {
             message: 'Client is required',
         }),
@@ -27,6 +36,8 @@ const CreateClient = () => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            contactPerson: '',
+            designation: '',
             client: '',
             address: '',
             city: '',
@@ -38,9 +49,9 @@ const CreateClient = () => {
 
     async function onSubmit(values) {
         try {
-            const resp = await ClientService.createClient(values)
+            const resp = await ClientAddressService.createClientAddress(values)
             if (resp.data.success) {
-                navigate('/clients')
+                navigate('/master-settings/client-address')
             }
         } catch (err) {}
     }
@@ -53,7 +64,11 @@ const CreateClient = () => {
             toast.error('Something went wrong.')
         }
     }
-
+    const getClients = async () => {
+        const resp = await ClientService.getClients()
+        setClients(resp.data.data)
+    }
+    useEffect(() => {getClients()}, [])
     const handleSaveClick = () => {
         if (formRef.current) {
             formRef.current.requestSubmit()
@@ -65,7 +80,7 @@ const CreateClient = () => {
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
-                            <Link className="button" to="/clients">
+                            <Link className="button" to="/master-settings/client-address">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                             </Link>
                             <Button className="bg-primary-purpal hover:bg-primary-purpal" onClick={handleSaveClick}>
@@ -75,7 +90,7 @@ const CreateClient = () => {
                     </div>
                 </CardContent>
             </Card>
-            <div className="p-3" style={{height : "calc(100vh - 125px)"}}>
+            <div className="p-3" style={{ height: 'calc(100vh - 125px)' }}>
                 <Card className="h-full overflow-card-scroll w-full m-0 overflow-auto">
                     <CardContent className="m-0 p-2 max-h-full">
                         <Form {...form}>
@@ -84,14 +99,14 @@ const CreateClient = () => {
                                     <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                         <FormField
                                             control={form.control}
-                                            name="client"
+                                            name="contactPerson"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-1">
-                                                    <FormLabel>Client</FormLabel>
+                                                    <FormLabel>Contact Person</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                            placeholder="client"
+                                                            placeholder="Contact Person"
                                                             {...field}
                                                         />
                                                     </FormControl>
@@ -100,21 +115,51 @@ const CreateClient = () => {
                                         />
                                         <FormField
                                             control={form.control}
-                                            name="pinCode"
+                                            name="client"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-1">
-                                                    <FormLabel>Pin Code</FormLabel>
+                                                    <FormLabel>Client</FormLabel>
+                                                    <div className="w-full">
+                                                        <SearchableDropdown
+                                                            options={clients}
+                                                            selectedVal={field.value}
+                                                            handleChange={(val) => 
+                                                                field.onChange(val)
+                                                            }
+                                                            placeholder="Client"
+                                                            label="client"
+                                                        />
+                                                    </div>
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="designation"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-1">
+                                                    <FormLabel>Designation</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                            placeholder="Pin Code"
+                                                            placeholder="Designation"
                                                             {...field}
-                                                            value={field.value || ''}
-                                                            onChange={(e) => {
-                                                                let value = e.target.value ? Number(e.target.value) : ''
-                                                                value = isNaN(value) ? '' : String(value)
-                                                                field.onChange(value)
-                                                            }}
+                                                        />
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="city"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-1">
+                                                    <FormLabel>City</FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                            placeholder="City"
+                                                            {...field}
                                                         />
                                                     </FormControl>
                                                 </FormItem>
@@ -142,22 +187,6 @@ const CreateClient = () => {
                                         <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
                                             <FormField
                                                 control={form.control}
-                                                name="city"
-                                                render={({ field }) => (
-                                                    <FormItem className="space-y-1">
-                                                        <FormLabel>City</FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                                placeholder="City"
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                    </FormItem>
-                                                )}
-                                            />
-                                            <FormField
-                                                control={form.control}
                                                 name="state"
                                                 render={({ field }) => (
                                                     <FormItem className="space-y-1">
@@ -172,20 +201,42 @@ const CreateClient = () => {
                                                     </FormItem>
                                                 )}
                                             />
+                                            <FormField
+                                                control={form.control}
+                                                name="country"
+                                                render={({ field }) => (
+                                                    <FormItem className="space-y-1">
+                                                        <FormLabel>Country</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                                placeholder="Country"
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                    </FormItem>
+                                                )}
+                                            />
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                         <FormField
                                             control={form.control}
-                                            name="country"
+                                            name="pinCode"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-1">
-                                                    <FormLabel>Country</FormLabel>
+                                                    <FormLabel>Pin Code</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                            placeholder="Country"
+                                                            placeholder="Pin Code"
                                                             {...field}
+                                                            value={field.value || ''}
+                                                            onChange={(e) => {
+                                                                let value = e.target.value ? Number(e.target.value) : ''
+                                                                value = isNaN(value) ? '' : String(value)
+                                                                field.onChange(value)
+                                                            }}
                                                         />
                                                     </FormControl>
                                                 </FormItem>
@@ -202,4 +253,4 @@ const CreateClient = () => {
     )
 }
 
-export default CreateClient
+export default CreateClientAddress

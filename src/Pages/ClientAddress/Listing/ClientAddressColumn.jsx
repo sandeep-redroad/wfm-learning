@@ -1,14 +1,10 @@
 
 let memoizedColumns = []
-const BillingEntityColumns = () => {
+const ClientAddressColumns = () => {
     if (memoizedColumns.length > 0) {
         return memoizedColumns
     }
     memoizedColumns = [
-        {
-            accessorKey: 'sl',
-            header: 'Sr. No.',
-        },
         {
             accessorKey: 'contactPerson',
             header: 'Contact Person',
@@ -16,9 +12,13 @@ const BillingEntityColumns = () => {
         {
             accessorKey: 'designation',
             header: 'Designation',
+        },
+        {
+            accessorKey: 'client',
+            header: 'Client',
         }
     ]
     return memoizedColumns
 }
 
-export default BillingEntityColumns;
+export default ClientAddressColumns;

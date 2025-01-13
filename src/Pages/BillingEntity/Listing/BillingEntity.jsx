@@ -72,8 +72,8 @@ const BillingEntity = () => {
     }
 
     return (
-        <div className="">
-            <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full">
+        <>
+            <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-between items-center">
                         <Link to="/master-settings/billing-entity/new">
@@ -93,23 +93,26 @@ const BillingEntity = () => {
                     </div>
                 </CardContent>
             </Card>
-            <Card className="p-0 m-3 mt-[4.5rem]">
-                <CardContent className="m-0 p-3">
-                    <div className="w-full my-2 grid grid-cols-4 mt-5">
-                        <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Billing Entity" />
-                    </div>
-                    <Datatable
-                        columns={BillingEntityColumns()}
-                        data={billingEntity}
-                        totalDataCount={totalCount}
-                        type={DataTableEnumType.BILLING_ENTITY}
-                        allcheck={allcheck}
-                        deleteId={deleteId}
-                        setDeleteId={setDeleteId}
-                    />
-                </CardContent>
-            </Card>
-        </div>
+            <div className="p-3" style={{ height: 'calc(100vh - 125px)' }}>
+                <Card className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
+                    <CardContent className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
+                        <div className="w-full my-2 grid grid-cols-4 mt-5">
+                            <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Contact Person" />
+                            <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Designation" />
+                        </div>
+                        <Datatable
+                            columns={BillingEntityColumns()}
+                            data={billingEntity}
+                            totalDataCount={totalCount}
+                            type={DataTableEnumType.BILLING_ENTITY}
+                            allcheck={allcheck}
+                            deleteId={deleteId}
+                            setDeleteId={setDeleteId}
+                        />
+                    </CardContent>
+                </Card>
+            </div>
+        </>
     )
 }
 
