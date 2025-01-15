@@ -37,7 +37,8 @@ import ClientAddress from './Pages/ClientAddress/Listing/ClientAddress'
 import CreateClientAddress from './Pages/ClientAddress/CreateClientAddress'
 import Notes from './Pages/Notes/Listing/Notes'
 import CreateNotes from './Pages/Notes/CreateNotes'
-import printInvoice from './Pages/Invoice/printInvoice'
+import ShowInvoiece from './Pages/Invoice/ShowInvoice'
+
 let router = createBrowserRouter([
     {
         path: '/login',
@@ -178,8 +179,8 @@ let router = createBrowserRouter([
         ],
     },
     {
-        path: '/printInvoice',
-        Component: printInvoice,
+        path: '/showInvoice',
+        Component: ShowInvoiece,
     },
     {
         path: '*',
