@@ -2,7 +2,7 @@ import { React, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'react-toastify'
-import { CalendarIcon, CloudCog } from 'lucide-react'
+import { ArrowLeft, CalendarIcon, CloudCog } from 'lucide-react'
 import { format } from 'date-fns'
 
 import { Calendar } from '@/components/ui/calendar'
@@ -26,7 +26,9 @@ import LofBusinessService from '@/Service/LofBusinessService'
 import ProjectService from '@/Service/ProjectService'
 import { lowerFirstChar } from '@/utils/helper'
 import Constent from '@/utils/constent'
+import NoteService from '@/Service/NoteService'
 import ClientAddressService from '@/Service/ClientAddressService'
+import BillingEntityService from '@/Service/BillingEntityService'
 
 const CreateProject = ({ type }) => {
     const navigate = useNavigate()
@@ -42,7 +44,9 @@ const CreateProject = ({ type }) => {
     const [lofBusiness, setLofBusiness] = useState([])
     const [projectleads, setProjectLead] = useState([{ id: 11, name: 'sandeep' }])
     const [process, setProcess] = useState([])
+    const [notes, setNotes] = useState([])
     const [billingTo, setBillingTo] = useState([])
+    const [billingFrom, setbillingFrom] = useState([])
     const [billing_type, setBillingType] = useState([])
     const [desc, setDesc] = useState([])
     const form = useForm()
@@ -52,6 +56,14 @@ const CreateProject = ({ type }) => {
             const resp = await LofBusinessService.getLofBusiness()
             if (resp.data.success) {
                 setLofBusiness(resp.data.data)
+            }
+        } catch (err) {}
+    }
+    const getBillingEntity = async () => {
+        try {
+            const resp = await BillingEntityService.getBillingEntities()
+            if (resp.data.success) {
+                setbillingFrom(resp.data.data)
             }
         } catch (err) {}
     }
@@ -77,7 +89,6 @@ const CreateProject = ({ type }) => {
             const resp = await ClientService.getClients()
             if (resp.data.success) {
                 setClient(resp.data.data)
-             
             }
         } catch (err) {}
     }
@@ -95,8 +106,17 @@ const CreateProject = ({ type }) => {
         try {
             const resp = await ClientAddressService.getClientAddresses(data)
             if (resp.data.success) {
-                console.log(resp.data.success)
+                //console.log(resp.data.success)
                 setBillingTo(resp.data.data)
+            }
+        } catch (err) {}
+    }
+
+    const getNotes = async () => {
+        try {
+            const resp = await NoteService.getNotes()
+            if (resp.data.success) {
+                setNotes(resp.data.data)
             }
         } catch (err) {}
     }
@@ -107,6 +127,8 @@ const CreateProject = ({ type }) => {
         getClient()
         getBillingTypes()
         getProcess()
+        getNotes()
+        getBillingEntity()
     }, [])
 
     const [projectFields, setProjectFields] = useState({
@@ -119,12 +141,14 @@ const CreateProject = ({ type }) => {
         rate: '',
         timePerWorkItem: '',
         comments: '',
+        note: '',
+        noteDescription: '',
         date: today,
         status: 'Active',
-        billingTo:'',
-        billingFrom:'',
-      
-
+        billingTo: '',
+        billingToDescription: '',
+        billingFrom: '',
+        billingFromDescription: '',
     })
 
     async function onSubmit(data) {
@@ -175,7 +199,9 @@ const CreateProject = ({ type }) => {
                     return
                 }
             }
-            projectFields['customFields'] = rows
+            projectFields['customFields'] = rows;
+            projectFields['descriptions'] = desc;
+            console.log("projectfields",projectFields)
 
             const resp = await ProjectService.createProject(projectFields)
             if (resp.data.success) {
@@ -382,12 +408,15 @@ const CreateProject = ({ type }) => {
     return (
         <>
             <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
-                <CardContent className="m-0 flex justify-end items-center p-3">
+                <CardContent className="m-0 flex justify-between items-center p-3">
+                    <div className="flex">
+                        
+                        <Link className="button bg-primary-back hover:bg-primary-purpal text-white rounded-[5px] p-[5px]" to="/projects">
+                           <ArrowLeft />
+                        </Link>
+                    </div>
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
-                            <Link className="button" to="/projects">
-                                <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
-                            </Link>
                             <Button className="bg-primary-purpal hover:bg-primary-purpal" onClick={handleSaveClick}>
                                 Save
                             </Button>
@@ -412,9 +441,11 @@ const CreateProject = ({ type }) => {
                                                         options={clients}
                                                         selectedVal={projectFields.client}
                                                         handleChange={(val) => {
-                                                            getClientAddress({"search":{
-                                                                "client":val
-                                                            }})
+                                                            getClientAddress({
+                                                                search: {
+                                                                    client: val,
+                                                                },
+                                                            })
                                                             setProjectFields((prev) => {
                                                                 return {
                                                                     ...prev,
@@ -581,57 +612,68 @@ const CreateProject = ({ type }) => {
                                     />
                                     <FormField
                                         control={form.control}
-                                        name="contactPerson"
+                                        name="billingTo"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Billing To</FormLabel>
                                                 <SearchableDropdown
                                                     options={billingTo}
-                                                    selectedVal={billingTo.contactPerson}
+                                                    selectedVal={projectFields.billingTo}
                                                     handleChange={(val) => {
-                                                       // getProject(val)
-                                                       console.log("in billingto",val);
+                                                        //  console.log("billingtotttt",val)
+                                                        let billingTodetails=`${val.address}\n${val.city},${val.state},${val.country}`;
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                billingTo: val,
+                                                                billingTo: val.contactPerson,
+                                                                billingToDescription:billingTodetails,
                                                             }
                                                         })
                                                     }}
-                                                    placeholder="Billing To"
                                                     label="contactPerson"
+                                                    type="CREATE_PROJECT_BILLINGTO"
+                                                    placeholder="Billing To"
                                                     className="mb-5"
                                                 />
                                                 <FormControl>
-                                                    <Textarea placeholder="Billing To" className="resize-none" row="1" value={billingTo.contactPerson} />
+                                                    <Textarea
+                                                        placeholder="Billing To"
+                                                        className="resize-none"
+                                                        row="1"
+                                                        value={projectFields.billingToDescription}
+                                                    />
                                                 </FormControl>
                                             </FormItem>
                                         )}
                                     />
                                     <FormField
                                         control={form.control}
-                                        name="note"
+                                        name="billingFrom"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Billing From</FormLabel>
+                                                {console.log(billingFrom)}
                                                 <SearchableDropdown
-                                                    options={departments}
-                                                    selectedVal={projectFields.project}
+                                                    options={billingFrom}
+                                                    selectedVal={projectFields.billingFrom}
                                                     handleChange={(val) => {
-                                                        getProject(val)
+                                                        let billingFromdetails=`${val.address}\n${val.city},${val.state},${val.country}`;
+                                                        console.log(billingFromdetails);
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                project: val,
+                                                                billingFrom: val.contactPerson,
+                                                                billingFromDescription: billingFromdetails,
                                                             }
                                                         })
                                                     }}
                                                     placeholder="Billing From"
-                                                    label="billing_from"
+                                                    label="contactPerson"
+                                                    type="CREATE_PROJECT_BILLINGFROM"
                                                     className="mb-5"
                                                 />
                                                 <FormControl>
-                                                    <Textarea placeholder="Billing From" className="resize-none" row="1" />
+                                                    <Textarea placeholder="Billing From" className="resize-none" row="1"  value={projectFields.billingFromDescription}/>
                                                 </FormControl>
                                             </FormItem>
                                         )}
@@ -696,7 +738,10 @@ const CreateProject = ({ type }) => {
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>
-                                                        {projectFields.billingType == 'Hourly transactional' ? 'Rate Per Chart' : 'Rate Per Hour'}
+                                                        {projectFields.billingType == 'Hourly transactional' ||
+                                                        projectFields.billingType == 'Hourly Transactional'
+                                                            ? 'Rate Per Chart'
+                                                            : 'Rate Per Hour'}
                                                     </FormLabel>
                                                     <FormControl>
                                                         <Input
@@ -716,31 +761,32 @@ const CreateProject = ({ type }) => {
                                                 </FormItem>
                                             )}
                                         />
-                                        {projectFields.billingType == 'Hourly transactional' && (
-                                            <FormField
-                                                control={form.control}
-                                                name="timePerWorkItem"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel>Time taken per Chart (in minutes)</FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                placeholder="minutes"
-                                                                value={projectFields.timePerWorkItem}
-                                                                onChange={(e) => {
-                                                                    setProjectFields((prev) => {
-                                                                        return {
-                                                                            ...prev,
-                                                                            timePerWorkItem: e.target.value,
-                                                                        }
-                                                                    })
-                                                                }}
-                                                            />
-                                                        </FormControl>
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        )}
+                                        {projectFields.billingType == 'Hourly transactional' ||
+                                            (projectFields.billingType == 'Hourly Transactional' && (
+                                                <FormField
+                                                    control={form.control}
+                                                    name="timePerWorkItem"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Time taken per Chart (in minutes)</FormLabel>
+                                                            <FormControl>
+                                                                <Input
+                                                                    placeholder="minutes"
+                                                                    value={projectFields.timePerWorkItem}
+                                                                    onChange={(e) => {
+                                                                        setProjectFields((prev) => {
+                                                                            return {
+                                                                                ...prev,
+                                                                                timePerWorkItem: e.target.value,
+                                                                            }
+                                                                        })
+                                                                    }}
+                                                                />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            ))}
                                     </div>
                                     <FormField
                                         control={form.control}
@@ -749,23 +795,30 @@ const CreateProject = ({ type }) => {
                                             <FormItem>
                                                 <FormLabel>Note</FormLabel>
                                                 <SearchableDropdown
-                                                    options={departments}
-                                                    selectedVal={projectFields.project}
+                                                    options={notes}
+                                                    selectedVal={projectFields.note}
                                                     handleChange={(val) => {
-                                                        getProject(val)
+                                                        // console.log("notes",val)
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                project: val,
+                                                                note: val.title,
+                                                                noteDescription: val.description,
                                                             }
                                                         })
                                                     }}
                                                     placeholder="Note"
-                                                    label="note"
+                                                    label="title"
                                                     className="mb-5"
+                                                    type="CREATE_PROJECT_NOTE"
                                                 />
                                                 <FormControl>
-                                                    <Textarea placeholder="Note" className="resize-none" row="1" />
+                                                    <Textarea
+                                                        placeholder="Note Description"
+                                                        value={projectFields.noteDescription}
+                                                        className="resize-none"
+                                                        row="1"
+                                                    />
                                                 </FormControl>
                                             </FormItem>
                                         )}
@@ -937,7 +990,7 @@ const CreateProject = ({ type }) => {
                                                 </tr>
                                             ) : (
                                                 desc.map((row, i) => (
-                                                    <TableRow key={row.id} name="customfields" className="border">
+                                                    <TableRow key={row.id} name="descriptions" className="border">
                                                         <TableCell className="border">
                                                             <Checkbox
                                                                 onClick={() => changedescOne(row, i)}
@@ -950,10 +1003,22 @@ const CreateProject = ({ type }) => {
                                                         <TableCell className="border">
                                                             <Input
                                                                 placeholder="Description"
-                                                                name="description"
-                                                                value={row.description}
+                                                               
+                                                                defaultValue={row.description}
+                                                                onChange={(event) =>
+                                                                {console.log(event.target.value);
+                                                                    setDesc((prev) => {
+                                                                        let updatedData = []
+                                                                        prev.map((item, i) => {
+                                                                            if (item.id == row.id) {
+                                                                                prev[i]['description'] = event.target.value
+                                                                            }
+                                                                            updatedData.push(item)
+                                                                        })
+                                                                        return updatedData
+                                                                    })}
+                                                                }
                                                                 className="border-none shadow-none"
-                                                                disabled={true}
                                                             />
                                                         </TableCell>
                                                     </TableRow>

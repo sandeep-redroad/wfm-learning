@@ -415,6 +415,7 @@ const Invoicef = () => {
                                                         }}
                                                         placeholder="Project"
                                                         label="id"
+                                                        type='projectFromInvoice'
                                                     />
                                                 </div>
                                             </FormItem>

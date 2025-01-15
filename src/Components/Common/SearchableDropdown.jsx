@@ -1,20 +1,28 @@
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
+import SearchableDropdownTypeEnum from '@/Enums/SearchableDropdownTypeEnum'
 
 const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeholder, field, className, type = '' }) => {
     const [query, setQuery] = useState('')
     const [isOpen, setIsOpen] = useState(false)
     const inputRef = useRef(null)
+    
     useEffect(() => {
         document.addEventListener('click', toggle)
         return () => document.removeEventListener('click', toggle)
     }, [])
 
-    console.log("options",label,options)
+    //console.log("options",label,options)
 
     const selectOption = (option) => {
         setQuery(() => '')
-        handleChange(option[label])
+        if(type in SearchableDropdownTypeEnum){
+        // if(type == 'note'||type=='contactPerson'||type=='contactPersonB'){
+        //     ["contactPersonB", "note", "contactPerson"].indexOf(type)
+            handleChange(option)
+        }else{
+            handleChange(option[label])
+        }
 
         setIsOpen((isOpen) => !isOpen)
     }
@@ -77,9 +85,14 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
                                         <span className=' font-bold'>{option[label]}</span>
                                         <span>{option["process"]}</span>
                                     </div>
-                                ) : (
-                                    <span>{option[label]}</span>
-                                )}
+                                ) : type == "projectFromInvoice" ? (
+                                    <div className='flex flex-col text-left uppercase'>
+                                        <span>{option['id']}</span>
+                                        <span className='ml-2 text-gray-300'>{option['process']}</span>
+                                        <span className='ml-2 text-gray-300'>{option['billingType']}</span>
+                                    </div>
+                                    
+                                ): <span>{option[label]}</span>}
                             </div>
                         )
                     })
