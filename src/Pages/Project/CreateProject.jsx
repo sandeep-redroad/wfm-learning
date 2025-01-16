@@ -621,13 +621,13 @@ const CreateProject = ({ type }) => {
                                                     selectedVal={projectFields.billingTo}
                                                     handleChange={(val) => {
                                                          console.log("billingtotttt",val.contactPerson)
-                                                        let billingTodetails=`${val.address}\n${val.city},${val.state},${val.country}`;
-                                                        billingTodetails=val.contactPerson!=undefined?billingTodetails:""
+                                                        let billingToAddress=`${val.address}\n${val.city},${val.state},${val.country}`;
+                                                        billingToAddress=val.contactPerson!=undefined?billingToAddress:""
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 billingTo: val.contactPerson,
-                                                                billingToDescription:billingTodetails,
+                                                                billingToDescription:billingToAddress,
                                                             }
                                                         })
                                                     }}
@@ -658,14 +658,14 @@ const CreateProject = ({ type }) => {
                                                     options={billingFrom}
                                                     selectedVal={projectFields.billingFrom}
                                                     handleChange={(val) => {
-                                                        let billingFromdetails=`${val.address}\n${val.city},${val.state},${val.country}`;
-                                                        billingFromdetails=val.contactPerson!="No Data found"?billingFromdetails:"";
-                                                        console.log(billingFromdetails);
+                                                        let billingFromAddress=`${val.address}\n${val.city},${val.state},${val.country}`;
+                                                        billingFromAddress=val.contactPerson!="No Data found"?billingFromAddress:"";
+                                                        console.log(billingFromAddress);
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 billingFrom: val.contactPerson,
-                                                                billingFromDescription: billingFromdetails,
+                                                                billingFromDescription: billingFromAddress,
                                                             }
                                                         })
                                                     }}
