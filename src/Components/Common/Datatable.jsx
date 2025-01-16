@@ -49,7 +49,7 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
             navigate(`/daily-work-log/${row.id}`)
         }
         if (DataTableEnumType.BILLING_ENTITY == type) {
-            navigate(`/master-settings/billing-entity/${row.billingEntity}`)
+            navigate(`/master-settings/billing-entity/${row.contactPerson}`)
         }
         if (DataTableEnumType.CLIENT_ADDRESS == type) {
             navigate(`/master-settings/billing-entity/${row.contactPerson}`)

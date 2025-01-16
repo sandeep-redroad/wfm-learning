@@ -15,13 +15,14 @@ const EditBillingEntiy = () => {
     const { billingEntityId } = useParams()
     const formRef = useRef(null)
     const formSchema = z.object({
-        billingEntity: z
+        contactPerson: z
             .string({
                 message: 'Billing Entity is required',
             })
             .min(1, {
                 message: 'Billing Entity is required',
             }),
+        designation: z.string().optional(),
         address: z.string().optional(),
         city: z.string().optional(),
         state: z.string().optional(),
@@ -37,7 +38,7 @@ const EditBillingEntiy = () => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            billingEntity: '',
+            contactPerson: '',
             address: '',
             city: '',
             state: '',
@@ -111,7 +112,7 @@ const EditBillingEntiy = () => {
                                 <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                     <FormField
                                         control={form.control}
-                                        name="billingEntity"
+                                        name="contactPerson"
                                         render={({ field }) => (
                                             <FormItem className="space-y-1">
                                                 <FormLabel>Billing Entity</FormLabel>
@@ -125,23 +126,18 @@ const EditBillingEntiy = () => {
                                             </FormItem>
                                         )}
                                     />
+
                                     <FormField
                                         control={form.control}
-                                        name="pinCode"
+                                        name="designation"
                                         render={({ field }) => (
                                             <FormItem className="space-y-1">
-                                                <FormLabel>Pin Code</FormLabel>
+                                                <FormLabel>Designation</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Pin Code"
+                                                        placeholder="Designation"
                                                         {...field}
-                                                        value={field.value || ''}
-                                                        onChange={(e) => {
-                                                            let value = e.target.value ? Number(e.target.value) : ''
-                                                            value = isNaN(value) ? '' : String(value)
-                                                            field.onChange(value)
-                                                        }}
                                                     />
                                                 </FormControl>
                                             </FormItem>
@@ -166,6 +162,7 @@ const EditBillingEntiy = () => {
                                             </FormItem>
                                         )}
                                     />
+
                                     <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
                                         <FormField
                                             control={form.control}
@@ -213,6 +210,28 @@ const EditBillingEntiy = () => {
                                                         className="shadow-none focus-visible:ring-transparent space-0 mt-0"
                                                         placeholder="Country"
                                                         {...field}
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="pinCode"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-1">
+                                                <FormLabel>Pin Code</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                        placeholder="Pin Code"
+                                                        {...field}
+                                                        value={field.value || ''}
+                                                        onChange={(e) => {
+                                                            let value = e.target.value ? Number(e.target.value) : ''
+                                                            value = isNaN(value) ? '' : String(value)
+                                                            field.onChange(value)
+                                                        }}
                                                     />
                                                 </FormControl>
                                             </FormItem>

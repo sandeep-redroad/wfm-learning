@@ -620,8 +620,9 @@ const CreateProject = ({ type }) => {
                                                     options={billingTo}
                                                     selectedVal={projectFields.billingTo}
                                                     handleChange={(val) => {
-                                                        //  console.log("billingtotttt",val)
+                                                         console.log("billingtotttt",val.contactPerson)
                                                         let billingTodetails=`${val.address}\n${val.city},${val.state},${val.country}`;
+                                                        billingTodetails=val.contactPerson!=undefined?billingTodetails:""
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
@@ -658,6 +659,7 @@ const CreateProject = ({ type }) => {
                                                     selectedVal={projectFields.billingFrom}
                                                     handleChange={(val) => {
                                                         let billingFromdetails=`${val.address}\n${val.city},${val.state},${val.country}`;
+                                                        billingFromdetails=val.contactPerson!="No Data found"?billingFromdetails:"";
                                                         console.log(billingFromdetails);
                                                         setProjectFields((prev) => {
                                                             return {
