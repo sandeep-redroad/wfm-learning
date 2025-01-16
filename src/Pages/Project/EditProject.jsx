@@ -151,10 +151,13 @@ const EditProject = ({ type }) => {
         }
 
          const getBillingEntity = async () => {
+            console.log("in billing entity")
                 try {
                     const resp = await BillingEntityService.getBillingEntities()
                     if (resp.data.success) {
+                       
                         setbillingFrom(resp.data.data)
+                        console.log("billing from",billingFrom)
                     }
                 } catch (err) {}
             }
