@@ -2,7 +2,7 @@ import { React, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'react-toastify'
-import { CalendarIcon } from 'lucide-react'
+import { CalendarIcon, CloudCog } from 'lucide-react'
 import { format } from 'date-fns'
 
 import { Calendar } from '@/components/ui/calendar'
@@ -128,49 +128,46 @@ const EditProject = ({ type }) => {
                     ]
                 })
 
-                setDesc((prev)=>{
+                setDesc((prev) => {
                     return [
                         ...prev,
-                        ...resp.data.data.descriptions.map((record,i)=>({
+                        ...resp.data.data.descriptions.map((record, i) => ({
                             ...record,
-                            id:i+1,
-                            checkbox:false
-                        }))
+                            id: i + 1,
+                            checkbox: false,
+                        })),
                     ]
                 })
             }
         } catch (err) {}
     }
-     const getNotes = async () => {
-            try {
-                const resp = await NoteService.getNotes()
-                if (resp.data.success) {
-                    setNotes(resp.data.data)
-                }
-            } catch (err) {}
-        }
-
-         const getBillingEntity = async () => {
-            console.log("in billing entity")
-                try {
-                    const resp = await BillingEntityService.getBillingEntities()
-                    if (resp.data.success) {
-                       
-                        setbillingFrom(resp.data.data)
-                        console.log("billing from",billingFrom)
-                    }
-                } catch (err) {}
+    const getNotes = async () => {
+        try {
+            const resp = await NoteService.getNotes()
+            if (resp.data.success) {
+                setNotes(resp.data.data)
             }
-             const getClientAddress = async (data) => {
-                    try {
-                        const resp = await ClientAddressService.getClientAddresses(data)
-                        if (resp.data.success) {
-                            //console.log(resp.data.success)
-                            setBillingTo(resp.data.data)
-                        }
-                    } catch (err) {}
-                }
-        
+        } catch (err) {}
+    }
+
+    const getBillingEntity = async () => {
+        try {
+            const resp = await BillingEntityService.getBillingEntities()
+            console.log('resp : ', resp)
+            if (resp.data.success) {
+                setbillingFrom(resp.data.data)
+            }
+        } catch (err) {}
+    }
+    const getClientAddress = async (data) => {
+        try {
+            const resp = await ClientAddressService.getClientAddresses(data)
+            if (resp.data.success) {
+                //console.log(resp.data.success)
+                setBillingTo(resp.data.data)
+            }
+        } catch (err) {}
+    }
 
     useEffect(() => {
         getLofBusiness()
@@ -178,9 +175,8 @@ const EditProject = ({ type }) => {
         getClient()
         getBillingTypes()
         getProcess()
-        getNotes();
+        getNotes()
         getBillingEntity()
-
     }, [])
 
     useEffect(() => {
@@ -199,8 +195,8 @@ const EditProject = ({ type }) => {
         comments: '',
         date: today,
         status: 'Active',
-        note:'',
-        noteDescription:'',
+        note: '',
+        noteDescription: '',
         billingTo: '',
         billingToDescription: '',
         billingFrom: '',
@@ -259,6 +255,7 @@ const EditProject = ({ type }) => {
                 }
             }
             projectFields['customFields'] = rows
+            projectFields['descriptions'] = desc;
             const resp = await ProjectService.updateProject(projectId, projectFields)
             if (resp.data.success) {
                 navigate('/projects')
@@ -482,7 +479,7 @@ const EditProject = ({ type }) => {
 
     return (
         <>
-            <Card className="p-0 mb-[44px] mx-0 rounded-none sticky top-16 w-full z-10">
+            <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
@@ -496,9 +493,9 @@ const EditProject = ({ type }) => {
                     </div>
                 </CardContent>
             </Card>
-            <div className="overflow-auto">
-                <Card className="p-0 m-3 ">
-                    <CardContent className="m-0 p-3">
+            <div className="p-3" style={{ height: 'calc(100vh - 125px)' }}>
+                <Card className="h-full overflow-card-scroll w-full m-0 overflow-auto">
+                    <CardContent className="m-0 p-2 max-h-full">
                         <Form {...form}>
                             <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="p-4 lg:ps-5">
                                 <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
@@ -683,8 +680,7 @@ const EditProject = ({ type }) => {
                                         )}
                                     />
 
-
-<FormField
+                                    <FormField
                                         control={form.control}
                                         name="billingTo"
                                         render={({ field }) => (
@@ -694,21 +690,29 @@ const EditProject = ({ type }) => {
                                                     options={billingTo}
                                                     selectedVal={projectFields.billingTo}
                                                     handleChange={(val) => {
-                                                        let billingTodetails=`${val.address}\n${val.city},${val.state},${val.country}`;
+                                                        let billingTodetails = `${val.address}\n${val.city},${val.state},${val.country}`
+                                                        console.log("billing to details",billingTodetails)
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 billingTo: val.contactPerson,
-                                                                billingToDescription:billingTodetails,
+                                                                billingToDescription: billingTodetails,
                                                             }
                                                         })
                                                     }}
                                                     placeholder="Billing To"
-                                                    label="billing_to"
+                                                    label="contactPerson"
                                                     className="mb-5"
+                                                     type="CREATE_PROJECT_BILLINGTO"
                                                 />
                                                 <FormControl>
-                                                    <Textarea placeholder="Billing To" className="resize-none" row="1"  value={projectFields.billingToDescription}/>
+                                                    <Textarea
+                                                        placeholder="Billing To"
+                                                        className="resize-none"
+                                                        row="1"
+                                                        value={projectFields.billingToDescription}
+                                                       
+                                                    />
                                                 </FormControl>
                                             </FormItem>
                                         )}
@@ -723,21 +727,28 @@ const EditProject = ({ type }) => {
                                                     options={billingFrom}
                                                     selectedVal={projectFields.billingFrom}
                                                     handleChange={(val) => {
-                                                        let billingFromdetails=`${val.address}\n${val.city},${val.state},${val.country}`;
+                                                        let billingFromdetails = `${val.address}\n${val.city},${val.state},${val.country}`
+                                                        console.log("billing to details",val)
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
-                                                                billingFrom: val,
+                                                                billingFrom: val.contactPerson,
                                                                 billingFromDescription: billingFromdetails,
                                                             }
                                                         })
                                                     }}
                                                     placeholder="Billing From"
-                                                    label="billing_from"
+                                                    label="contactPerson"
+                                                    type="CREATE_PROJECT_BILLINGFROM"
                                                     className="mb-5"
                                                 />
                                                 <FormControl>
-                                                    <Textarea placeholder="Billing From" className="resize-none" row="1" value={projectFields.billingFromDescription} />
+                                                    <Textarea
+                                                        placeholder="Billing From"
+                                                        className="resize-none"
+                                                        row="1"
+                                                        value={projectFields.billingFromDescription}
+                                                    />
                                                 </FormControl>
                                             </FormItem>
                                         )}
@@ -1073,7 +1084,19 @@ const EditProject = ({ type }) => {
                                                                 name="description"
                                                                 value={row.description}
                                                                 className="border-none shadow-none"
-                                                                
+                                                                onChange={(event) =>
+                                                                {console.log(event.target.value);
+                                                                    setDesc((prev) => {
+                                                                        let updatedData = []
+                                                                        prev.map((item, i) => {
+                                                                            if (item.id == row.id) {
+                                                                                prev[i]['description'] = event.target.value
+                                                                            }
+                                                                            updatedData.push(item)
+                                                                        })
+                                                                        return updatedData
+                                                                    })}
+                                                                }
                                                             />
                                                         </TableCell>
                                                     </TableRow>
