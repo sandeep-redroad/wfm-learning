@@ -22,7 +22,11 @@ const ClientAddress = () => {
     const [deleteId, setDeleteId] = useState([])
     const [queryParam, setQueryParam] = useState({
         page: 1,
-        search: '',
+        search: {
+            client: '',
+            designation: '',
+            contactPerson: '',
+        },
     })
     const location = useLocation()
     const getClientAddress = async (page = 1) => {

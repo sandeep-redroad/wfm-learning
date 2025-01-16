@@ -22,6 +22,7 @@ export default {
 			'primary-gray':"#808080d6",
 			'light-gray' : "#f5f5f5",
 			'table-head-gray' : "#e5e7eb61",
+			'primary-back':"#ad3648",
 			
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
