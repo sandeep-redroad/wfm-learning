@@ -27,6 +27,7 @@ import BillingTypeService from '@/Service/BillingTypeService'
 import ClientService from '@/Service/ClientService'
 import ProcessService from '@/Service/ProcessService'
 import ProjectService from '@/Service/ProjectService'
+import ClientAddressService from '@/Service/ClientAddressService'
 
 const Invoicef = () => {
     const [checkAll, setcheckAll] = useState(false)
@@ -42,6 +43,7 @@ const Invoicef = () => {
     const [product, setProduct] = useState(null)
     const [process, setProcess] = useState([])
     const [billing_type, setBillingType] = useState([])
+    const [billingto, setBillingTo] = useState()
     const [noneValidatedValue, setNoneValidatedValue] = useState({
         client: '',
         billingType: '',
@@ -66,17 +68,29 @@ const Invoicef = () => {
     })
 
     const setStartEnd = (e) => {
-        let checkdate=e.getDate();
-        console.log('in start end', e.getDate())
-        console.log(parseInt(e))
-        if(checkdate<25){
-            console.log("is less than 25")
-            setStartDate(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).toLocaleDateString(), Constent.DATE_FORMAT)
-            setEndDate(new Date(new Date().getFullYear(), new Date().getMonth(), 0).toLocaleDateString(), Constent.DATE_FORMAT)
+        let checkdate = parseInt(e.getDate())
+        const currentDate = new Date(e)
+        const currentMonth = currentDate.getMonth()
+        const currentYear = currentDate.getFullYear()
+        console.log(currentMonth,currentYear)
+
+        if (checkdate < 25) {
+            // Get the first day of the previous month
+            const startOfPrevMonth = new Date(currentYear, currentMonth - 1, 1)
+            const endOfPrevMonth = new Date(currentYear, currentMonth, 0)
+            setStartDate(format(startOfPrevMonth, Constent.DATE_FORMAT));
+            setEndDate(format(endOfPrevMonth, Constent.DATE_FORMAT))
+            console.log(startOfPrevMonth,endOfPrevMonth)
+            console.log(format(startOfPrevMonth, Constent.DATE_FORMAT),format(endOfPrevMonth, Constent.DATE_FORMAT))
         }else{
-            console.log("is greater than 25")
-            setStartDate(new Date(new Date().getFullYear(), new Date().getMonth() , 1).toLocaleDateString(), Constent.DATE_FORMAT)
-            setEndDate(new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).toLocaleDateString(), Constent.DATE_FORMAT)
+            const startOfMonth = new Date(currentYear, currentMonth, 1);
+
+            // Get the last day of the current month
+            const endOfMonth = new Date(currentYear, currentMonth + 1, 0);
+            setStartDate(format(startOfMonth, Constent.DATE_FORMAT));
+            setEndDate(format(endOfMonth, Constent.DATE_FORMAT))
+            console.log(format(startOfMonth, Constent.DATE_FORMAT),format(endOfMonth, Constent.DATE_FORMAT))
+            
         }
     }
 
@@ -117,8 +131,17 @@ const Invoicef = () => {
         } catch (err) {}
     }
 
+    const getBillingTo = async () => {
+        try {
+            const resp = await ClientAddressService.getClientAddresses()
+            if (resp.data.success) {
+                setBillingTo(resp.data.data)
+            }
+        } catch (err) {}
+    }
+
     useEffect(() => {
-        // getLofBusiness()
+        // getBullingTo()
         getProjects()
         getClient()
         getBillingTypes()
@@ -343,7 +366,9 @@ const Invoicef = () => {
                                                     <PopoverTrigger asChild>
                                                         <FormControl>
                                                             <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                                {noneValidatedValue.invoice_date ? format(noneValidatedValue.invoice_date, Constent.DATE_FORMAT) : invoice_date}
+                                                                {noneValidatedValue.invoice_date
+                                                                    ? format(noneValidatedValue.invoice_date, Constent.DATE_FORMAT)
+                                                                    : invoice_date}
                                                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                             </Button>
                                                         </FormControl>
@@ -569,68 +594,78 @@ const Invoicef = () => {
                                             </FormItem>
                                         )}
                                     />
-                                    {product?.billingType=="Hourly Transactional"&&
-                                      <>
-                                      <FormField
-                                        className="w-full"
-                                        control={form.control}
-                                        name="billingType"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>No of charts recieved</FormLabel>
-                                                <div className="full">
-                                                    <Input  type="number"{...field} placeholder="No charts recieved" value={product?.billingType ?? ''} disabled={true} />
-                                                </div>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        className="w-full"
-                                        control={form.control}
-                                        name="billingType"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Time taken per chart</FormLabel>
-                                                <div className="full">
-                                                    <Input type="number" {...field} placeholder="Time taken per chart" value={product?.billingType ?? ''} disabled={true} />
-                                                </div>
-                                            </FormItem>
-                                        )}
-                                    />
-                                      </>
-                                    }
-                                    {
-                                        product?.billingType=="FTE"&&
-                                    
-                                     <>
-                                     <FormField
-                                        className="w-full"
-                                        control={form.control}
-                                        name="no_fte"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>No of FTEs Deployed</FormLabel>
-                                                <div className="full">
-                                                    <Input type="number"{...field} placeholder="No of FTEs Deployed"  />
-                                                </div>
-                                            </FormItem>
-                                        )}
-                                    />
-                                      <FormField
-                                        className="w-full"
-                                        control={form.control}
-                                        name="no_work"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>No of working days</FormLabel>
-                                                <div className="full">
-                                                    <Input type="number" {...field} placeholder="No of working days"  />
-                                                </div>
-                                            </FormItem>
-                                        )}
-                                    />
-                                     </>
-                                    }
+                                    {product?.billingType == 'Hourly Transactional' && (
+                                        <>
+                                            <FormField
+                                                className="w-full"
+                                                control={form.control}
+                                                name="billingType"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>No of charts recieved</FormLabel>
+                                                        <div className="full">
+                                                            <Input
+                                                                type="number"
+                                                                {...field}
+                                                                placeholder="No charts recieved"
+                                                                value={product?.billingType ?? ''}
+                                                                disabled={true}
+                                                            />
+                                                        </div>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                className="w-full"
+                                                control={form.control}
+                                                name="billingType"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Time taken per chart</FormLabel>
+                                                        <div className="full">
+                                                            <Input
+                                                                type="number"
+                                                                {...field}
+                                                                placeholder="Time taken per chart"
+                                                                value={product?.billingType ?? ''}
+                                                                disabled={true}
+                                                            />
+                                                        </div>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </>
+                                    )}
+                                    {product?.billingType == 'FTE' && (
+                                        <>
+                                            <FormField
+                                                className="w-full"
+                                                control={form.control}
+                                                name="no_fte"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>No of FTEs Deployed</FormLabel>
+                                                        <div className="full">
+                                                            <Input type="number" {...field} placeholder="No of FTEs Deployed" />
+                                                        </div>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                className="w-full"
+                                                control={form.control}
+                                                name="no_work"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>No of working days</FormLabel>
+                                                        <div className="full">
+                                                            <Input type="number" {...field} placeholder="No of working days" />
+                                                        </div>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </>
+                                    )}
                                 </div>
                                 <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
                                     <Table>
@@ -641,8 +676,12 @@ const Invoicef = () => {
                                                 </TableHead>
                                                 <TableHead className="w-[50px] border">Sr.No</TableHead>
                                                 <TableHead className="w-[300px] border">Description</TableHead>
-                                                <TableHead className="w-[100px] border">{product?.billingType=="Per WorkItem Transactional" ? 'Charts' : 'Hours'}</TableHead>
-                                                <TableHead className="w-[150px] border">{product?.billingType=="Per WorkItem Transactional"? 'Rate per chart' : 'Rate per hour'}</TableHead>
+                                                <TableHead className="w-[100px] border">
+                                                    {product?.billingType == 'Per WorkItem Transactional' ? 'Charts' : 'Hours'}
+                                                </TableHead>
+                                                <TableHead className="w-[150px] border">
+                                                    {product?.billingType == 'Per WorkItem Transactional' ? 'Rate per chart' : 'Rate per hour'}
+                                                </TableHead>
                                                 <TableHead className="w-[100px] border">Amount</TableHead>
                                             </TableRow>
                                         </TableHeader>

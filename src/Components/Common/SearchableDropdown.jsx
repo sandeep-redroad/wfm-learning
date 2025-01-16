@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
+import SearchableDropdownTypeEnum from '@/Enums/SearchableDropdownTypeEnum'
 
 const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeholder, field, className, type = '' }) => {
     const [query, setQuery] = useState('')
@@ -11,9 +12,13 @@ const SearchableDropdown = ({ options, label, selectedVal, handleChange, placeho
         return () => document.removeEventListener('click', toggle)
     }, [])
 
+    //console.log("options",label,options)
+
     const selectOption = (option) => {
         setQuery(() => '')
-        if(type == 'note'){
+        if(type in SearchableDropdownTypeEnum){
+        // if(type == 'note'||type=='contactPerson'||type=='contactPersonB'){
+        //     ["contactPersonB", "note", "contactPerson"].indexOf(type)
             handleChange(option)
         }else{
             handleChange(option[label])
