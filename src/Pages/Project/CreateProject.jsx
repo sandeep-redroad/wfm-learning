@@ -146,9 +146,9 @@ const CreateProject = ({ type }) => {
         date: today,
         status: 'Active',
         billingTo: '',
-        billingToDescription: '',
+        billingToAddress: '',
         billingFrom: '',
-        billingFromDescription: '',
+        billingFromAddress: '',
     })
 
     async function onSubmit(data) {
@@ -620,13 +620,14 @@ const CreateProject = ({ type }) => {
                                                     options={billingTo}
                                                     selectedVal={projectFields.billingTo}
                                                     handleChange={(val) => {
-                                                        //  console.log("billingtotttt",val)
-                                                        let billingTodetails=`${val.address}\n${val.city},${val.state},${val.country}`;
+                                                         console.log("billingtotttt",val.contactPerson)
+                                                        let billingToAddress=`${val.address}\n${val.city},${val.state},${val.country}`;
+                                                        billingToAddress=val.contactPerson!=undefined?billingToAddress:""
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 billingTo: val.contactPerson,
-                                                                billingToDescription:billingTodetails,
+                                                                billingToAddress:billingToAddress,
                                                             }
                                                         })
                                                     }}
@@ -640,7 +641,7 @@ const CreateProject = ({ type }) => {
                                                         placeholder="Billing To"
                                                         className="resize-none"
                                                         row="1"
-                                                        value={projectFields.billingToDescription}
+                                                        value={projectFields.billingToAddress}
                                                     />
                                                 </FormControl>
                                             </FormItem>
@@ -657,13 +658,14 @@ const CreateProject = ({ type }) => {
                                                     options={billingFrom}
                                                     selectedVal={projectFields.billingFrom}
                                                     handleChange={(val) => {
-                                                        let billingFromdetails=`${val.address}\n${val.city},${val.state},${val.country}`;
-                                                        console.log(billingFromdetails);
+                                                        let billingFromAddress=`${val.address}\n${val.city},${val.state},${val.country}`;
+                                                        billingFromAddress=val.contactPerson!="No Data found"?billingFromAddress:"";
+                                                        console.log(billingFromAddress);
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
                                                                 billingFrom: val.contactPerson,
-                                                                billingFromDescription: billingFromdetails,
+                                                                billingFromAddress: billingFromAddress,
                                                             }
                                                         })
                                                     }}
@@ -673,7 +675,7 @@ const CreateProject = ({ type }) => {
                                                     className="mb-5"
                                                 />
                                                 <FormControl>
-                                                    <Textarea placeholder="Billing From" className="resize-none" row="1"  value={projectFields.billingFromDescription}/>
+                                                    <Textarea placeholder="Billing From" className="resize-none" row="1"  value={projectFields.billingFromAddress}/>
                                                 </FormControl>
                                             </FormItem>
                                         )}
