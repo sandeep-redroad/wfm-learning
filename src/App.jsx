@@ -37,7 +37,10 @@ import ClientAddress from './Pages/ClientAddress/Listing/ClientAddress'
 import CreateClientAddress from './Pages/ClientAddress/CreateClientAddress'
 import Notes from './Pages/Notes/Listing/Notes'
 import CreateNotes from './Pages/Notes/CreateNotes'
-// import printInvoice from './Pages/Invoice/printInvoice'
+import ShowInvoiece from './Pages/Invoice/ShowInvoice'
+import EditClientAddress from './Pages/ClientAddress/EditClientAddress'
+import EditNotes from './Pages/Notes/EditNotes'
+
 let router = createBrowserRouter([
     {
         path: '/login',
@@ -127,8 +130,8 @@ let router = createBrowserRouter([
                 Component: CreateClientAddress,
             },
             {
-                path: '/master-settings/client-address/:contactId',
-                Component: CreateClientAddress,
+                path: '/master-settings/client-address/:contactPerson',
+                Component: EditClientAddress,
             },
             {
                 path: '/master-settings/notes',
@@ -137,6 +140,10 @@ let router = createBrowserRouter([
             {
                 path: '/master-settings/notes/new',
                 Component: CreateNotes,
+            },
+            {
+                path: '/master-settings/notes/:noteTitle',
+                Component: EditNotes,
             },
             {
                 path: '/master-settings/billing',
@@ -177,10 +184,10 @@ let router = createBrowserRouter([
             },
         ],
     },
-    // {
-    //     path: '/printInvoice',
-    //     Component: printInvoice,
-    // },
+    {
+        path: '/showInvoice',
+        Component: ShowInvoiece,
+    },
     {
         path: '*',
         Component: NotFound404,

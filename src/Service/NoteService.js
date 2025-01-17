@@ -16,12 +16,12 @@ class NoteService{
         return await Axios.delete("api/note",{data})
     }
 
-    async getNote(clientId){
-        return await Axios.get(`api/note/${clientId}`)
+    async getNote(title){
+        return await Axios.get(`api/note/${title}`)
     }
 
-    async updateNote(clientId, data){
-        return await Axios.put(`api/note/${clientId}`, data)
+    async updateNote(title, data){
+        return await Axios.put(`api/note/${title}`, data)
     }
 }
 

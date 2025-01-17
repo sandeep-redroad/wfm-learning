@@ -10,11 +10,11 @@ const SidebarMenu = {
             url: '/projects',
             items: [],
         },
-        {
-            title: 'Daily Work Log',
-            url: '/daily-work-log',
-            items: [],
-        },
+        // {
+        //     title: 'Daily Work Log',
+        //     url: '/daily-work-log',
+        //     items: [],
+        // },
         {
             title: 'Invoices',
             url: '/invoices',
@@ -65,11 +65,11 @@ const SidebarMenu = {
                     url: '/master-settings/billing',
                     items: [],
                 },
-                {
-                    title: 'Employee Mapped',
-                    url: '/master-settings/employee-mapped',
-                    items: [],
-                },
+                // {
+                //     title: 'Employee Mapped',
+                //     url: '/master-settings/employee-mapped',
+                //     items: [],
+                // },
                 {
                     title: 'Billing Entity',
                     url: '/master-settings/billing-entity',

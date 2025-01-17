@@ -52,7 +52,10 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
             navigate(`/master-settings/billing-entity/${row.contactPerson}`)
         }
         if (DataTableEnumType.CLIENT_ADDRESS == type) {
-            navigate(`/master-settings/billing-entity/${row.contactPerson}`)
+            navigate(`/master-settings/client-address/${row.contactPerson}`)
+        }
+        if (DataTableEnumType.NOTE == type) {
+            navigate(`/master-settings/notes/${row.title}`)
         }
     }
 
@@ -113,14 +116,16 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
                             {table.getHeaderGroups().map((headerGroup) =>
                                 headerGroup.headers.map((header) => {
                                     return header.id == 'sl' ? (
-                                        <div key={header.id} className="p-1 py-2 w-20 font-medium text-gray-700 border-r last:border-r-0">
+                                        <div key={header.id} className="p-1 py-2 w-20 font-medium text-gray-700 ">
+                                            {/* add this in above div if you want to add cell right border  border-r last:border-r-0 */}
                                             <Checkbox
                                                 className="mx-3 my-1"
                                                 onCheckedChange={(event) => handleAllChange(event, table.getRowModel().rows)}
                                             />
                                         </div>
                                     ) : (
-                                        <div key={header.id} className="p-1 flex-1 py-2 font-medium text-gray-700 border-r last:border-r-0">
+                                        <div key={header.id} className="p-1 flex-1 py-2 font-medium text-gray-700">
+                                            {/* add this in above div if you want to add cell right border  border-r last:border-r-0 */}
                                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                                         </div>
                                     )
@@ -142,7 +147,8 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
                                         onClick={() => handleRedirect(row.original)}
                                     >
                                         {row.getVisibleCells().map((cell) => (
-                                            <div className={`p-1 border-r last:border-r-0 ${cell.column.id === 'sl' ? 'w-20' : 'flex-1'}`}>
+                                            <div className={`p-1  ${cell.column.id === 'sl' ? 'w-20' : 'flex-1'}`}> 
+                                            {/* add this in above div if you want to add cell right border  border-r last:border-r-0 */}
                                                 {DataTableEnumType.PROJECT == type ? (
                                                     cell.column.id === 'sl' ? (
                                                         allcheck ? (

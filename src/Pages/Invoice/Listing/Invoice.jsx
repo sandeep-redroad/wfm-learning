@@ -4,7 +4,7 @@ import { Button } from '@/Components/ui/button'
 import Datatable from '@/Components/Common/Datatable'
 import { Input } from '@/Components/ui/input'
 import InvoiceColumns from './InvoiceColumn'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 
 const Invoice = () => {
     const handleSearch = (e) => {
