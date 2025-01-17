@@ -40,6 +40,7 @@ import CreateNotes from './Pages/Notes/CreateNotes'
 import ShowInvoiece from './Pages/Invoice/ShowInvoice'
 import EditClientAddress from './Pages/ClientAddress/EditClientAddress'
 import EditNotes from './Pages/Notes/EditNotes'
+import EditInvoice from './Pages/Invoice/EditInvoice'
 
 let router = createBrowserRouter([
     {
@@ -79,6 +80,10 @@ let router = createBrowserRouter([
             {
                 path: 'invoices/new',
                 Component: CreateInoice,
+            },
+            {
+                path: '/invoices/:invoiceId',
+                element: <EditInvoice type="edit" />,
             },
 
             {

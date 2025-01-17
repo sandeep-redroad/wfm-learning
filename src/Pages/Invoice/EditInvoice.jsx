@@ -19,7 +19,7 @@ import Constent from '@/utils/constent'
 import ClientService from '@/Service/ClientService'
 import ProjectService from '@/Service/ProjectService'
 
-const Invoicef = () => {
+const EditInvoice = () => {
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
@@ -255,7 +255,6 @@ const Invoicef = () => {
             formRef.current.requestSubmit()
         }
     }
-
     return (
         <>
             <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
@@ -825,4 +824,4 @@ const Invoicef = () => {
     )
 }
 
-export default Invoicef
+export default EditInvoice
