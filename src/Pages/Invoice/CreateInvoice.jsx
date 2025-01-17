@@ -14,12 +14,14 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../../Components/Common/SearchableDropdown'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Constent from '@/utils/constent'
 import ClientService from '@/Service/ClientService'
 import ProjectService from '@/Service/ProjectService'
+import InvoiceService from '@/Service/InvoiceService'
 
 const Invoicef = () => {
+    const navigate = useNavigate();
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
@@ -52,6 +54,8 @@ const Invoicef = () => {
             paymentStatus: '',
             noOfWorkingDays: '',
             noOfChartReceive: '',
+            timeTakenPerChart: '',
+            noOfFTEDeployed: '',
         },
     })
 
@@ -133,67 +137,86 @@ const Invoicef = () => {
         }
     }, [form.getValues('client')])
 
-    function onSubmit(data) {
-        delete data['customFields']
-        const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => value == ''))
-        const validatedData = {
-            client: 'Client',
-            invoiceDate: 'Invoice Date',
-            projectId: 'Project',
-            lofBusiness: 'LOF Bussiness',
-            process: 'Process',
-            billingType: 'Billing Type',
-            billingTo: 'Billing To',
-            billingToAddress: 'Billing To Address',
-            billingFrom: 'Billing From',
-            billingFromAddress: 'Billing From Address',
-            billingStartDate: 'Billing Start Date',
-            billingEndDate: 'Billing End Date',
-            noteDescription: 'Note Description',
-            totalAmount: 'Total Amount',
-            paidAmount: 'Paid Amount',
-            paymentStatus: 'Status',
-            noOfWorkingDays: 'No of Working Days',
-            noOfChartReceive: 'No of Chart Receive',
-            timeTakenPerChart: 'Time Taken Per Chart',
-            noOfFTEDeployed: 'No of FTE Deployed',
-        }
+    async function onSubmit(data) {
+        try {
+            delete data['customFields']
+            const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => value == ''))
+            const validatedData = {
+                client: 'Client',
+                invoiceDate: 'Invoice Date',
+                projectId: 'Project',
+                lofBusiness: 'LOF Bussiness',
+                process: 'Process',
+                billingType: 'Billing Type',
+                billingTo: 'Billing To',
+                billingToAddress: 'Billing To Address',
+                billingFrom: 'Billing From',
+                billingFromAddress: 'Billing From Address',
+                billingStartDate: 'Billing Start Date',
+                billingEndDate: 'Billing End Date',
+                noteDescription: 'Note Description',
+                totalAmount: 'Total Amount',
+                paidAmount: 'Paid Amount',
+                paymentStatus: 'Status',
+                noOfWorkingDays: 'No of Working Days',
+                noOfChartReceive: 'No of Chart Receive',
+                timeTakenPerChart: 'Time Taken Per Chart',
+                noOfFTEDeployed: 'No of FTE Deployed',
+            }
 
-        for (let i = 0; i < rows.length; i++) {
-            if (rows[i].description === '') {
-                toast.error('Description of Service is requrired')
-                return
+            for (let i = 0; i < rows.length; i++) {
+                if (rows[i].description === '') {
+                    toast.error('Description of Service is requrired')
+                    return
+                }
+                if (rows[i].hours == '') {
+                    toast.error('Hours is requried')
+                    return
+                }
+                if (rows[i].rate == '') {
+                    toast.error('Rate is requried')
+                    return
+                }
+                if (rows[i].amount == '') {
+                    toast.error('Rate is requried')
+                    return
+                }
             }
-            if (rows[i].hours == '') {
-                toast.error('Hours is requried')
-                return
-            }
-            if (rows[i].rate == '') {
-                toast.error('Rate is requried')
-                return
-            }
-            if (rows[i].amount == '') {
-                toast.error('Rate is requried')
-                return
-            }
-        }
 
-        let filterKey = Object.keys(filteredObj)
-        for (let i = 0; i < filterKey.length; i++) {
-            let key = filterKey[i]
-            if (key == 'timePerWorkItem') {
-                continue
-            }
-            if (validatedData[key] !== undefined && filteredObj[key] == '') {
-                toast.error(validatedData[key] + ' is required')
-                return
-            }
-        }
+            let filterKey = Object.keys(filteredObj)
+            // for (let i = 0; i < filterKey.length; i++) {
+            //     let key = filterKey[i]
+            //     if(key == ){
 
-        data['billingTable'] = rows
+            //     }
+            //     if (validatedData[key] !== undefined && filteredObj[key] == '') {
+            //         if (filteredObj['billingType'] == 'Hourly Transactional') {
+            //             continue
+            //         }
+            //         toast.error(validatedData[key] + ' is required')
+            //         return
+            //     }
+            // }
 
-        console.log('final Data : ', data)
+            data['billingTable'] = rows
+
+            let removeKeys = ['comments', 'created_at', 'date', 'descriptions', 'id', 'note', 'rate', 'status']
+            removeKeys.map((key) => {
+                delete data[key]
+            })
+            Object.keys(data).map((key) => {
+                if (data[key] === undefined) {
+                    data[key] = ''
+                }
+            })
+            console.log('final Data : ', data)
+            const resp = await InvoiceService.createInvoice(data)
+            if (resp.data.success) {
+                navigate('/invoices')
+            }
+        } catch (err) {}
     }
+
     const addRow = () => {
         setRows((prev) => {
             const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
@@ -218,9 +241,11 @@ const Invoicef = () => {
 
         setRows(() => newdata)
     }
+
     const deleteAll = () => {
         setRows([])
     }
+
     const changeOne = (row) => {
         setRows((prev) => {
             let updatedData = []
@@ -250,6 +275,7 @@ const Invoicef = () => {
             return updatedData
         })
     }
+
     const handleSaveClick = () => {
         if (formRef.current) {
             formRef.current.requestSubmit()
@@ -580,7 +606,9 @@ const Invoicef = () => {
                                                     {project?.billingType == 'Per WorkItem Transactional' ? 'Charts' : 'Hours'}
                                                 </TableHead>
                                                 <TableHead className="w-[150px] border">
-                                                    {project?.billingType == 'Per WorkItem Transactional' ? 'Rate per chart($)' : 'Rate per hour($)'}
+                                                    {project?.billingType == 'Hourly transactional' || project?.billingType == 'Hourly Transactional'
+                                                        ? 'Rate Per Chart($)'
+                                                        : 'Rate Per Hour($)'}
                                                 </TableHead>
                                                 <TableHead className="w-[100px] border">Amount($)</TableHead>
                                             </TableRow>

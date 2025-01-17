@@ -10,27 +10,27 @@ const InvoiceColumns = () => {
         },
         {
             accessorKey: 'id',
-            header: 'ID',
+            header: 'Invoie Id',
         },
         {
-            accessorKey: 'project_id',
+            accessorKey: 'projectId',
             header: 'Project Id',
         },
         {
-            accessorKey: 'lob_process',
-            header: 'LOB Process',
+            accessorKey: 'client',
+            header: 'Client',
         },
         {
-            accessorKey: 'total_amount',
-            header: 'Total Amount',
+            accessorKey: 'billingType',
+            header: 'Billing Type',
         },
         {
-            accessorKey: 'status',
+            accessorKey: 'paymentStatus',
             header: 'Status',
         },
         {
-            accessorKey: 'amount_paid',
-            header: 'Amount Paid',
+            accessorKey: 'invoiceDate',
+            header: 'Date',
         },
     ]
     return memoizedColumns
