@@ -163,7 +163,6 @@ const EditProject = ({ type }) => {
         try {
             const resp = await ClientAddressService.getClientAddresses(data)
             if (resp.data.success) {
-                //console.log(resp.data.success)
                 setBillingTo(resp.data.data)
             }
         } catch (err) {}
@@ -198,9 +197,9 @@ const EditProject = ({ type }) => {
         note: '',
         noteDescription: '',
         billingTo: '',
-        billingToDescription: '',
+        billingToAddress: '',
         billingFrom: '',
-        billingFromDescription: '',
+        billingFromAddress: '',
     })
 
     const form = useForm()
@@ -696,7 +695,7 @@ const EditProject = ({ type }) => {
                                                             return {
                                                                 ...prev,
                                                                 billingTo: val.contactPerson,
-                                                                billingToDescription: billingToAddress,
+                                                                billingToAddress: billingToAddress,
                                                             }
                                                         })
                                                     }}
@@ -710,7 +709,7 @@ const EditProject = ({ type }) => {
                                                         placeholder="Billing To"
                                                         className="resize-none"
                                                         row="1"
-                                                        value={projectFields.billingToDescription}
+                                                        value={projectFields.billingToAddress}
                                                        
                                                     />
                                                 </FormControl>
@@ -733,7 +732,7 @@ const EditProject = ({ type }) => {
                                                             return {
                                                                 ...prev,
                                                                 billingFrom: val.contactPerson,
-                                                                billingFromDescription: billingFromAddress,
+                                                                billingFromAddress: billingFromAddress,
                                                             }
                                                         })
                                                     }}
@@ -747,7 +746,7 @@ const EditProject = ({ type }) => {
                                                         placeholder="Billing From"
                                                         className="resize-none"
                                                         row="1"
-                                                        value={projectFields.billingFromDescription}
+                                                        value={projectFields.billingFromAddress}
                                                     />
                                                 </FormControl>
                                             </FormItem>
