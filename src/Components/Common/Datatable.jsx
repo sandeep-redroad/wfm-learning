@@ -147,7 +147,7 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
                                         onClick={() => handleRedirect(row.original)}
                                     >
                                         {row.getVisibleCells().map((cell) => (
-                                            <div className={`p-1  ${cell.column.id === 'sl' ? 'w-20' : 'flex-1'}`}> 
+                                            <div className={`p-1  ${cell.column.id === 'sl' ? 'w-20' : 'flex-1'}`}>
                                             {/* add this in above div if you want to add cell right border  border-r last:border-r-0 */}
                                                 {DataTableEnumType.PROJECT == type ? (
                                                     cell.column.id === 'sl' ? (
@@ -187,7 +187,7 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
                                                             checked={deleteId?.includes(row.original._id)}
                                                         />
                                                     )
-                                                ) : cell.column.id === 'date' || cell.column.id === 'created_at' ? (
+                                                ) : cell.column.id === 'date' || cell.column.id === 'created_at' || cell.column.id === 'invoiceDate' ? (
                                                     <>{format(cell.getValue(), Constent.DATE_FORMAT)}</>
                                                 ) : (
                                                     <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
