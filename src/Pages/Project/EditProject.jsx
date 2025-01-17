@@ -685,12 +685,12 @@ const EditProject = ({ type }) => {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Billing To</FormLabel>
+                                                {console.log("billingTo L ", billingTo)}
                                                 <SearchableDropdown
                                                     options={billingTo}
                                                     selectedVal={projectFields.billingTo}
                                                     handleChange={(val) => {
-                                                        let billingToAddress = `${val.address}\n${val.city},${val.state},${val.country}`
-                                                        console.log("billing to details",billingToAddress)
+                                                        let billingToAddress = `${val.designation}\n${val.address}\n${val.city},${val.state},${val.country}`
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
@@ -726,7 +726,7 @@ const EditProject = ({ type }) => {
                                                     options={billingFrom}
                                                     selectedVal={projectFields.billingFrom}
                                                     handleChange={(val) => {
-                                                        let billingFromAddress = `${val.address}\n${val.city},${val.state},${val.country}`
+                                                        let billingFromAddress = `${val.designation}\n${val.address}\n${val.city},${val.state},${val.country}`
                                                         console.log("billing to details",val)
                                                         setProjectFields((prev) => {
                                                             return {

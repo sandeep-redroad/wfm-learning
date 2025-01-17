@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'react-toastify'
 import { format } from 'date-fns'
-import { CalendarIcon } from 'lucide-react'
+import { CalendarIcon, Printer } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Calendar } from '@/components/ui/calendar'
@@ -14,12 +14,13 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../../Components/Common/SearchableDropdown'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import Constent from '@/utils/constent'
 import ClientService from '@/Service/ClientService'
 import ProjectService from '@/Service/ProjectService'
 
 const EditInvoice = () => {
+    const { invoiceId } = useParams()
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
@@ -261,6 +262,9 @@ const EditInvoice = () => {
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
+                            <Link className="button" to={`/printInvoice/${invoiceId}`}>
+                                <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400"><Printer /> Print Invoice</Button>
+                            </Link>
                             <Link className="button" to="/invoices">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                             </Link>

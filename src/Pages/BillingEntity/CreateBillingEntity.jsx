@@ -21,6 +21,13 @@ const CreateBillingEntiy = () => {
             .min(1, {
                 message: 'Contact Person is required',
             }),
+        gstNumber: z
+            .string({
+                message: 'GST Number is required',
+            })
+            .min(1, {
+                message: 'GST Number is required',
+            }),
         designation: z.string().optional(),
         address: z.string().optional(),
         city: z.string().optional(),
@@ -88,75 +95,23 @@ const CreateBillingEntiy = () => {
                     </div>
                 </CardContent>
             </Card>
-            <div className="p-3" style={{height : "calc(100vh - 125px)"}}>
-            <Card className="h-full overflow-card-scroll w-full m-0 overflow-auto">
-                <CardContent className="m-0 p-2 max-h-full">
-                    <Form {...form}>
-                        <form ref={formRef} onSubmit={form.handleSubmit(onSubmit, onError)} className="p-4 lg:ps-5">
-                            <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
-                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                    <FormField
-                                        control={form.control}
-                                        name="contactPerson"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-1">
-                                                <FormLabel>Contact Person</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Contact Person"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="designation"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-1">
-                                                <FormLabel>Designation</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Designation"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem] my-[1.75rem">
-                                    <FormField
-                                        control={form.control}
-                                        name="address"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-1">
-                                                <FormLabel>Address</FormLabel>
-                                                <FormControl>
-                                                    <Textarea
-                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Address"
-                                                        {...field}
-                                                        rows="6"
-                                                    ></Textarea>
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
+            <div className="p-3" style={{ height: 'calc(100vh - 125px)' }}>
+                <Card className="h-full overflow-card-scroll w-full m-0 overflow-auto">
+                    <CardContent className="m-0 p-2 max-h-full">
+                        <Form {...form}>
+                            <form ref={formRef} onSubmit={form.handleSubmit(onSubmit, onError)} className="p-4 lg:ps-5">
+                                <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
+                                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                         <FormField
                                             control={form.control}
-                                            name="city"
+                                            name="contactPerson"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-1">
-                                                    <FormLabel>City</FormLabel>
+                                                    <FormLabel>Contact Person</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                            placeholder="City"
+                                                            placeholder="Contact Person"
                                                             {...field}
                                                         />
                                                     </FormControl>
@@ -165,14 +120,123 @@ const CreateBillingEntiy = () => {
                                         />
                                         <FormField
                                             control={form.control}
-                                            name="state"
+                                            name="designation"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-1">
-                                                    <FormLabel>State</FormLabel>
+                                                    <FormLabel>Designation</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                            placeholder="State"
+                                                            placeholder="Designation"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem] my-[1.75rem">
+                                        <FormField
+                                            control={form.control}
+                                            name="address"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-1">
+                                                    <FormLabel>Address</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                            placeholder="Address"
+                                                            {...field}
+                                                            rows="6"
+                                                        ></Textarea>
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
+                                            <FormField
+                                                control={form.control}
+                                                name="city"
+                                                render={({ field }) => (
+                                                    <FormItem className="space-y-1">
+                                                        <FormLabel>City</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                                placeholder="City"
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="state"
+                                                render={({ field }) => (
+                                                    <FormItem className="space-y-1">
+                                                        <FormLabel>State</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                                placeholder="State"
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
+                                        <FormField
+                                            control={form.control}
+                                            name="country"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-1">
+                                                    <FormLabel>Country</FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                            placeholder="Country"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="pinCode"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-1">
+                                                    <FormLabel>Pin Code</FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                            placeholder="Pin Code"
+                                                            {...field}
+                                                            value={field.value || ''}
+                                                            onChange={(e) => {
+                                                                let value = e.target.value ? Number(e.target.value) : ''
+                                                                value = isNaN(value) ? '' : String(value)
+                                                                field.onChange(value)
+                                                            }}
+                                                        />
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="gstNumber"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-1">
+                                                    <FormLabel>GST Number</FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                            placeholder="GST Number"
                                                             {...field}
                                                         />
                                                     </FormControl>
@@ -181,51 +245,10 @@ const CreateBillingEntiy = () => {
                                         />
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                    <FormField
-                                        control={form.control}
-                                        name="country"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-1">
-                                                <FormLabel>Country</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Country"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="pinCode"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-1">
-                                                <FormLabel>Pin Code</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Pin Code"
-                                                        {...field}
-                                                        value={field.value || ''}
-                                                        onChange={(e) => {
-                                                            let value = e.target.value ? Number(e.target.value) : ''
-                                                            value = isNaN(value) ? '' : String(value)
-                                                            field.onChange(value)
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                            </div>
-                        </form>
-                    </Form>
-                </CardContent>
-            </Card>
+                            </form>
+                        </Form>
+                    </CardContent>
+                </Card>
             </div>
         </>
     )
