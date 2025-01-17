@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { useDebounce } from 'use-debounce'
 import Constent from '@/utils/constent'
 import InvoiceService from '@/Service/InvoiceService'
+import DataTableEnumType from '@/Enums/DataTableTypeEnum'
 
 const Invoice = () => {
     const [invoices, setInvoices] = useState([])
@@ -91,7 +92,7 @@ const Invoice = () => {
                         <div className="w-full my-2 grid grid-cols-4 gap-3 mb-3">
                             <Input type="text" placeholder="ID" />
                         </div>
-                        <Datatable columns={InvoiceColumns()} data={invoices} totalDataCount={10} />
+                        <Datatable columns={InvoiceColumns()} data={invoices} totalDataCount={totalCount} type={DataTableEnumType.INVOICE} />
                     </CardContent>
                 </Card>
             </div>

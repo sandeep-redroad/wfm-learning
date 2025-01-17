@@ -291,7 +291,7 @@ const Invoicef = () => {
                             <Link className="button" to="/invoices">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                             </Link>
-                            <Button className="" onClick={handleSaveClick}>
+                            <Button className="bg-primary-purpal hover:bg-primary-purpal" onClick={handleSaveClick}>
                                 Save
                             </Button>
                         </div>
