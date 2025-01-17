@@ -57,6 +57,9 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
         if (DataTableEnumType.NOTE == type) {
             navigate(`/master-settings/notes/${row.title}`)
         }
+        if (DataTableEnumType.INVOICE == type) {
+            navigate(`/invoices/${row.id}`)
+        }
     }
 
     const handleCheckboxChange = (event, row) => {

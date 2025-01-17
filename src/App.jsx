@@ -83,7 +83,7 @@ let router = createBrowserRouter([
             },
             {
                 path: '/invoices/:invoiceId',
-                element: <EditInvoice type="edit" />,
+                Component: EditInvoice,
             },
 
             {
