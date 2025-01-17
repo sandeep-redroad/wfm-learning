@@ -1066,7 +1066,7 @@ const CreateProject = ({ type }) => {
                                         </Button>
                                     )}
                                 </div>
-                                <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
+                                {/* <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
                                     <h3 className="font-medium mb-6">History</h3>
                                     <Table>
                                         <TableHeader>
@@ -1272,7 +1272,7 @@ const CreateProject = ({ type }) => {
                                             Delete All
                                         </Button>
                                     )}
-                                </div>
+                                </div> */}
                             </form>
                         </Form>
                     </CardContent>

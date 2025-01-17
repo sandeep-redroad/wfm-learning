@@ -5,7 +5,8 @@ const DataTableEnumType = {
     BILLING_ENTITY : 'BILLING_ENTITY',
     CLIENT : 'CLIENT',
     CLIENT_ADDRESS : 'CLIENT_ADDRESS',
-    DAILY_WORK_LOG : 'DAILY_WORK_LOG'
+    DAILY_WORK_LOG : 'DAILY_WORK_LOG',
+    NOTE : 'NOTE'
 }
 
 Object.freeze(DataTableEnumType);

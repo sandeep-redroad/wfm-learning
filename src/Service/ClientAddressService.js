@@ -20,12 +20,12 @@ class ClientAddressService{
         return await Axios.delete("api/client_address",{data})
     }
 
-    async getClientAddress(clientId){
-        return await Axios.get(`api/client_address/${clientId}`)
+    async getClientAddress(contactPerson){
+        return await Axios.get(`api/client_address/${contactPerson}`)
     }
 
-    async updateClientAddress(clientId, data){
-        return await Axios.put(`api/client_address/${clientId}`, data)
+    async updateClientAddress(contactPerson, data){
+        return await Axios.put(`api/client_address/${contactPerson}`, data)
     }
 }
 

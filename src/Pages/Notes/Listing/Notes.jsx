@@ -26,6 +26,7 @@ const Notes = () => {
         search: '',
     })
     const location = useLocation()
+    
     const getNotes = async (page = 1) => {
         try {
             const resp = await NoteService.getNotes(queryParam)
@@ -104,7 +105,6 @@ const Notes = () => {
                     <CardContent className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
                         <div className="w-full my-2 grid grid-cols-4 gap-3 mb-3">
                             <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Title" />
-                            {/* <Input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="description" /> */}
                         </div>
                         <Datatable
                             columns={NoteColumns()}
@@ -113,7 +113,7 @@ const Notes = () => {
                             allcheck={allcheck}
                             deleteId={deleteId}
                             setDeleteId={setDeleteId}
-                            type={DataTableEnumType.CLIENT}
+                            type={DataTableEnumType.NOTE}
                         />
                     </CardContent>
                 </Card>
