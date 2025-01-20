@@ -14,13 +14,15 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import SearchableDropdown from '../../Components/Common/SearchableDropdown'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import Constent from '@/utils/constent'
 import ClientService from '@/Service/ClientService'
 import ProjectService from '@/Service/ProjectService'
+import InvoiceService from '@/Service/InvoiceService'
 
 const EditInvoice = () => {
     const [checkAll, setcheckAll] = useState(false)
+    const { invoiceId } = useParams()
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
     const [projects, setProjects] = useState([])
@@ -29,31 +31,30 @@ const EditInvoice = () => {
     const [start_date, setStartDate] = useState(format(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1), Constent.DATE_FORMAT))
     const [end_date, setEndDate] = useState(format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), Constent.DATE_FORMAT))
     const [project, setProject] = useState(null)
-
-    const form = useForm({
-        defaultValues: {
-            client: '',
-            invoiceDate: invoice_date,
-            projectId: '',
-            lofBusiness: '',
-            process: '',
-            billingType: '',
-            invoiceStartDate: '',
-            invoiceEndDate: '',
-            billingTo: '',
-            billingToAddress: '',
-            billingFrom: '',
-            billingFromAddress: '',
-            billingStartDate: start_date,
-            billingEndDate: end_date,
-            noteDescription: '',
-            totalAmount: '',
-            paidAmount: '',
-            paymentStatus: '',
-            noOfWorkingDays: '',
-            noOfChartReceive: '',
-        },
+    const [invoiceField, setInvoiceField] = useState({
+        client: '',
+        invoiceDate: invoice_date,
+        projectId: '',
+        lofBusiness: '',
+        process: '',
+        billingType: '',
+        invoiceStartDate: '',
+        invoiceEndDate: '',
+        billingTo: '',
+        billingToAddress: '',
+        billingFrom: '',
+        billingFromAddress: '',
+        billingStartDate: start_date,
+        billingEndDate: end_date,
+        noteDescription: '',
+        totalAmount: '',
+        paidAmount: '',
+        paymentStatus: '',
+        noOfWorkingDays: '',
+        noOfChartReceive: '',
     })
+
+    const form = useForm()
 
     const setStartEnd = (e) => {
         let checkdate = parseInt(e.getDate())
@@ -88,11 +89,44 @@ const EditInvoice = () => {
         } catch (err) {}
     }
 
+    useEffect(() => {
+        if (form.getValues('client') !== '') {
+            getProjects()
+        }
+    }, [form.getValues('client')])
+
     const getProject = async (projectId) => {
         try {
             const resp = await ProjectService.getProject(projectId)
             if (resp.data.success) {
-                setProject(resp.data.data)
+                setInvoiceField((prev)=>{
+                    console.log("in res",resp.data.data)
+                    let data=resp.data.data;
+                    return {
+                        ...prev,
+                        // Assuming you only want to overwrite specific fields from resp.data.data
+                        client: data.client || prev.client,
+                        invoiceDate: data.invoiceDate || prev.invoiceDate,
+                        lofBusiness: data.lofBusiness || prev.lofBusiness,
+                        process: data.process || prev.process,
+                        billingType: data.billingType || prev.billingType,
+                        invoiceStartDate: data.invoiceStartDate || prev.invoiceStartDate,
+                        invoiceEndDate: data.invoiceEndDate || prev.invoiceEndDate,
+                        billingTo: data.billingTo || prev.billingTo,
+                        billingToAddress: data.billingToAddress || prev.billingToAddress,
+                        billingFrom: data.billingFrom || prev.billingFrom,
+                        billingFromAddress: data.billingFromAddress || prev.billingFromAddress,
+                        billingStartDate: data.billingStartDate || prev.billingStartDate,
+                        billingEndDate: data.billingEndDate || prev.billingEndDate,
+                        noteDescription: data.noteDescription || prev.noteDescription,
+                        totalAmount: data.totalAmount || prev.totalAmount,
+                        paidAmount: data.paidAmount || prev.paidAmount,
+                        paymentStatus: data.paymentStatus || prev.paymentStatus,
+                        noOfWorkingDays: data.noOfWorkingDays || prev.noOfWorkingDays,
+                        noOfChartReceive: data.noOfChartReceive || prev.noOfChartReceive,
+                        projectId: projectId, // Ensure projectId is updated with the current one
+                    };
+                })
                 form.reset({ ...resp.data.data, projectId: projectId })
                 let descriptions = resp.data.data.descriptions ?? []
                 setRows((prev) => {
@@ -115,8 +149,43 @@ const EditInvoice = () => {
         } catch (err) {}
     }
 
+    const getInvoice = async () => {
+        try {
+            const resp = await InvoiceService.getInvoice(invoiceId)
+
+            if (resp.data.success) {
+                if (!resp.data.data) {
+                    toast.error('Invoice Not Found')
+                    navigate('/invoices')
+                    return
+                }
+
+                setInvoiceField((prev) => {
+                    console.log(resp.data.data)
+                    return {
+                        ...prev,
+                        ...resp.data.data,
+                    }
+                })
+
+                setRows((prev) => {
+                    return [
+                        ...prev,
+                        ...resp.data.data.billingTable.map((record, i) => ({
+                            ...record,
+                            id: i + 1,
+                            checkbox: false,
+                        })),
+                    ]
+                })
+            }
+        } catch (err) {}
+    }
+
     useEffect(() => {
+        getInvoice()
         getClient()
+        getProjects()
     }, [])
     const getClient = async () => {
         try {
@@ -127,13 +196,7 @@ const EditInvoice = () => {
         } catch (err) {}
     }
 
-    useEffect(() => {
-        if (form.getValues('client') !== '') {
-            getProjects()
-        }
-    }, [form.getValues('client')])
-
-    function onSubmit(data) {
+    async function onSubmit(data) {
         delete data['customFields']
         const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => value == ''))
         const validatedData = {
@@ -193,6 +256,10 @@ const EditInvoice = () => {
         data['billingTable'] = rows
 
         console.log('final Data : ', data)
+         const resp = await InvoiceService.updateInvoice(invoiceId,data)
+                    if (resp.data.success) {
+                        navigate('/invoices')
+                    }
     }
     const addRow = () => {
         setRows((prev) => {
@@ -286,9 +353,15 @@ const EditInvoice = () => {
                                                 <div className="full">
                                                     <SearchableDropdown
                                                         options={clients}
-                                                        selectedVal={field.value}
+                                                        selectedVal={invoiceField.client}
                                                         handleChange={(val) => {
-                                                            field.onChange(val)
+                                                           setInvoiceField((prev) => {
+                                                                    return {
+                                                                        ...prev,
+                                                                        client: val,
+                                                                    }
+                                                                })
+                                                           
                                                         }}
                                                         placeholder="Client"
                                                         label="client"
@@ -308,7 +381,9 @@ const EditInvoice = () => {
                                                     <PopoverTrigger asChild>
                                                         <FormControl>
                                                             <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                                {field.value ? format(field.value, Constent.DATE_FORMAT) : invoice_date}
+                                                                {invoiceField.invoiceDate
+                                                                    ? format(invoiceField.invoiceDate, Constent.DATE_FORMAT)
+                                                                    : invoice_date}
                                                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                             </Button>
                                                         </FormControl>
@@ -317,7 +392,7 @@ const EditInvoice = () => {
                                                         <Calendar
                                                             mode="single"
                                                             {...field}
-                                                            selected={new Date(field.value)}
+                                                            selected={new Date(invoiceField.invoiceDate)}
                                                             onSelect={(e) => {
                                                                 field.onChange(format(e, Constent.DATE_FORMAT))
                                                                 setStartEnd(e)
@@ -339,11 +414,16 @@ const EditInvoice = () => {
                                                 <div className="full">
                                                     <SearchableDropdown
                                                         options={projects}
-                                                        selectedVal={field.value}
+                                                        selectedVal={invoiceField.projectId}
                                                         handleChange={(val) => {
                                                             getProject(val)
-                                                            field.onChange(val)
-                                                        }}
+                                                                setInvoiceField((prev) => {
+                                                                    return {
+                                                                        ...prev,
+                                                                        projectId: val,
+                                                                    }
+                                                                })
+                                                            }}
                                                         placeholder="Project"
                                                         label="id"
                                                         type="projectFromInvoice"
@@ -360,7 +440,7 @@ const EditInvoice = () => {
                                             <FormItem>
                                                 <FormLabel>LOF Business</FormLabel>
                                                 <div className="w-full">
-                                                    <Input {...field} placeholder="LOF Business" readOnly={true} />
+                                                    <Input value={invoiceField.lofBusiness} placeholder="LOF Business" readOnly={true} />
                                                 </div>
                                             </FormItem>
                                         )}
@@ -373,7 +453,7 @@ const EditInvoice = () => {
                                             <FormItem>
                                                 <FormLabel>Process</FormLabel>
                                                 <div className="full">
-                                                    <Input {...field} placeholder="Process" readOnly={true} />
+                                                    <Input value={invoiceField.process} placeholder="Process" readOnly={true} />
                                                 </div>
                                             </FormItem>
                                         )}
@@ -387,7 +467,7 @@ const EditInvoice = () => {
                                             <FormItem>
                                                 <FormLabel>Billing Type</FormLabel>
                                                 <div className="full">
-                                                    <Input {...field} placeholder="Billing type" readOnly={true} />
+                                                    <Input value={invoiceField.billingType} placeholder="Billing type" readOnly={true} />
                                                 </div>
                                             </FormItem>
                                         )}
@@ -404,13 +484,13 @@ const EditInvoice = () => {
                                                     <Input
                                                         {...field}
                                                         placeholder="Billing From"
-                                                        value={form.getValues('billingFrom')}
+                                                        value={invoiceField.billingFrom}
                                                         readOnly={true}
                                                         className="mb-5"
                                                     />
                                                     <Textarea
                                                         placeholder="billing from address"
-                                                        value={form.getValues('billingFromAddress')}
+                                                        value={invoiceField.billingFromAddress}
                                                         className="resize-none"
                                                         row="1"
                                                         readOnly={true}
@@ -430,13 +510,13 @@ const EditInvoice = () => {
                                                     <Input
                                                         {...field}
                                                         placeholder="Billing To"
-                                                        value={form.getValues('billingTo')}
+                                                        value={invoiceField.billingTo}
                                                         readOnly={true}
                                                         className="mb-5"
                                                     />
                                                     <Textarea
                                                         placeholder="billing to address"
-                                                        value={form.getValues('billingToAddress')}
+                                                        value={invoiceField.billingToAddress}
                                                         className="resize-none"
                                                         row="1"
                                                         readOnly={true}
@@ -464,9 +544,9 @@ const EditInvoice = () => {
                                                     <PopoverContent className="w-auto p-0" align="start">
                                                         <Calendar
                                                             mode="single"
-                                                            selected={new Date(field.value)}
+                                                            selected={new Date(invoiceField.billingStartDate)}
                                                             onSelect={(e) => {
-                                                                field.onChange(format(field.billingStartDate, Constent.DATE_FORMAT))
+                                                                invoiceField.onChange(format(invoiceField.billingStartDate, Constent.DATE_FORMAT))
                                                             }}
                                                             initialFocus
                                                         />
@@ -486,7 +566,9 @@ const EditInvoice = () => {
                                                     <PopoverTrigger asChild>
                                                         <FormControl>
                                                             <Button variant={'outline'} className="w-full pl-3 text-left font-normal">
-                                                                {field.value ? format(field.value, Constent.DATE_FORMAT) : end_date}
+                                                                {invoiceField.billingEndDate
+                                                                    ? format(invoiceField.billingEndDate, Constent.DATE_FORMAT)
+                                                                    : end_date}
                                                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                             </Button>
                                                         </FormControl>
@@ -494,9 +576,9 @@ const EditInvoice = () => {
                                                     <PopoverContent className="w-auto p-0" align="start">
                                                         <Calendar
                                                             mode="single"
-                                                            selected={new Date(field.value)}
+                                                            selected={new Date(invoiceField.billingEndDate)}
                                                             onSelect={(e) => {
-                                                                field.onChange(format(e, Constent.DATE_FORMAT))
+                                                                invoiceField.billingEndDate.onChange(format(e, Constent.DATE_FORMAT))
                                                             }}
                                                             initialFocus
                                                         />
@@ -505,7 +587,7 @@ const EditInvoice = () => {
                                             </FormItem>
                                         )}
                                     />
-                                    {project?.billingType == 'Hourly Transactional' && (
+                                    {invoiceField?.billingType == 'Hourly Transactional' && (
                                         <>
                                             <FormField
                                                 className="w-full"
@@ -515,7 +597,12 @@ const EditInvoice = () => {
                                                     <FormItem>
                                                         <FormLabel>No of charts recieved</FormLabel>
                                                         <div className="full">
-                                                            <Input type="number" {...field} placeholder="No charts recieved" readOnly={true} />
+                                                            <Input
+                                                                type="number"
+                                                                value={invoiceField.noOfChartReceive}
+                                                                placeholder="No charts recieved"
+                                                                readOnly={true}
+                                                            />
                                                         </div>
                                                     </FormItem>
                                                 )}
@@ -528,14 +615,19 @@ const EditInvoice = () => {
                                                     <FormItem>
                                                         <FormLabel>Time taken per chart</FormLabel>
                                                         <div className="full">
-                                                            <Input type="number" {...field} placeholder="Time taken per chart" readOnly={true} />
+                                                            <Input
+                                                                type="number"
+                                                                value={invoiceField.timeTakenPerChart}
+                                                                placeholder="Time taken per chart"
+                                                                readOnly={true}
+                                                            />
                                                         </div>
                                                     </FormItem>
                                                 )}
                                             />
                                         </>
                                     )}
-                                    {project?.billingType == 'FTE' && (
+                                    {invoiceField?.billingType == 'FTE' && (
                                         <>
                                             <FormField
                                                 className="w-full"
@@ -545,7 +637,11 @@ const EditInvoice = () => {
                                                     <FormItem>
                                                         <FormLabel>No of FTEs Deployed</FormLabel>
                                                         <div className="full">
-                                                            <Input type="number" {...field} placeholder="No of FTEs Deployed" />
+                                                            <Input
+                                                                type="number"
+                                                                value={invoiceField.noOfFTEDeployed}
+                                                                placeholder="No of FTEs Deployed"
+                                                            />
                                                         </div>
                                                     </FormItem>
                                                 )}
@@ -558,7 +654,11 @@ const EditInvoice = () => {
                                                     <FormItem>
                                                         <FormLabel>No of working days</FormLabel>
                                                         <div className="full">
-                                                            <Input type="number" {...field} placeholder="No of working days" />
+                                                            <Input
+                                                                type="number"
+                                                                value={invoiceField.noOfWorkingDays}
+                                                                placeholder="No of working days"
+                                                            />
                                                         </div>
                                                     </FormItem>
                                                 )}
@@ -748,7 +848,7 @@ const EditInvoice = () => {
 
                                                 <div className="w-full">
                                                     <Textarea
-                                                        value={project?.noteDescription ?? ''}
+                                                        value={invoiceField?.noteDescription ?? ''}
                                                         placeholder="Note Descriptions"
                                                         className="resize-none"
                                                         row="1"
@@ -765,7 +865,7 @@ const EditInvoice = () => {
                                             <FormItem>
                                                 <FormLabel>Total Amount</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="Total Amount" {...field} disabled={true} />
+                                                    <Input placeholder="Total Amount" value={invoiceField.totalAmount} disabled={true} />
                                                 </FormControl>
                                             </FormItem>
                                         )}
@@ -780,11 +880,10 @@ const EditInvoice = () => {
                                                 <div className="w-full">
                                                     <Select
                                                         name="status"
-                                                        {...field}
                                                         defaultValue={'Pending'}
-                                                        value={field.value}
+                                                        value={invoiceField.paymentStatus}
                                                         className=" w-full"
-                                                        onValueChange={(val) => field.onChange(val)}
+                                                        onValueChange={(val) => invoiceField.onChange(val)}
                                                     >
                                                         <FormControl>
                                                             <SelectTrigger className="shadow-none  w-full">
@@ -809,7 +908,7 @@ const EditInvoice = () => {
                                             <FormItem>
                                                 <FormLabel>Amount Paid</FormLabel>
                                                 <FormControl>
-                                                    <Input {...field} placeholder="Amount Paid" />
+                                                    <Input value={invoiceField.paidAmount} placeholder="Amount Paid" />
                                                 </FormControl>
                                             </FormItem>
                                         )}
