@@ -21,6 +21,7 @@ class InvoiceService{
     }
 
     async updateInvoice(invoiceId, data){
+        console.log("invoicedata",data);
         return await Axios.put(`api/invoice/${invoiceId}`, data)
     }
 }
