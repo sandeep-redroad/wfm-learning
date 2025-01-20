@@ -6,6 +6,10 @@ const ClientAddressColumns = () => {
     }
     memoizedColumns = [
         {
+            accessorKey: 'sl',
+            header: 'Sl',
+        },
+        {
             accessorKey: 'contactPerson',
             header: 'Contact Person',
         },

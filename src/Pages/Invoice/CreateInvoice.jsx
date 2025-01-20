@@ -674,10 +674,6 @@ const Invoicef = () => {
                                                                                 }
                                                                                 updatedData.push(item)
                                                                             })
-                                                                            form.setValue(
-                                                                                'totalAmount',
-                                                                                updatedData.reduce((acc, item) => acc + item.amount, 0)
-                                                                            )
                                                                             return updatedData
                                                                         })
                                                                     }}
