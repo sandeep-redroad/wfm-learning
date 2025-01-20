@@ -56,6 +56,7 @@ const Invoicef = () => {
             noOfChartReceive: '',
             timeTakenPerChart: '',
             noOfFTEDeployed: '',
+            gstNumber : ''
         },
     })
 
@@ -97,7 +98,8 @@ const Invoicef = () => {
             const resp = await ProjectService.getProject(projectId)
             if (resp.data.success) {
                 setProject(resp.data.data)
-                form.reset({ ...resp.data.data, projectId: projectId })
+                let billingFromData = resp.data.data.billingFromData
+                form.reset({ ...resp.data.data, projectId: projectId, gstNumber : billingFromData['gstNumber'] })
                 let descriptions = resp.data.data.descriptions ?? []
                 setRows((prev) => {
                     let newRows = []
@@ -135,8 +137,8 @@ const Invoicef = () => {
         if (form.getValues('client') !== '') {
             getProjects()
         }
+        console.log("form.getValues('client') : ", form.getValues('client'))
     }, [form.getValues('client')])
-
     async function onSubmit(data) {
         try {
             delete data['customFields']
@@ -162,6 +164,7 @@ const Invoicef = () => {
                 noOfChartReceive: 'No of Chart Receive',
                 timeTakenPerChart: 'Time Taken Per Chart',
                 noOfFTEDeployed: 'No of FTE Deployed',
+                gstNumber : "GST Number"
             }
 
             for (let i = 0; i < rows.length; i++) {
@@ -419,6 +422,32 @@ const Invoicef = () => {
                                             </FormItem>
                                         )}
                                     />
+                                    <FormField
+                                        className="w-full"
+                                        control={form.control}
+                                        name="department"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Department</FormLabel>
+                                                <div className="full">
+                                                    <Input {...field} placeholder="Department" readOnly={true} />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        className="w-full"
+                                        control={form.control}
+                                        name="gstNumber"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>GST Number</FormLabel>
+                                                <div className="full">
+                                                    <Input {...field} placeholder="GST Number" readOnly={true} />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
                                 </div>
                                 <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem] mt-[20px]">
                                     <FormField
@@ -542,7 +571,7 @@ const Invoicef = () => {
                                                     <FormItem>
                                                         <FormLabel>No of charts recieved</FormLabel>
                                                         <div className="full">
-                                                            <Input type="number" {...field} placeholder="No charts recieved" readOnly={true} />
+                                                            <Input type="number" {...field} placeholder="No charts recieved" />
                                                         </div>
                                                     </FormItem>
                                                 )}
@@ -555,7 +584,7 @@ const Invoicef = () => {
                                                     <FormItem>
                                                         <FormLabel>Time taken per chart</FormLabel>
                                                         <div className="full">
-                                                            <Input type="number" {...field} placeholder="Time taken per chart" readOnly={true} />
+                                                            <Input type="number" {...field} placeholder="Time taken per chart" />
                                                         </div>
                                                     </FormItem>
                                                 )}
@@ -645,10 +674,6 @@ const Invoicef = () => {
                                                                                 }
                                                                                 updatedData.push(item)
                                                                             })
-                                                                            form.setValue(
-                                                                                'totalAmount',
-                                                                                updatedData.reduce((acc, item) => acc + item.amount, 0)
-                                                                            )
                                                                             return updatedData
                                                                         })
                                                                     }}

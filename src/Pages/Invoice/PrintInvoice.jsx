@@ -3,8 +3,10 @@ import { Page, Text, Image, View, Document, StyleSheet, PDFViewer, Font } from '
 import logo from '../../assets/images/logo/redroadicon.png'
 import RobotoBold from '../../assets/fonts/Roboto/Roboto-Bold.ttf'
 import RobotoLight from '../../assets/fonts/Roboto/Roboto-Light.ttf'
+import { format } from 'date-fns'
+import Constent from '@/utils/constent'
 
-const PrintInvoice = () => {
+const PrintInvoice = ({ invoice }) => {
     Font.register({ family: 'Roboto', fonts: [{ src: RobotoLight }, { src: RobotoBold, fontWeight: 700 }] })
 
     const styles = StyleSheet.create({
@@ -20,11 +22,6 @@ const PrintInvoice = () => {
         },
         textBold: {
             fontWeight: 'bold',
-        },
-
-        viewer: {
-            width: '80vw',
-            height: '90vh',
         },
         fullWidth: {
             width: '100%',
@@ -111,11 +108,10 @@ const PrintInvoice = () => {
             justifyContent: 'center',
             textAlign: 'left',
         },
-        noteItem :{
-            marginLeft : "10px"
-        }
+        noteItem: {
+            marginLeft: '10px',
+        },
     })
-
     return (
         <Document>
             <Page size="A4" style={styles.page}>
@@ -131,9 +127,9 @@ const PrintInvoice = () => {
                             <Text style={styles.textBold}>GST Number:</Text>
                         </View>
                         <View style={styles.invoiceDateNumberData}>
-                            <Text>11-30-2022</Text>
-                            <Text>1640</Text>
-                            <Text>1640</Text>
+                            <Text>{format(invoice.invoiceDate, Constent.DATE_FORMAT)}</Text>
+                            <Text>{invoice.id}</Text>
+                            <Text>{invoice.gstNumber}</Text>
                         </View>
                     </View>
 
@@ -141,20 +137,15 @@ const PrintInvoice = () => {
                         <View style={styles.billingTo}>
                             <View style={styles.fullWidth}>
                                 <Text style={styles.textBold}>To,</Text>
-                                <Text>Kate Isgro</Text>
-                                <Text>Director, Revenue Cycle Operational Support (ROS)</Text>
-                                <Text>99 Cherry Hill Road, Suite 302</Text>
-                                <Text>Parsippany, NJ 07054</Text>
+                                <Text>{invoice.billingTo}</Text>
+                                <Text>{invoice.billingToAddress}</Text>
                             </View>
                         </View>
                         <View style={styles.billingFrom}>
                             <View style={styles.fullWidth}>
                                 <Text style={styles.textBold}>From,</Text>
-                                <Text>Vineeth Jose</Text>
-                                <Text>Head of Operations</Text>
-                                <Text>Red Road Health Solutions Pvt. Ltd.</Text>
-                                <Text>473, Embassy Pristine, Iblur,</Text>
-                                <Text>Bangalore - 560 103</Text>
+                                <Text>{invoice.billingFrom}</Text>
+                                <Text>{invoice.billingFromAddress}</Text>
                             </View>
                         </View>
                     </View>
@@ -166,269 +157,56 @@ const PrintInvoice = () => {
                             <Text style={styles.textBold}>Department:</Text>
                         </View>
                         <View style={styles.invoiceTypeInfoValue}>
-                            <Text>VMC/VMN</Text>
-                            <Text>November 1st to November 30th 2022</Text>
-                            <Text>Revenue Cycle Management</Text>
+                            <Text>{invoice.process}</Text>
+                            <Text>
+                                {format(invoice.billingStartDate, Constent.PRINT_INVOICE_PERIOD_START_DATE_FORMAT) +
+                                    ' to ' +
+                                    format(invoice.billingEndDate, Constent.PRINT_INVOICE_PERIOD_END_DATE_FORMAT)}
+                            </Text>
+                            <Text>{invoice.department ?? 'sas'}</Text>
                         </View>
                     </View>
 
-                    <View style={styles.table}>
-                        <View style={styles.tableHeader}>
-                            <Text style={[styles.tableCell, { width: '10%' }]}>S.No.</Text>
-                            <Text style={[styles.tableCellLeft, { width: '50%' }]}>Description of Service</Text>
-                            <Text style={[styles.tableCell, { width: '15%' }]}>Hours</Text>
-                            <Text style={[styles.tableCell, { width: '10%' }]}>Rate Per Hour</Text>
-                            <Text style={[styles.tableCell, { width: '15%' }]}>Total</Text>
-                        </View>
-                        <View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>1</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
+                    {invoice.billingTable.length > 0 && (
+                        <View style={styles.table}>
+                            <View style={styles.tableHeader}>
+                                <Text style={[styles.tableCell, { width: '10%' }]}>S.No.</Text>
+                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Description of Service</Text>
+                                <Text style={[styles.tableCell, { width: '15%' }]}>Hours</Text>
+                                <Text style={[styles.tableCell, { width: '10%' }]}>Rate Per Hour</Text>
+                                <Text style={[styles.tableCell, { width: '15%' }]}>Total</Text>
                             </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>2</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>3</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
-                            </View>
-                            <View style={styles.tableRow}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>4</Text>
-                                <Text style={[styles.tableCellLeft, { width: '50%' }]}>Contracting Service</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>580</Text>
-                                <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>$1</Text>
-                                <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
+                            <View>
+                                {invoice.billingTable.map((billing, i) => (
+                                    <View style={styles.tableRow}>
+                                        <Text style={[styles.tableCell, { width: '10%' }]}>{i + 1}</Text>
+                                        <Text style={[styles.tableCellLeft, { width: '50%' }]}>{billing.description}</Text>
+                                        <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>
+                                            {billing.hours}
+                                        </Text>
+                                        <Text style={[styles.tableCell, { width: '10%', backgroundColor: 'rgb(250,204,21 / 1)' }]}>
+                                            ${billing.rate}
+                                        </Text>
+                                        <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>
+                                            ${billing.amount}
+                                        </Text>
+                                    </View>
+                                ))}
                             </View>
                         </View>
-                    </View>
+                    )}
 
                     <View style={styles.table}>
                         <View style={styles.tableRow}>
                             <Text style={[styles.tableCell, { width: '85%', backgroundColor: '#f2f2f2' }]}>Total Amount Due</Text>
-                            <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>$580</Text>
+                            <Text style={[styles.tableCell, { width: '15%', backgroundColor: 'rgb(34,211,238/1)' }]}>${invoice.totalAmount}</Text>
                         </View>
                     </View>
 
                     <View>
                         <Text style={styles.textBold}>Note:</Text>
                         <View style={styles.noteItem}>
-                            <Text>1. No. of FTEs deployed - 1, No. of working days - 18</Text>
-                            <Text>2. No. of FTEs deployed - 1, No. of working days - 18</Text>
-                            <Text>3. No. of FTEs deployed - 1, No. of working days - 18</Text>
-                            <Text>4. No. of FTEs deployed - 1, No. of working days - 18.5</Text>
+                            <Text>{invoice.noteDescription}</Text>
                         </View>
                     </View>
                 </View>

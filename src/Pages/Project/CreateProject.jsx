@@ -106,7 +106,6 @@ const CreateProject = ({ type }) => {
         try {
             const resp = await ClientAddressService.getClientAddresses(data)
             if (resp.data.success) {
-                //console.log(resp.data.success)
                 setBillingTo(resp.data.data)
             }
         } catch (err) {}
@@ -201,7 +200,6 @@ const CreateProject = ({ type }) => {
             }
             projectFields['customFields'] = rows;
             projectFields['descriptions'] = desc;
-            console.log("projectfields",projectFields)
 
             const resp = await ProjectService.createProject(projectFields)
             if (resp.data.success) {
@@ -620,8 +618,7 @@ const CreateProject = ({ type }) => {
                                                     options={billingTo}
                                                     selectedVal={projectFields.billingTo}
                                                     handleChange={(val) => {
-                                                         console.log("billingtotttt",val.contactPerson)
-                                                        let billingToAddress=`${val.address}\n${val.city},${val.state},${val.country}`;
+                                                        let billingToAddress=`${val.designation},\n${val.address}\n${val.city}, ${val.state}, ${val.country}`;
                                                         billingToAddress=val.contactPerson!=undefined?billingToAddress:""
                                                         setProjectFields((prev) => {
                                                             return {
@@ -658,7 +655,7 @@ const CreateProject = ({ type }) => {
                                                     options={billingFrom}
                                                     selectedVal={projectFields.billingFrom}
                                                     handleChange={(val) => {
-                                                        let billingFromAddress=`${val.address}\n${val.city},${val.state},${val.country}`;
+                                                        let billingFromAddress=`${val.designation},\n${val.address}\n${val.city}, ${val.state}, ${val.country}`;
                                                         billingFromAddress=val.contactPerson!="No Data found"?billingFromAddress:"";
                                                         console.log(billingFromAddress);
                                                         setProjectFields((prev) => {

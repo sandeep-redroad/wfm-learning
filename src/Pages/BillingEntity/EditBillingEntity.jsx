@@ -16,23 +16,21 @@ const EditBillingEntiy = () => {
     const formRef = useRef(null)
     const formSchema = z.object({
         contactPerson: z
-            .string({
-                message: 'Billing Entity is required',
-            })
+            .string()
             .min(1, {
                 message: 'Billing Entity is required',
+            }),
+        gstNumber: z
+            .string()
+            .min(1, {
+                message: 'GST Number is required',
             }),
         designation: z.string().optional(),
         address: z.string().optional(),
         city: z.string().optional(),
         state: z.string().optional(),
         country: z.string().optional(),
-        pinCode: z
-            .string()
-            .optional()
-            .transform((val) => {
-                return val && !isNaN(Number(val)) ? Number(val) : ''
-            }),
+        pinCode: z.string().optional()
     })
     const navigate = useNavigate()
     const form = useForm({
@@ -44,6 +42,7 @@ const EditBillingEntiy = () => {
             state: '',
             country: '',
             pinCode: '',
+            gstNumber : ''
         },
     })
 
@@ -223,15 +222,25 @@ const EditBillingEntiy = () => {
                                                 <FormLabel>Pin Code</FormLabel>
                                                 <FormControl>
                                                     <Input
+                                                        {...field}
                                                         className="shadow-none focus-visible:ring-transparent space-0 mt-0"
                                                         placeholder="Pin Code"
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="gstNumber"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-1">
+                                                <FormLabel>GST Number</FormLabel>
+                                                <FormControl>
+                                                    <Input
                                                         {...field}
-                                                        value={field.value || ''}
-                                                        onChange={(e) => {
-                                                            let value = e.target.value ? Number(e.target.value) : ''
-                                                            value = isNaN(value) ? '' : String(value)
-                                                            field.onChange(value)
-                                                        }}
+                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                        placeholder="GST Number"
                                                     />
                                                 </FormControl>
                                             </FormItem>

@@ -85,7 +85,6 @@ let router = createBrowserRouter([
                 path: '/invoices/:invoiceId',
                 Component: EditInvoice,
             },
-
             {
                 path: '/projects/new',
                 element: <CreateProject type="new" />,
@@ -190,7 +189,7 @@ let router = createBrowserRouter([
         ],
     },
     {
-        path: '/showInvoice',
+        path: '/printInvoice/:invoiceId',
         Component: ShowInvoiece,
     },
     {
