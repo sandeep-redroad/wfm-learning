@@ -12,9 +12,10 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/Context/AuthContext'
+import { getFirstTwoChars } from '@/utils/helper'
 
 const Navbar = () => {
-    const { logout } = useAuth()
+    const { logout, userInfo } = useAuth()
     const { open } = useSidebar()
     return (
         <header
@@ -32,14 +33,14 @@ const Navbar = () => {
 
             <DropdownMenu>
                 <DropdownMenuTrigger>
-                    <div className="flex items-end flex-col gap-2 cursor-pointer">
+                    <div className="flex items-end flex-col cursor-pointer">
                         <Avatar className="text-sm h-7 w-7">
                             <AvatarImage src="" className="bg-white " />
                             <AvatarFallback className="text-black">
-                                SA
+                                {getFirstTwoChars(userInfo?.full_name)}
                             </AvatarFallback>
                         </Avatar>
-                        <span>Sandeep</span>
+                        <span>{userInfo?.full_name}</span>
                     </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>

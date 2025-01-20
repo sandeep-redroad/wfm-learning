@@ -19,7 +19,7 @@ const PageSidebar = (props) => {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" className="hover:bg-transparent active:bg-transparent" asChild>
-                            <Link to="/dashboard" className="flex justify-center">
+                            <Link to="/" className="flex justify-center">
                                 <img
                                     src={assets.redroadwhitelogo}
                                     alt="Logo"

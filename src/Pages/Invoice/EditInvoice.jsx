@@ -331,7 +331,7 @@ const EditInvoice = () => {
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
-                            <Link className="button" to={`/printInvoice/${invoiceId}`}>
+                            <Link className="button" target='_blank' to={`/printInvoice/${invoiceId}`}>
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">
                                     <Printer /> Print Invoice
                                 </Button>

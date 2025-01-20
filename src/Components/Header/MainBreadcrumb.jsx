@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation, useParams, Link } from 'react-router-dom'
 import { capitalizeFirstChar } from '@/utils/helper'
 
 const MainBreadcrumb = () => {
@@ -10,12 +10,13 @@ const MainBreadcrumb = () => {
 
     useEffect(() => {
         const bradcrumb = location.pathname.split('/').filter((path) => path)
+        console.log(":bradcrumb L ", bradcrumb)
         let clickableBrad = []
         if (bradcrumb.length > 1) {
             for (let i = 0; i < bradcrumb.length - 1; i++) {
                 clickableBrad.push(
                     <BreadcrumbItem className="hidden md:block" key={i}>
-                        <BreadcrumbLink to="#" className="hover:text-white cursor-pointer font-bold">
+                        <BreadcrumbLink to={`/${bradcrumb.slice(0, i + 1).join('/')}`} className="hover:text-white cursor-pointer font-bold">
                             {capitalizeFirstChar(bradcrumb[i].replaceAll('-', ' '))}
                         </BreadcrumbLink>
                     </BreadcrumbItem>

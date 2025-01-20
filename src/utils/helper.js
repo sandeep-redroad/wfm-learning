@@ -7,8 +7,8 @@ export function capitalizeFirstChar(str) {
     return str.charAt(0).toUpperCase() + str.slice(1)
 }
 export function lowerFirstChar(str) {
-  if (!str) return str
-  return str.charAt(0).toLowerCase() + str.slice(1)
+    if (!str) return str
+    return str.charAt(0).toLowerCase() + str.slice(1)
 }
 
 export const ExportExcel = (rawData, fileName) => {
@@ -32,17 +32,36 @@ export const ExportExcel = (rawData, fileName) => {
 }
 
 export function getCookie(cname) {
-    let name = cname + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for(let i = 0; i <ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
+    let name = cname + '='
+    let decodedCookie = decodeURIComponent(document.cookie)
+    let ca = decodedCookie.split(';')
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i]
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1)
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length)
+        }
     }
-    return "";
-  }
+    return ''
+}
+
+export function getFirstTwoChars(str) {
+    if (str === undefined) {
+        return ''
+    }
+    if (str.split(' ').length > 1) {
+        return str
+            .split(' ')
+            .slice(0, 2)
+            .map((word) => word.charAt(0).toUpperCase())
+            .join('')
+    }else{
+      return str
+        .split('')
+        .slice(0, 2)
+        .map((word) => word.charAt(0).toUpperCase()) 
+        .join('') // Join the characters into a single string
+    }
+}

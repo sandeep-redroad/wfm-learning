@@ -846,9 +846,10 @@ const Invoicef = () => {
                                                             </SelectTrigger>
                                                         </FormControl>
                                                         <SelectContent>
-                                                            <SelectItem value="Pending">Pending</SelectItem>
-                                                            <SelectItem value="Paid">Paid</SelectItem>
-                                                            <SelectItem value="Partially Paid">Partially Paid</SelectItem>
+                                                            <SelectItem value="Processed">Processed</SelectItem>
+                                                            <SelectItem value="Past Due">Past Due</SelectItem>
+                                                            <SelectItem value="Hold">Hold</SelectItem>
+                                                            <SelectItem value="Not due yet">Not due yet</SelectItem>
                                                         </SelectContent>
                                                     </Select>
                                                 </div>
