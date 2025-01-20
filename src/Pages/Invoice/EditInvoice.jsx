@@ -23,7 +23,7 @@ import InvoiceService from '@/Service/InvoiceService'
 const EditInvoice = () => {
     const { invoiceId } = useParams()
     const [checkAll, setcheckAll] = useState(false)
-    const { invoiceId } = useParams()
+
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
     const [projects, setProjects] = useState([])
@@ -100,9 +100,9 @@ const EditInvoice = () => {
         try {
             const resp = await ProjectService.getProject(projectId)
             if (resp.data.success) {
-                setInvoiceField((prev)=>{
-                    console.log("in res",resp.data.data)
-                    let data=resp.data.data;
+                setInvoiceField((prev) => {
+                    console.log('in res', resp.data.data)
+                    let data = resp.data.data
                     return {
                         ...prev,
                         // Assuming you only want to overwrite specific fields from resp.data.data
@@ -125,8 +125,9 @@ const EditInvoice = () => {
                         paymentStatus: data.paymentStatus || prev.paymentStatus,
                         noOfWorkingDays: data.noOfWorkingDays || prev.noOfWorkingDays,
                         noOfChartReceive: data.noOfChartReceive || prev.noOfChartReceive,
+                        noOfFTEDeployed:data.noOfFTEDeployed || prev.noOfFTEDeployed,
                         projectId: projectId, // Ensure projectId is updated with the current one
-                    };
+                    }
                 })
                 form.reset({ ...resp.data.data, projectId: projectId })
                 let descriptions = resp.data.data.descriptions ?? []
@@ -198,7 +199,8 @@ const EditInvoice = () => {
     }
 
     async function onSubmit(data) {
-        delete data['customFields']
+        console.log("data",data)
+        delete data['billingTable'];
         const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => value == ''))
         const validatedData = {
             client: 'Client',
@@ -257,10 +259,10 @@ const EditInvoice = () => {
         data['billingTable'] = rows
 
         console.log('final Data : ', data)
-         const resp = await InvoiceService.updateInvoice(invoiceId,data)
-                    if (resp.data.success) {
-                        navigate('/invoices')
-                    }
+        // const resp = await InvoiceService.updateInvoice(invoiceId, data)
+        // if (resp.data.success) {
+        //     navigate('/invoices')
+        // }
     }
     const addRow = () => {
         setRows((prev) => {
@@ -330,7 +332,9 @@ const EditInvoice = () => {
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
                             <Link className="button" to={`/printInvoice/${invoiceId}`}>
-                                <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400"><Printer /> Print Invoice</Button>
+                                <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">
+                                    <Printer /> Print Invoice
+                                </Button>
                             </Link>
                             <Link className="button" to="/invoices">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
@@ -359,13 +363,12 @@ const EditInvoice = () => {
                                                         options={clients}
                                                         selectedVal={invoiceField.client}
                                                         handleChange={(val) => {
-                                                           setInvoiceField((prev) => {
-                                                                    return {
-                                                                        ...prev,
-                                                                        client: val,
-                                                                    }
-                                                                })
-                                                           
+                                                            setInvoiceField((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    client: val,
+                                                                }
+                                                            })
                                                         }}
                                                         placeholder="Client"
                                                         label="client"
@@ -421,13 +424,13 @@ const EditInvoice = () => {
                                                         selectedVal={invoiceField.projectId}
                                                         handleChange={(val) => {
                                                             getProject(val)
-                                                                setInvoiceField((prev) => {
-                                                                    return {
-                                                                        ...prev,
-                                                                        projectId: val,
-                                                                    }
-                                                                })
-                                                            }}
+                                                            setInvoiceField((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    projectId: val,
+                                                                }
+                                                            })
+                                                        }}
                                                         placeholder="Project"
                                                         label="id"
                                                         type="projectFromInvoice"
@@ -720,10 +723,19 @@ const EditInvoice = () => {
                                                                                 }
                                                                                 updatedData.push(item)
                                                                             })
-                                                                            form.setValue(
-                                                                                'totalAmount',
-                                                                                updatedData.reduce((acc, item) => acc + item.amount, 0)
-                                                                            )
+                                                                            setInvoiceField((prev) => {
+                                                                                return {
+                                                                                    ...prev,
+                                                                                    totalAmount: updatedData.reduce(
+                                                                                        (acc, item) => acc + item.amount,
+                                                                                        0
+                                                                                    ),
+                                                                                }
+                                                                            })
+                                                                            // form.setValue(
+                                                                            //     'totalAmount',
+                                                                            //     updatedData.reduce((acc, item) => acc + item.amount, 0)
+                                                                            // )
                                                                             return updatedData
                                                                         })
                                                                     }}
@@ -750,10 +762,15 @@ const EditInvoice = () => {
                                                                                 }
                                                                                 updatedData.push(item)
                                                                             })
-                                                                            form.setValue(
-                                                                                'totalAmount',
-                                                                                updatedData.reduce((acc, item) => acc + item.amount, 0)
-                                                                            )
+                                                                            setInvoiceField((prev) => {
+                                                                                return {
+                                                                                    ...prev,
+                                                                                    totalAmount: updatedData.reduce(
+                                                                                        (acc, item) => acc + item.amount,
+                                                                                        0
+                                                                                    ),
+                                                                                }
+                                                                            })
                                                                             return updatedData
                                                                         })
                                                                     }}
@@ -778,10 +795,12 @@ const EditInvoice = () => {
                                                                             }
                                                                             updatedData.push(item)
                                                                         })
-                                                                        form.setValue(
-                                                                            'totalAmount',
-                                                                            updatedData.reduce((acc, item) => acc + item.amount, 0)
-                                                                        )
+                                                                        setInvoiceField((prev) => {
+                                                                            return {
+                                                                                ...prev,
+                                                                                totalAmount: updatedData.reduce((acc, item) => acc + item.amount, 0),
+                                                                            }
+                                                                        })
                                                                         return updatedData
                                                                     })
                                                                 }}
