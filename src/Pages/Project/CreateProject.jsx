@@ -618,7 +618,7 @@ const CreateProject = ({ type }) => {
                                                     options={billingTo}
                                                     selectedVal={projectFields.billingTo}
                                                     handleChange={(val) => {
-                                                        let billingToAddress=`${val.designation}\n${val.address}\n${val.city},${val.state},${val.country}`;
+                                                        let billingToAddress=`${val.designation},\n${val.address}\n${val.city}, ${val.state}, ${val.country}`;
                                                         billingToAddress=val.contactPerson!=undefined?billingToAddress:""
                                                         setProjectFields((prev) => {
                                                             return {
@@ -655,7 +655,7 @@ const CreateProject = ({ type }) => {
                                                     options={billingFrom}
                                                     selectedVal={projectFields.billingFrom}
                                                     handleChange={(val) => {
-                                                        let billingFromAddress=`${val.designation}\n${val.address}\n${val.city},${val.state},${val.country}`;
+                                                        let billingFromAddress=`${val.designation},\n${val.address}\n${val.city}, ${val.state}, ${val.country}`;
                                                         billingFromAddress=val.contactPerson!="No Data found"?billingFromAddress:"";
                                                         console.log(billingFromAddress);
                                                         setProjectFields((prev) => {
