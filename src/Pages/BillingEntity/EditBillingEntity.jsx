@@ -64,7 +64,7 @@ const EditBillingEntiy = () => {
 
     async function onSubmit(values) {
         try {
-            values['pinCode'] = values['pinCode'] == '' ? null : values['pinCode']
+            // values['pinCode'] = values['pinCode'] == '' ? null : values['pinCode']
             const resp = await BillingEntityService.updateBillingEntity(billingEntityId, values)
             if (resp.data.success) {
                 navigate('/master-settings/billing-entity')
