@@ -108,6 +108,7 @@ const Invoicef = () => {
                         newRows.push({
                             id: newId,
                             checkbox: false,
+                            isDeleted: false,
                             projectId: desc.projectId,
                             description: desc.description,
                             hours: '',
@@ -230,6 +231,7 @@ const Invoicef = () => {
                     checkbox: false,
                     projectId: '',
                     description: '',
+                    isDeleted : false,
                     hours: '',
                     rate: project?.rate ?? '',
                     amount: '',

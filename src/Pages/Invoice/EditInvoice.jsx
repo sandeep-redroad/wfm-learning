@@ -23,7 +23,6 @@ import InvoiceService from '@/Service/InvoiceService'
 const EditInvoice = () => {
     const { invoiceId } = useParams()
     const [checkAll, setcheckAll] = useState(false)
-
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
     const [projects, setProjects] = useState([])
@@ -125,7 +124,7 @@ const EditInvoice = () => {
                         paymentStatus: data.paymentStatus || prev.paymentStatus,
                         noOfWorkingDays: data.noOfWorkingDays || prev.noOfWorkingDays,
                         noOfChartReceive: data.noOfChartReceive || prev.noOfChartReceive,
-                        noOfFTEDeployed:data.noOfFTEDeployed || prev.noOfFTEDeployed,
+                        noOfFTEDeployed: data.noOfFTEDeployed || prev.noOfFTEDeployed,
                         projectId: projectId, // Ensure projectId is updated with the current one
                     }
                 })
@@ -137,7 +136,9 @@ const EditInvoice = () => {
                     descriptions.map((desc) => {
                         newRows.push({
                             id: newId,
+                            _id: desc._id,
                             checkbox: false,
+                            isDeleted: desc.isDeleted,
                             projectId: desc.projectId,
                             description: desc.description,
                             hours: '',
@@ -199,8 +200,8 @@ const EditInvoice = () => {
     }
 
     async function onSubmit(data) {
-        console.log("data",data)
-        delete data['billingTable'];
+        console.log('data', data)
+        delete data['billingTable']
         const filteredObj = Object.fromEntries(Object.entries(data).filter(([key, value]) => value == ''))
         const validatedData = {
             client: 'Client',
@@ -224,7 +225,7 @@ const EditInvoice = () => {
             timeTakenPerChart: 'Time Taken Per Chart',
             noOfFTEDeployed: 'No of FTE Deployed',
         }
-
+        console.log('rows L ', rows)
         for (let i = 0; i < rows.length; i++) {
             if (rows[i].description === '') {
                 toast.error('Description of Service is requrired')
@@ -256,13 +257,13 @@ const EditInvoice = () => {
             }
         }
 
-        data['billingTable'] = rows
+        invoiceField['billingTable'] = rows
 
-        console.log('final Data : ', data)
-        // const resp = await InvoiceService.updateInvoice(invoiceId, data)
-        // if (resp.data.success) {
-        //     navigate('/invoices')
-        // }
+        console.log('final Data : ', invoiceField)
+        const resp = await InvoiceService.updateInvoice(invoiceId, invoiceField)
+        if (resp.data.success) {
+            navigate('/invoices')
+        }
     }
     const addRow = () => {
         setRows((prev) => {
@@ -272,6 +273,7 @@ const EditInvoice = () => {
                 {
                     id: newId,
                     checkbox: false,
+                    isDeleted: false,
                     projectId: '',
                     description: '',
                     hours: '',
@@ -283,10 +285,17 @@ const EditInvoice = () => {
     }
 
     const deleteone = (id) => {
-        const updatedrows = rows.filter((row) => !row.checkbox)
-        let newdata = updatedrows.length > 0 ? updatedrows : []
+        //const updatedrows = rows.filter((row) => !row.checkbox)
+        const updatedrows1 = rows.map((row) => {
+            row['isDeleted'] = row.checkbox
+            console.log(row)
+            return row;
+        })
+        console.log("updated rows",updatedrows1)
+       
+        let newdata = updatedrows1.length > 0 ? updatedrows1 : []
 
-        setRows(() => newdata)
+      setRows(() => newdata)
     }
     const deleteAll = () => {
         setRows([])
@@ -647,6 +656,11 @@ const EditInvoice = () => {
                                                             <Input
                                                                 type="number"
                                                                 value={invoiceField.noOfFTEDeployed}
+                                                                onChange={(e) =>
+                                                                    setInvoiceField((prev) => {
+                                                                        return { ...prev, noOfFTEDeployed: e.target.value }
+                                                                    })
+                                                                }
                                                                 placeholder="No of FTEs Deployed"
                                                             />
                                                         </div>
@@ -665,6 +679,11 @@ const EditInvoice = () => {
                                                                 type="number"
                                                                 value={invoiceField.noOfWorkingDays}
                                                                 placeholder="No of working days"
+                                                                onChange={(e) =>
+                                                                    setInvoiceField((prev) => {
+                                                                        return { ...prev, noOfWorkingDays: e.target.value }
+                                                                    })
+                                                                }
                                                             />
                                                         </div>
                                                     </FormItem>
@@ -701,122 +720,133 @@ const EditInvoice = () => {
                                                     </td>
                                                 </tr>
                                             ) : (
-                                                rows.map((row, i) => (
-                                                    <TableRow key={row.id} className="border">
-                                                        <TableCell className="border">
-                                                            <Checkbox onClick={() => changeOne(row, i)} checked={row.checkbox} value={row.checkbox} />
-                                                        </TableCell>
-                                                        <TableCell className="border">{row.id}</TableCell>
-                                                        <TableCell className="border">
-                                                            <div className="w-full border-none">
-                                                                <Input
-                                                                    type="text"
-                                                                    value={row.description}
-                                                                    placeholder="description"
-                                                                    className="border-none shadow-none"
-                                                                    onChange={(e) => {
-                                                                        setRows((prev) => {
-                                                                            let updatedData = []
-                                                                            prev.map((item, i) => {
-                                                                                if (item.id == row.id) {
-                                                                                    prev[i]['description'] = e.target.value
-                                                                                }
-                                                                                updatedData.push(item)
-                                                                            })
-                                                                            setInvoiceField((prev) => {
-                                                                                return {
-                                                                                    ...prev,
-                                                                                    totalAmount: updatedData.reduce(
-                                                                                        (acc, item) => acc + item.amount,
-                                                                                        0
-                                                                                    ),
-                                                                                }
-                                                                            })
-                                                                            // form.setValue(
-                                                                            //     'totalAmount',
-                                                                            //     updatedData.reduce((acc, item) => acc + item.amount, 0)
-                                                                            // )
-                                                                            return updatedData
-                                                                        })
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                        </TableCell>
+                                                rows.map(
+                                                    (row, i) =>
+                                                        !row?.isDeleted && (
+                                                            <TableRow key={row.id} className="border">
+                                                                <TableCell className="border">
+                                                                    <Checkbox
+                                                                        onClick={() => changeOne(row, i)}
+                                                                        checked={row.checkbox}
+                                                                        value={row.checkbox}
+                                                                    />
+                                                                    <input type="hidden" value={row.isDeleted} name="isDeleted" />
+                                                                </TableCell>
+                                                                <TableCell className="border">{row.id}</TableCell>
+                                                                <TableCell className="border">
+                                                                    <div className="w-full border-none">
+                                                                        <Input
+                                                                            type="text"
+                                                                            value={row.description}
+                                                                            placeholder="description"
+                                                                            className="border-none shadow-none"
+                                                                            onChange={(e) => {
+                                                                                setRows((prev) => {
+                                                                                    let updatedData = []
+                                                                                    prev.map((item, i) => {
+                                                                                        if (item.id == row.id) {
+                                                                                            prev[i]['description'] = e.target.value
+                                                                                        }
+                                                                                        updatedData.push(item)
+                                                                                    })
+                                                                                    setInvoiceField((prev) => {
+                                                                                        return {
+                                                                                            ...prev,
+                                                                                            totalAmount: updatedData.reduce(
+                                                                                                (acc, item) => acc + item.amount,
+                                                                                                0
+                                                                                            ),
+                                                                                        }
+                                                                                    })
+                                                                                    // form.setValue(
+                                                                                    //     'totalAmount',
+                                                                                    //     updatedData.reduce((acc, item) => acc + item.amount, 0)
+                                                                                    // )
+                                                                                    return updatedData
+                                                                                })
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </TableCell>
 
-                                                        <TableCell className="border p-0">
-                                                            <div className="flex items-center space-x-2 justify-center">
-                                                                <Input
-                                                                    type="number"
-                                                                    placeholder="Hours"
-                                                                    value={row.hours}
-                                                                    onChange={(e) => {
-                                                                        let hours = e.target.value
-                                                                        setRows((prev) => {
-                                                                            let updatedData = []
-                                                                            let amount = Number(row.rate) * Number(hours)
+                                                                <TableCell className="border p-0">
+                                                                    <div className="flex items-center space-x-2 justify-center">
+                                                                        <Input
+                                                                            type="number"
+                                                                            placeholder="Hours"
+                                                                            value={row.hours}
+                                                                            onChange={(e) => {
+                                                                                let hours = e.target.value
+                                                                                setRows((prev) => {
+                                                                                    let updatedData = []
+                                                                                    let amount = Number(row.rate) * Number(hours)
 
-                                                                            prev.map((item, i) => {
-                                                                                if (item.id == row.id) {
-                                                                                    prev[i]['hours'] = hours
-                                                                                    prev[i]['amount'] = amount
-                                                                                }
-                                                                                updatedData.push(item)
+                                                                                    prev.map((item, i) => {
+                                                                                        if (item.id == row.id) {
+                                                                                            prev[i]['hours'] = hours
+                                                                                            prev[i]['amount'] = amount
+                                                                                        }
+                                                                                        updatedData.push(item)
+                                                                                    })
+                                                                                    setInvoiceField((prev) => {
+                                                                                        return {
+                                                                                            ...prev,
+                                                                                            totalAmount: updatedData.reduce(
+                                                                                                (acc, item) => acc + item.amount,
+                                                                                                0
+                                                                                            ),
+                                                                                        }
+                                                                                    })
+                                                                                    return updatedData
+                                                                                })
+                                                                            }}
+                                                                            className="border-none shadow-none focus-visible:ring-0"
+                                                                        />
+                                                                    </div>
+                                                                </TableCell>
+                                                                <TableCell className="border p-0">
+                                                                    <Input
+                                                                        type="number"
+                                                                        placeholder="Rate"
+                                                                        value={row.rate}
+                                                                        onChange={(e) => {
+                                                                            let rate = e.target.value
+                                                                            setRows((prev) => {
+                                                                                let updatedData = []
+                                                                                let amount = Number(row.hours) * Number(rate)
+                                                                                prev.map((item, i) => {
+                                                                                    if (item.id == row.id) {
+                                                                                        prev[i]['rate'] = rate
+                                                                                        prev[i]['amount'] = amount
+                                                                                    }
+                                                                                    updatedData.push(item)
+                                                                                })
+                                                                                setInvoiceField((prev) => {
+                                                                                    return {
+                                                                                        ...prev,
+                                                                                        totalAmount: updatedData.reduce(
+                                                                                            (acc, item) => acc + item.amount,
+                                                                                            0
+                                                                                        ),
+                                                                                    }
+                                                                                })
+                                                                                return updatedData
                                                                             })
-                                                                            setInvoiceField((prev) => {
-                                                                                return {
-                                                                                    ...prev,
-                                                                                    totalAmount: updatedData.reduce(
-                                                                                        (acc, item) => acc + item.amount,
-                                                                                        0
-                                                                                    ),
-                                                                                }
-                                                                            })
-                                                                            return updatedData
-                                                                        })
-                                                                    }}
-                                                                    className="border-none shadow-none focus-visible:ring-0"
-                                                                />
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell className="border p-0">
-                                                            <Input
-                                                                type="number"
-                                                                placeholder="Rate"
-                                                                value={row.rate}
-                                                                onChange={(e) => {
-                                                                    let rate = e.target.value
-                                                                    setRows((prev) => {
-                                                                        let updatedData = []
-                                                                        let amount = Number(row.hours) * Number(rate)
-                                                                        prev.map((item, i) => {
-                                                                            if (item.id == row.id) {
-                                                                                prev[i]['rate'] = rate
-                                                                                prev[i]['amount'] = amount
-                                                                            }
-                                                                            updatedData.push(item)
-                                                                        })
-                                                                        setInvoiceField((prev) => {
-                                                                            return {
-                                                                                ...prev,
-                                                                                totalAmount: updatedData.reduce((acc, item) => acc + item.amount, 0),
-                                                                            }
-                                                                        })
-                                                                        return updatedData
-                                                                    })
-                                                                }}
-                                                                className="border-none shadow-none focus-visible:ring-0"
-                                                            />
-                                                        </TableCell>
-                                                        <TableCell className="p-0">
-                                                            <Input
-                                                                placeholder="Amount"
-                                                                value={row.amount}
-                                                                disabled={true}
-                                                                className="border-none shadow-none focus-visible:ring-0"
-                                                            />
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))
+                                                                        }}
+                                                                        className="border-none shadow-none focus-visible:ring-0"
+                                                                    />
+                                                                </TableCell>
+                                                                <TableCell className="p-0">
+                                                                    <Input
+                                                                        placeholder="Amount"
+                                                                        value={row.amount}
+                                                                        disabled={true}
+                                                                        className="border-none shadow-none focus-visible:ring-0"
+                                                                    />
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        )
+                                                )
                                             )}
                                         </TableBody>
                                     </Table>

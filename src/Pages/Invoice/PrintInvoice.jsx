@@ -42,7 +42,7 @@ const PrintInvoice = ({ invoice }) => {
             width: '60%',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-start',
         },
         billingDetails: {
             display: 'flex',

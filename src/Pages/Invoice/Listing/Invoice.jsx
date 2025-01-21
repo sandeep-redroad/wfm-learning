@@ -9,6 +9,8 @@ import { useDebounce } from 'use-debounce'
 import Constent from '@/utils/constent'
 import InvoiceService from '@/Service/InvoiceService'
 import DataTableEnumType from '@/Enums/DataTableTypeEnum'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { toast } from 'react-toastify'
 
 const Invoice = () => {
     const [invoices, setInvoices] = useState([])
@@ -63,13 +65,13 @@ const Invoice = () => {
         })
     }, [debounce1, debounce2])
 
-    const deleteProject = async () => {
+    const deleteInvoice = async () => {
         try {
-            const resp = await ProjectService.deleteProject(deleteId)
+            const resp = await InvoiceService.deleteInvoice(deleteId)
             console.log('response', resp)
             if (resp.data.success) {
                 toast.success(resp.data.message)
-                getProject()
+                getInvoice()
             }
         } catch (err) {
             console.log('error', err)
@@ -83,6 +85,17 @@ const Invoice = () => {
                         <Link className="button" to="/invoices/new">
                             <Button className="bg-primary-purpal hover:bg-primary-purpal">Add Invoice</Button>
                         </Link>
+                        <DropdownMenu className="ml-[10px] ">
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className={`ml-[10px] ${deleteId.length > 0 ? 'block' : 'hidden'}`}>
+                                    Action
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={deleteInvoice}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </CardContent>
             </Card>
@@ -92,7 +105,15 @@ const Invoice = () => {
                         <div className="w-full my-2 grid grid-cols-4 gap-3 mb-3">
                             <Input type="text" placeholder="ID" />
                         </div>
-                        <Datatable columns={InvoiceColumns()} data={invoices} totalDataCount={totalCount} type={DataTableEnumType.INVOICE} />
+                        <Datatable
+                            columns={InvoiceColumns()}
+                            data={invoices}
+                            totalDataCount={totalCount}
+                            type={DataTableEnumType.INVOICE}
+                            allcheck={allcheck}
+                            deleteId={deleteId}
+                            setDeleteId={setDeleteId}
+                        />
                     </CardContent>
                 </Card>
             </div>
