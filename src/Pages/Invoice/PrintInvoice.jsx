@@ -170,7 +170,7 @@ const PrintInvoice = ({ invoice }) => {
                     {invoice.billingTable.length > 0 && (
                         <View style={styles.table}>
                             <View style={styles.tableHeader}>
-                                <Text style={[styles.tableCell, { width: '10%' }]}>S.No.</Text>
+                                <Text style={[styles.tableCell, { width: '10%' }]}>Sr.No.</Text>
                                 <Text style={[styles.tableCellLeft, { width: '50%' }]}>Description of Service</Text>
                                 <Text style={[styles.tableCell, { width: '15%' }]}>Hours</Text>
                                 <Text style={[styles.tableCell, { width: '10%' }]}>Rate Per Hour</Text>

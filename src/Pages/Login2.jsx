@@ -12,6 +12,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/Context/AuthContext'
 import AuthService from '@/Service/AuthService'
 import { toast } from 'react-toastify'
+import { getCookie } from '@/utils/helper'
 
 const formSchema = z.object({
     username: z.string().min(2, {
@@ -23,11 +24,18 @@ const formSchema = z.object({
 })
 
 const Login2 = () => {
-    const { login, setUserInfo} = useAuth()
+    const { login, setUserInfo } = useAuth()
     const [isError, setIsError] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const navigate = useNavigate()
+
+    const storedAuthState = getCookie('session_id')
+    useEffect(() => {
+        if (storedAuthState) {
+            navigate("/")
+        }
+    }, [])
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -37,16 +45,15 @@ const Login2 = () => {
         },
     })
 
-
     async function onSubmit(data) {
         try {
             setIsLoading(true)
             setIsError(false)
             const resp = await AuthService.login(data)
-            if(resp.data.success){
+            if (resp.data.success) {
                 setUserInfo(resp.data.data)
                 login()
-                navigate('/dashboard')
+                navigate('/')
             }
         } catch (err) {
             setIsLoading(false)
@@ -60,7 +67,7 @@ const Login2 = () => {
      */
     const onError = (errors, e) => {
         setIsLoading(true)
-        setIsError(true) 
+        setIsError(true)
     }
 
     return (

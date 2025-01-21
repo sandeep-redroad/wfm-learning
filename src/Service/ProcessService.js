@@ -3,7 +3,7 @@ import Axios from "@/Axios";
 
 class ProcessService{
 
-    async getProcess(data){
+    async getProcess(data = {}){
         const queryString = new URLSearchParams(data).toString();
         return await Axios.get(`api/process/get_pagination?${queryString}`)
     }

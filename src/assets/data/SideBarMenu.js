@@ -2,7 +2,7 @@ const SidebarMenu = {
     navMain: [
         {
             title: 'Dashboard',
-            url: '/dashboard',
+            url: '/',
             items: [],
         },
         {

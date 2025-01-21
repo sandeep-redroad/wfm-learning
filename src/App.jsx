@@ -66,7 +66,7 @@ let router = createBrowserRouter([
         children: [
             {
                 index: true,
-                path: '/dashboard',
+                path: '/',
                 Component: Dashboard,
             },
             {
