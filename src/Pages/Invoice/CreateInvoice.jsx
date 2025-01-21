@@ -21,7 +21,7 @@ import ProjectService from '@/Service/ProjectService'
 import InvoiceService from '@/Service/InvoiceService'
 
 const Invoicef = () => {
-    const navigate = useNavigate();
+    const navigate = useNavigate()
     const [checkAll, setcheckAll] = useState(false)
     const [rows, setRows] = useState([])
     const formRef = useRef(null)
@@ -56,7 +56,7 @@ const Invoicef = () => {
             noOfChartReceive: '',
             timeTakenPerChart: '',
             noOfFTEDeployed: '',
-            gstNumber : ''
+            gstNumber: '',
         },
     })
 
@@ -99,7 +99,7 @@ const Invoicef = () => {
             if (resp.data.success) {
                 setProject(resp.data.data)
                 let billingFromData = resp.data.data.billingFromData
-                form.reset({ ...resp.data.data, projectId: projectId, gstNumber : billingFromData['gstNumber'] })
+                form.reset({ ...resp.data.data, projectId: projectId, gstNumber: billingFromData['gstNumber'] })
                 let descriptions = resp.data.data.descriptions ?? []
                 setRows((prev) => {
                     let newRows = []
@@ -164,7 +164,7 @@ const Invoicef = () => {
                 noOfChartReceive: 'No of Chart Receive',
                 timeTakenPerChart: 'Time Taken Per Chart',
                 noOfFTEDeployed: 'No of FTE Deployed',
-                gstNumber : "GST Number"
+                gstNumber: 'GST Number',
             }
 
             for (let i = 0; i < rows.length; i++) {
@@ -362,22 +362,12 @@ const Invoicef = () => {
 
                                     <FormField
                                         control={form.control}
-                                        name="projectId"
+                                        name="process"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Project</FormLabel>
+                                                <FormLabel>Process</FormLabel>
                                                 <div className="full">
-                                                    <SearchableDropdown
-                                                        options={projects}
-                                                        selectedVal={field.value}
-                                                        handleChange={(val) => {
-                                                            getProject(val)
-                                                            field.onChange(val)
-                                                        }}
-                                                        placeholder="Project"
-                                                        label="id"
-                                                        type="projectFromInvoice"
-                                                    />
+                                                    <Input {...field} placeholder="Process" readOnly={true} />
                                                 </div>
                                             </FormItem>
                                         )}
@@ -398,12 +388,22 @@ const Invoicef = () => {
 
                                     <FormField
                                         control={form.control}
-                                        name="process"
+                                        name="projectId"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Process</FormLabel>
+                                                <FormLabel>Project</FormLabel>
                                                 <div className="full">
-                                                    <Input {...field} placeholder="Process" readOnly={true} />
+                                                    <SearchableDropdown
+                                                        options={projects}
+                                                        selectedVal={field.value}
+                                                        handleChange={(val) => {
+                                                            getProject(val)
+                                                            field.onChange(val)
+                                                        }}
+                                                        placeholder="Project"
+                                                        label="id"
+                                                        type="projectFromInvoice"
+                                                    />
                                                 </div>
                                             </FormItem>
                                         )}
