@@ -289,13 +289,13 @@ const EditInvoice = () => {
         const updatedrows1 = rows.map((row) => {
             row['isDeleted'] = row.checkbox
             console.log(row)
-            return row;
+            return row
         })
-        console.log("updated rows",updatedrows1)
-       
+        console.log('updated rows', updatedrows1)
+
         let newdata = updatedrows1.length > 0 ? updatedrows1 : []
 
-      setRows(() => newdata)
+        setRows(() => newdata)
     }
     const deleteAll = () => {
         setRows([])
@@ -340,7 +340,7 @@ const EditInvoice = () => {
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
-                            <Link className="button" target='_blank' to={`/printInvoice/${invoiceId}`}>
+                            <Link className="button" target="_blank" to={`/printInvoice/${invoiceId}`}>
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">
                                     <Printer /> Print Invoice
                                 </Button>
@@ -423,6 +423,32 @@ const EditInvoice = () => {
 
                                     <FormField
                                         control={form.control}
+                                        name="process"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Process</FormLabel>
+                                                <div className="full">
+                                                    <Input value={invoiceField.process} placeholder="Process" readOnly={true} />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="lofBusiness"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>LOF Business</FormLabel>
+                                                <div className="w-full">
+                                                    <Input value={invoiceField.lofBusiness} placeholder="LOF Business" readOnly={true} />
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
                                         name="projectId"
                                         render={({ field }) => (
                                             <FormItem>
@@ -444,32 +470,6 @@ const EditInvoice = () => {
                                                         label="id"
                                                         type="projectFromInvoice"
                                                     />
-                                                </div>
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="lofBusiness"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>LOF Business</FormLabel>
-                                                <div className="w-full">
-                                                    <Input value={invoiceField.lofBusiness} placeholder="LOF Business" readOnly={true} />
-                                                </div>
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="process"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Process</FormLabel>
-                                                <div className="full">
-                                                    <Input value={invoiceField.process} placeholder="Process" readOnly={true} />
                                                 </div>
                                             </FormItem>
                                         )}
@@ -566,7 +566,7 @@ const EditInvoice = () => {
                                                             }}
                                                             initialFocus
                                                         />
-                                                    </PopoverContent>
+                                                    </PopoverContent>   
                                                 </Popover>
                                             </FormItem>
                                         )}
@@ -758,10 +758,6 @@ const EditInvoice = () => {
                                                                                             ),
                                                                                         }
                                                                                     })
-                                                                                    // form.setValue(
-                                                                                    //     'totalAmount',
-                                                                                    //     updatedData.reduce((acc, item) => acc + item.amount, 0)
-                                                                                    // )
                                                                                     return updatedData
                                                                                 })
                                                                             }}
@@ -944,9 +940,10 @@ const EditInvoice = () => {
                                                             </SelectTrigger>
                                                         </FormControl>
                                                         <SelectContent>
-                                                            <SelectItem value="Pending">Pending</SelectItem>
-                                                            <SelectItem value="Paid">Paid</SelectItem>
-                                                            <SelectItem value="Partially Paid">Partially Paid</SelectItem>
+                                                            <SelectItem value="Processed">Processed</SelectItem>
+                                                            <SelectItem value="Past Due">Past Due</SelectItem>
+                                                            <SelectItem value="Hold">Hold</SelectItem>
+                                                            <SelectItem value="Not due yet">Not due yet</SelectItem>
                                                         </SelectContent>
                                                     </Select>
                                                 </div>

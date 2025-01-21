@@ -422,8 +422,8 @@ const CreateProject = ({ type }) => {
                 </CardContent>
             </Card>
             <div className="p-3" style={{ height: 'calc(100vh - 125px)' }}>
-                <Card className="h-full overflow-card-scroll w-full m-0 overflow-auto"> 
-                {/* h-full overflow-card-scroll w-full p-3 ps-1 m-0 overflow-auto */}
+                <Card className="h-full overflow-card-scroll w-full m-0 overflow-auto">
+                    {/* h-full overflow-card-scroll w-full p-3 ps-1 m-0 overflow-auto */}
                     <CardContent className="m-0 p-2 max-h-full">
                         <Form {...form}>
                             <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="p-4 lg:ps-5">
@@ -829,8 +829,109 @@ const CreateProject = ({ type }) => {
                                     />
                                 </div>
 
-                                <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
-                                    <Table>
+                                <div className="mt-2">
+                                    <FormLabel>Services</FormLabel>
+                                    <Table className="mt-2">
+                                        <TableHeader>
+                                            <TableRow className="border">
+                                                <TableHead className="w-[35px] border">
+                                                    <Checkbox onClick={changedescAll} value={checkdescAll} checked={checkdescAll} />
+                                                </TableHead>
+                                                <TableHead className="w-[50px] border">Sr.No</TableHead>
+
+                                                <TableHead className="w-[300px] border">Description</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {desc.length == 0 ? (
+                                                <tr>
+                                                    <td colSpan="6">
+                                                        <h6 className="text-center" style={{ margin: 0 }}>
+                                                            No Data
+                                                        </h6>
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                desc.map((row, i) => (
+                                                    <TableRow key={row.id} name="descriptions" className="border">
+                                                        <TableCell className="border">
+                                                            <Checkbox
+                                                                onClick={() => changedescOne(row, i)}
+                                                                checked={row.checkbox}
+                                                                value={row.checkbox}
+                                                            />
+                                                        </TableCell>
+                                                        <TableCell className="border">{row.id}</TableCell>
+
+                                                        <TableCell className="border">
+                                                            <Input
+                                                                placeholder="Description"
+                                                                defaultValue={row.description}
+                                                                onChange={(event) => {
+                                                                    console.log(event.target.value)
+                                                                    setDesc((prev) => {
+                                                                        let updatedData = []
+                                                                        prev.map((item, i) => {
+                                                                            if (item.id == row.id) {
+                                                                                prev[i]['description'] = event.target.value
+                                                                            }
+                                                                            updatedData.push(item)
+                                                                        })
+                                                                        return updatedData
+                                                                    })
+                                                                }}
+                                                                className="border-none shadow-none"
+                                                            />
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                    <Button
+                                        type="button"
+                                        className=""
+                                        onClick={adddescRow}
+                                        style={{
+                                            padding: '0px 10px',
+                                            height: '28px',
+                                            backgroundColor: '#808080d6',
+                                        }}
+                                    >
+                                        Add Row
+                                    </Button>
+
+                                    {!checkdescAll &&
+                                    desc.filter((row) => {
+                                        return row.checkbox
+                                    }).length > 0 ? (
+                                        <Button
+                                            type="button"
+                                            className="bg-primary-red ml-1"
+                                            onClick={() => deletedescone()}
+                                            style={{ padding: '0px 10px', height: '28px' }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    ) : (
+                                        ''
+                                    )}
+
+                                    {checkdescAll && desc.length > 0 && (
+                                        <Button
+                                            type="button"
+                                            className="bg-primary-red ml-1"
+                                            onClick={deletedescAll}
+                                            style={{ padding: '0px 10px', height: '28px' }}
+                                        >
+                                            Delete All
+                                        </Button>
+                                    )}
+                                </div>
+
+                                <div className="mt-5">
+                                    <FormLabel>Custom Fields</FormLabel>
+                                    <Table className="mt-2">
                                         <TableHeader>
                                             <TableRow className="border">
                                                 <TableHead className="w-[35px] border">
@@ -971,104 +1072,6 @@ const CreateProject = ({ type }) => {
                                     )}
                                 </div>
 
-                                <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow className="border">
-                                                <TableHead className="w-[35px] border">
-                                                    <Checkbox onClick={changedescAll} value={checkdescAll} checked={checkdescAll} />
-                                                </TableHead>
-                                                <TableHead className="w-[50px] border">Sr.No</TableHead>
-
-                                                <TableHead className="w-[300px] border">Description</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {desc.length == 0 ? (
-                                                <tr>
-                                                    <td colSpan="6">
-                                                        <h6 className="text-center" style={{ margin: 0 }}>
-                                                            No Data
-                                                        </h6>
-                                                    </td>
-                                                </tr>
-                                            ) : (
-                                                desc.map((row, i) => (
-                                                    <TableRow key={row.id} name="descriptions" className="border">
-                                                        <TableCell className="border">
-                                                            <Checkbox
-                                                                onClick={() => changedescOne(row, i)}
-                                                                checked={row.checkbox}
-                                                                value={row.checkbox}
-                                                            />
-                                                        </TableCell>
-                                                        <TableCell className="border">{row.id}</TableCell>
-
-                                                        <TableCell className="border">
-                                                            <Input
-                                                                placeholder="Description"
-                                                                defaultValue={row.description}
-                                                                onChange={(event) => {
-                                                                    console.log(event.target.value)
-                                                                    setDesc((prev) => {
-                                                                        let updatedData = []
-                                                                        prev.map((item, i) => {
-                                                                            if (item.id == row.id) {
-                                                                                prev[i]['description'] = event.target.value
-                                                                            }
-                                                                            updatedData.push(item)
-                                                                        })
-                                                                        return updatedData
-                                                                    })
-                                                                }}
-                                                                className="border-none shadow-none"
-                                                            />
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))
-                                            )}
-                                        </TableBody>
-                                    </Table>
-                                    <Button
-                                        type="button"
-                                        className=""
-                                        onClick={adddescRow}
-                                        style={{
-                                            padding: '0px 10px',
-                                            height: '28px',
-                                            backgroundColor: '#808080d6',
-                                        }}
-                                    >
-                                        Add Row
-                                    </Button>
-
-                                    {!checkdescAll &&
-                                    desc.filter((row) => {
-                                        return row.checkbox
-                                    }).length > 0 ? (
-                                        <Button
-                                            type="button"
-                                            className="bg-primary-red ml-1"
-                                            onClick={() => deletedescone()}
-                                            style={{ padding: '0px 10px', height: '28px' }}
-                                        >
-                                            Delete
-                                        </Button>
-                                    ) : (
-                                        ''
-                                    )}
-
-                                    {checkdescAll && desc.length > 0 && (
-                                        <Button
-                                            type="button"
-                                            className="bg-primary-red ml-1"
-                                            onClick={deletedescAll}
-                                            style={{ padding: '0px 10px', height: '28px' }}
-                                        >
-                                            Delete All
-                                        </Button>
-                                    )}
-                                </div>
                                 {/* <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
                                     <h3 className="font-medium mb-6">History</h3>
                                     <Table>

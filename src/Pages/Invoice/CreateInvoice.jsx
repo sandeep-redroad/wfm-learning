@@ -19,14 +19,23 @@ import Constent from '@/utils/constent'
 import ClientService from '@/Service/ClientService'
 import ProjectService from '@/Service/ProjectService'
 import InvoiceService from '@/Service/InvoiceService'
+import ProcessService from '@/Service/ProcessService'
 
-const Invoicef = () => {
+const CreateInvoice = () => {
     const navigate = useNavigate()
     const [checkAll, setcheckAll] = useState(false)
+
     const [rows, setRows] = useState([])
+    const [projectSerchParams, setProjectSearchParams] = useState({
+        search: {
+            client: '',
+            process: '',
+        },
+    })
     const formRef = useRef(null)
     const [projects, setProjects] = useState([])
     const [clients, setClient] = useState([])
+    const [process, setProcess] = useState([])
     const [invoice_date, setInvoiceDate] = useState(format(new Date(), Constent.DATE_FORMAT))
     const [start_date, setStartDate] = useState(format(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1), Constent.DATE_FORMAT))
     const [end_date, setEndDate] = useState(format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), Constent.DATE_FORMAT))
@@ -81,12 +90,7 @@ const Invoicef = () => {
 
     const getProjects = async () => {
         try {
-            let queryParam = {
-                search: {
-                    client: form.getValues('client'),
-                },
-            }
-            const resp = await ProjectService.getProjects(queryParam)
+            const resp = await ProjectService.getProjects(projectSerchParams)
             if (resp.data.success) {
                 setProjects(resp.data.data)
             }
@@ -123,8 +127,10 @@ const Invoicef = () => {
     }
 
     useEffect(() => {
+        getProcess()
         getClient()
     }, [])
+
     const getClient = async () => {
         try {
             const resp = await ClientService.getClients()
@@ -134,12 +140,22 @@ const Invoicef = () => {
         } catch (err) {}
     }
 
+    const getProcess = async () => {
+        try {
+            const resp = await ProcessService.getProcess()
+            if (resp.data.success) {
+                setProcess(resp.data.data)
+            }
+        } catch (err) {}
+    }
+
     useEffect(() => {
-        if (form.getValues('client') !== '') {
+        if (projectSerchParams.search.client !== '' && projectSerchParams.search.process !== '') {
             getProjects()
         }
-        console.log("form.getValues('client') : ", form.getValues('client'))
-    }, [form.getValues('client')])
+    }, [projectSerchParams.search.client, projectSerchParams.search.process])
+
+
     async function onSubmit(data) {
         try {
             delete data['customFields']
@@ -231,7 +247,7 @@ const Invoicef = () => {
                     checkbox: false,
                     projectId: '',
                     description: '',
-                    isDeleted : false,
+                    isDeleted: false,
                     hours: '',
                     rate: project?.rate ?? '',
                     amount: '',
@@ -320,6 +336,15 @@ const Invoicef = () => {
                                                         options={clients}
                                                         selectedVal={field.value}
                                                         handleChange={(val) => {
+                                                            setProjectSearchParams((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    search: {
+                                                                        ...prev.search,
+                                                                        client: val,
+                                                                    },
+                                                                }
+                                                            })
                                                             field.onChange(val)
                                                         }}
                                                         placeholder="Client"
@@ -369,7 +394,24 @@ const Invoicef = () => {
                                             <FormItem>
                                                 <FormLabel>Process</FormLabel>
                                                 <div className="full">
-                                                    <Input {...field} placeholder="Process" readOnly={true} />
+                                                    <SearchableDropdown
+                                                        options={process}
+                                                        selectedVal={field.value}
+                                                        handleChange={(val) => {
+                                                            setProjectSearchParams((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    search: {
+                                                                        ...prev.search,
+                                                                        process: val,
+                                                                    },
+                                                                }
+                                                            })
+                                                            field.onChange(val)
+                                                        }}
+                                                        placeholder="Process"
+                                                        label="process"
+                                                    />
                                                 </div>
                                             </FormItem>
                                         )}
@@ -470,7 +512,7 @@ const Invoicef = () => {
                                                         placeholder="billing from address"
                                                         value={form.getValues('billingFromAddress')}
                                                         className="resize-none"
-                                                        row="1"
+                                                        rows="4"
                                                         readOnly={true}
                                                     />
                                                 </div>
@@ -496,7 +538,8 @@ const Invoicef = () => {
                                                         placeholder="billing to address"
                                                         value={form.getValues('billingToAddress')}
                                                         className="resize-none"
-                                                        row="1"
+                                                        rows="4"
+                                                        
                                                         readOnly={true}
                                                     />
                                                 </div>
@@ -881,4 +924,4 @@ const Invoicef = () => {
     )
 }
 
-export default Invoicef
+export default CreateInvoice
