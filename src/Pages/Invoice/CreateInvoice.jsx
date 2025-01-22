@@ -24,7 +24,6 @@ import ProcessService from '@/Service/ProcessService'
 const CreateInvoice = () => {
     const navigate = useNavigate()
     const [checkAll, setcheckAll] = useState(false)
-
     const [rows, setRows] = useState([])
     const [projectSerchParams, setProjectSearchParams] = useState({
         search: {
@@ -143,6 +142,7 @@ const CreateInvoice = () => {
     const getProcess = async () => {
         try {
             const resp = await ProcessService.getProcess()
+            
             if (resp.data.success) {
                 setProcess(resp.data.data)
             }
