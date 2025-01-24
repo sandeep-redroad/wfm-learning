@@ -21,15 +21,21 @@ const CreateBillingEntiy = () => {
             .min(1, {
                 message: 'Contact Person is required',
             }),
-        gstNumber: z
+
+        designation: z
             .string({
-                message: 'GST Number is required',
+                message: 'Designation is required',
             })
             .min(1, {
-                message: 'GST Number is required',
+                message: 'Designation is required',
             }),
-        designation: z.string().optional(),
-        address: z.string().optional(),
+        address: z
+            .string({
+                message: 'Address is required',
+            })
+            .min(1, {
+                message: 'Address required',
+            }),
         city: z.string().optional(),
         state: z.string().optional(),
         country: z.string().optional(),
@@ -227,7 +233,7 @@ const CreateBillingEntiy = () => {
                                                 </FormItem>
                                             )}
                                         />
-                                        <FormField
+                                        {/* <FormField
                                             control={form.control}
                                             name="gstNumber"
                                             render={({ field }) => (
@@ -242,7 +248,7 @@ const CreateBillingEntiy = () => {
                                                     </FormControl>
                                                 </FormItem>
                                             )}
-                                        />
+                                        /> */}
                                     </div>
                                 </div>
                             </form>

@@ -54,9 +54,9 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
         if (DataTableEnumType.CLIENT_ADDRESS == type) {
             navigate(`/master-settings/client-address/${row.contactPerson}`)
         }
-        if (DataTableEnumType.NOTE == type) {
-            navigate(`/master-settings/notes/${row.title}`)
-        }
+        // if (DataTableEnumType.NOTE == type) {
+        //     navigate(`/master-settings/notes/${row.title}`)
+        // }
         if (DataTableEnumType.INVOICE == type) {
             navigate(`/invoices/${row.id}`)
         }

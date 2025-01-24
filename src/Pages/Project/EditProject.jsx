@@ -200,6 +200,7 @@ const EditProject = ({ type }) => {
         billingToAddress: '',
         billingFrom: '',
         billingFromAddress: '',
+        billingFrequency: '',
     })
 
     const form = useForm()
@@ -235,6 +236,10 @@ const EditProject = ({ type }) => {
                 toast.error('Please enter rate')
                 return
             }
+            if (key == 'billingFrequency') {
+                toast.error('Please select billing frequency')
+                return
+            }
             if (projectFields['billingType'] == 'Per WorkItem Transactional') {
                 if (key == 'timePerWorkItem') {
                     toast.error('Please enter time in minute')
@@ -254,7 +259,8 @@ const EditProject = ({ type }) => {
                 }
             }
             projectFields['customFields'] = rows
-            projectFields['descriptions'] = desc;
+            projectFields['descriptions'] = desc
+            console.log("projectfields",projectFields)
             const resp = await ProjectService.updateProject(projectId, projectFields)
             if (resp.data.success) {
                 navigate('/projects')
@@ -685,7 +691,7 @@ const EditProject = ({ type }) => {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Billing To</FormLabel>
-                                                {console.log("billingTo L ", billingTo)}
+                                                {console.log('billingTo L ', billingTo)}
                                                 <SearchableDropdown
                                                     options={billingTo}
                                                     selectedVal={projectFields.billingTo}
@@ -702,7 +708,7 @@ const EditProject = ({ type }) => {
                                                     placeholder="Billing To"
                                                     label="contactPerson"
                                                     className="mb-5"
-                                                     type="CREATE_PROJECT_BILLINGTO"
+                                                    type="CREATE_PROJECT_BILLINGTO"
                                                 />
                                                 <FormControl>
                                                     <Textarea
@@ -710,7 +716,6 @@ const EditProject = ({ type }) => {
                                                         className="resize-none"
                                                         row="1"
                                                         value={projectFields.billingToAddress}
-                                                       
                                                     />
                                                 </FormControl>
                                             </FormItem>
@@ -727,7 +732,7 @@ const EditProject = ({ type }) => {
                                                     selectedVal={projectFields.billingFrom}
                                                     handleChange={(val) => {
                                                         let billingFromAddress = `${val.designation}\n${val.address}\n${val.city},${val.state},${val.country}`
-                                                        console.log("billing to details",val)
+                                                        console.log('billing to details', val)
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
@@ -855,6 +860,39 @@ const EditProject = ({ type }) => {
                                                 )}
                                             />
                                         )}
+
+                                        <FormField
+                                            control={form.control}
+                                            name="billingFrequency"
+                                            className="mt-[20px]"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Billing Frequency</FormLabel>
+                                                    <Select
+                                                      onValueChange={(e) => {
+                                                            console.log("billing frequency",e)
+                                                            setProjectFields((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    billingFrequency: e
+                                                                }
+                                                            })
+                                                        }}
+                                                        value={projectFields.billingFrequency}                                                        
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Select billing frequency" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="Quarterly">Quarterly</SelectItem>
+                                                            <SelectItem value="Monthly">Monthly</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </FormItem>
+                                            )}
+                                        />
                                     </div>
 
                                     <FormField
@@ -1083,8 +1121,8 @@ const EditProject = ({ type }) => {
                                                                 name="description"
                                                                 value={row.description}
                                                                 className="border-none shadow-none"
-                                                                onChange={(event) =>
-                                                                {console.log(event.target.value);
+                                                                onChange={(event) => {
+                                                                    console.log(event.target.value)
                                                                     setDesc((prev) => {
                                                                         let updatedData = []
                                                                         prev.map((item, i) => {
@@ -1094,8 +1132,8 @@ const EditProject = ({ type }) => {
                                                                             updatedData.push(item)
                                                                         })
                                                                         return updatedData
-                                                                    })}
-                                                                }
+                                                                    })
+                                                                }}
                                                             />
                                                         </TableCell>
                                                     </TableRow>
