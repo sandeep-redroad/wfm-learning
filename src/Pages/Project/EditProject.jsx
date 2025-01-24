@@ -200,6 +200,7 @@ const EditProject = ({ type }) => {
         billingToAddress: '',
         billingFrom: '',
         billingFromAddress: '',
+        billingFrequency: '',
     })
 
     const form = useForm()
@@ -233,6 +234,10 @@ const EditProject = ({ type }) => {
             }
             if (key == 'rate') {
                 toast.error('Please enter rate')
+                return
+            }
+            if (key == 'billingFrequency') {
+                toast.error('Please select billing frequency')
                 return
             }
             if (projectFields['billingType'] == 'Per WorkItem Transactional') {

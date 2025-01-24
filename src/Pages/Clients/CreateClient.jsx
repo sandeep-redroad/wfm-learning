@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -10,9 +10,14 @@ import { Textarea } from '@/Components/ui/textarea'
 import { toast } from 'react-toastify'
 import { Card, CardContent } from '@/components/ui/card'
 import ClientService from '@/Service/ClientService'
+import { Dialog, DialogTrigger } from '@/Components/ui/dialog'
+import CreatePointofContact from './CreatePointofContact'
+import ClientAddressService from '@/Service/ClientAddressService'
 
 const CreateClient = () => {
+    const [isOpen, setIsOpen] = useState(false)
     const formRef = useRef(null)
+    const [contact, setContact] = useState([])
     const formSchema = z.object({
         client: z.string().min(1, {
             message: 'Client is required',
@@ -37,10 +42,23 @@ const CreateClient = () => {
     })
 
     async function onSubmit(values) {
+        console.log(values.client)
+
         try {
             const resp = await ClientService.createClient(values)
             if (resp.data.success) {
-                navigate('/client')
+                contact.map((con, index) => {
+                    let updatedObj = { ...con, client: values.client }
+                    async function addpoc() {
+                        try {
+                            const cresp = await ClientAddressService.createClientAddress(updatedObj)
+                            if (cresp.data.success) {
+                                navigate('/client')
+                            }
+                        } catch (err) {}
+                    }
+                    addpoc()
+                })
             }
         } catch (err) {}
     }
@@ -68,6 +86,12 @@ const CreateClient = () => {
                             <Link className="button" to="/client">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                             </Link>
+                            <Dialog open={isOpen} onOpenChange={() => setIsOpen((prev) => !prev)}>
+                                <DialogTrigger>
+                                    <Button className="bg-primary-purpal hover:bg-primary-purpal">Add POC</Button>
+                                </DialogTrigger>
+                                <CreatePointofContact setIsOpen={setIsOpen} contact={contact} setContact={setContact} />
+                            </Dialog>
                             <Button className="bg-primary-purpal hover:bg-primary-purpal" onClick={handleSaveClick}>
                                 Save
                             </Button>
@@ -75,7 +99,7 @@ const CreateClient = () => {
                     </div>
                 </CardContent>
             </Card>
-            <div className="p-3" style={{height : "calc(100vh - 125px)"}}>
+            <div className="p-3" style={{ height: 'calc(100vh - 125px)' }}>
                 <Card className="h-full overflow-card-scroll w-full m-0 overflow-auto">
                     <CardContent className="m-0 p-2 max-h-full">
                         <Form {...form}>

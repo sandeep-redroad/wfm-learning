@@ -19,6 +19,7 @@ import Constent from '@/utils/constent'
 import ClientService from '@/Service/ClientService'
 import ProjectService from '@/Service/ProjectService'
 import InvoiceService from '@/Service/InvoiceService'
+import ProcessService from '@/Service/ProcessService'
 
 const EditInvoice = () => {
     const { invoiceId } = useParams()
@@ -27,10 +28,17 @@ const EditInvoice = () => {
     const formRef = useRef(null)
     const [projects, setProjects] = useState([])
     const [clients, setClient] = useState([])
+    const [process, setProcess] = useState([])
     const [invoice_date, setInvoiceDate] = useState(format(new Date(), Constent.DATE_FORMAT))
     const [start_date, setStartDate] = useState(format(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1), Constent.DATE_FORMAT))
     const [end_date, setEndDate] = useState(format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), Constent.DATE_FORMAT))
     const [project, setProject] = useState(null)
+    const [projectSerchParams, setProjectSearchParams] = useState({
+            search: {
+                client: '',
+                process: '',
+            },
+        })
     const [invoiceField, setInvoiceField] = useState({
         client: '',
         invoiceDate: invoice_date,
@@ -53,6 +61,20 @@ const EditInvoice = () => {
         noOfWorkingDays: '',
         noOfChartReceive: '',
     })
+
+
+      const getProcess = async () => {
+        console.log("in process")
+            try {
+                const resp = await ProcessService.getProcess()
+                console.log("in process",resp)
+                if (resp.data.success) {
+                    setProcess(resp.data.data)
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        }
 
     const form = useForm()
 
@@ -186,8 +208,10 @@ const EditInvoice = () => {
     }
 
     useEffect(() => {
+        getProcess()
         getInvoice()
         getClient()
+       
         getProjects()
     }, [])
     const getClient = async () => {
@@ -198,6 +222,12 @@ const EditInvoice = () => {
             }
         } catch (err) {}
     }
+
+     useEffect(() => {
+            if (projectSerchParams.search.client !== '' && projectSerchParams.search.process !== '') {
+                getProjects()
+            }
+        }, [projectSerchParams.search.client, projectSerchParams.search.process])
 
     async function onSubmit(data) {
         console.log('data', data)
@@ -428,7 +458,30 @@ const EditInvoice = () => {
                                             <FormItem>
                                                 <FormLabel>Process</FormLabel>
                                                 <div className="full">
-                                                    <Input value={invoiceField.process} placeholder="Process" readOnly={true} />
+                                                <SearchableDropdown
+                                                        options={process}
+                                                        selectedVal={invoiceField.process}
+                                                        handleChange={(val) => {
+                                                            setProjectSearchParams((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    search: {
+                                                                        ...prev.search,
+                                                                        process: val,
+                                                                    },
+                                                                }
+                                                            })
+                                                            setInvoiceField((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    process: val,
+                                                                }
+                                                            })
+                                                        }}
+                                                        placeholder="Process"
+                                                        label="process"
+                                                    />
+                                                    {/* <Input value={invoiceField.process} placeholder="Process" readOnly={true} /> */}
                                                 </div>
                                             </FormItem>
                                         )}
@@ -508,7 +561,7 @@ const EditInvoice = () => {
                                                         placeholder="billing from address"
                                                         value={invoiceField.billingFromAddress}
                                                         className="resize-none"
-                                                        row="1"
+                                                        rows="3"
                                                         readOnly={true}
                                                     />
                                                 </div>
@@ -534,7 +587,7 @@ const EditInvoice = () => {
                                                         placeholder="billing to address"
                                                         value={invoiceField.billingToAddress}
                                                         className="resize-none"
-                                                        row="1"
+                                                        rows="3"
                                                         readOnly={true}
                                                     />
                                                 </div>
@@ -566,7 +619,7 @@ const EditInvoice = () => {
                                                             }}
                                                             initialFocus
                                                         />
-                                                    </PopoverContent>   
+                                                    </PopoverContent>
                                                 </Popover>
                                             </FormItem>
                                         )}
@@ -901,6 +954,11 @@ const EditInvoice = () => {
                                                         placeholder="Note Descriptions"
                                                         className="resize-none"
                                                         row="1"
+                                                        onChange={(e) =>
+                                                            setInvoiceField((prev) => {
+                                                                return { ...prev, noteDescription: e.target.value }
+                                                            })
+                                                        }
                                                     />
                                                 </div>
                                             </FormItem>
@@ -932,7 +990,11 @@ const EditInvoice = () => {
                                                         defaultValue={'Pending'}
                                                         value={invoiceField.paymentStatus}
                                                         className=" w-full"
-                                                        onValueChange={(val) => invoiceField.onChange(val)}
+                                                        onValueChange={(val) =>
+                                                            setInvoiceField((prev) => {
+                                                                return { ...prev, paymentStatus: val }
+                                                            })
+                                                        }
                                                     >
                                                         <FormControl>
                                                             <SelectTrigger className="shadow-none  w-full">
@@ -958,7 +1020,15 @@ const EditInvoice = () => {
                                             <FormItem>
                                                 <FormLabel>Amount Paid</FormLabel>
                                                 <FormControl>
-                                                    <Input value={invoiceField.paidAmount} placeholder="Amount Paid" />
+                                                    <Input
+                                                        value={invoiceField.paidAmount}
+                                                        placeholder="Amount Paid"
+                                                        onChange={(e) => {
+                                                            setInvoiceField((prev) => {
+                                                                return { ...prev, paidAmount: e.target.value }
+                                                            })
+                                                        }}
+                                                    />
                                                 </FormControl>
                                             </FormItem>
                                         )}
