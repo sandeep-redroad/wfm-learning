@@ -80,7 +80,7 @@ const Clients = () => {
             <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-between items-center">
-                        <Link to="/clients/new">
+                        <Link to="/client/new">
                             <Button className="bg-primary-purpal hover:bg-primary-purpal">Add Client</Button>
                         </Link>
 

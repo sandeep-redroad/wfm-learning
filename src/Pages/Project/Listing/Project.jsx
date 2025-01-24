@@ -83,7 +83,7 @@ const Project = () => {
             <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-between items-center">
-                        <Link className="button" to="/projects/new">
+                        <Link className="button" to="/redroad-service/new">
                             <Button className="bg-primary-purpal hover:bg-primary-purpal">Add Project</Button>
                         </Link>
                         <DropdownMenu className="ml-[10px] ">

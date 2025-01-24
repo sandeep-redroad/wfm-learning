@@ -40,7 +40,7 @@ const CreateClient = () => {
         try {
             const resp = await ClientService.createClient(values)
             if (resp.data.success) {
-                navigate('/clients')
+                navigate('/client')
             }
         } catch (err) {}
     }
@@ -65,7 +65,7 @@ const CreateClient = () => {
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
-                            <Link className="button" to="/clients">
+                            <Link className="button" to="/client">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                             </Link>
                             <Button className="bg-primary-purpal hover:bg-primary-purpal" onClick={handleSaveClick}>

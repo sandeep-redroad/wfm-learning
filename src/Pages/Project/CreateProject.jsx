@@ -203,7 +203,7 @@ const CreateProject = ({ type }) => {
 
             const resp = await ProjectService.createProject(projectFields)
             if (resp.data.success) {
-                navigate('/projects')
+                navigate('/redroad-service')
             }
         } catch (err) {
             console.log('err : ', err)
@@ -408,7 +408,7 @@ const CreateProject = ({ type }) => {
             <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
                 <CardContent className="m-0 flex justify-between items-center p-3">
                     <div className="flex">
-                        <Link className="button bg-primary-back hover:bg-primary-purpal text-white rounded-[5px] p-[5px]" to="/projects">
+                        <Link className="button bg-primary-back hover:bg-primary-purpal text-white rounded-[5px] p-[5px]" to="/redroad-service">
                             <ArrowLeft />
                         </Link>
                     </div>
@@ -618,7 +618,7 @@ const CreateProject = ({ type }) => {
                                                     options={billingTo}
                                                     selectedVal={projectFields.billingTo}
                                                     handleChange={(val) => {
-                                                        let billingToAddress = `${val.designation},\n${val.address}\n${val.city}, ${val.state}, ${val.country}`
+                                                        let billingToAddress = `${val.designation},\n${val.address}\n${val.city}, ${val.state}, ${val.country}, ${val.pinCode}`
                                                         billingToAddress = val.contactPerson != undefined ? billingToAddress : ''
                                                         setProjectFields((prev) => {
                                                             return {
@@ -637,8 +637,14 @@ const CreateProject = ({ type }) => {
                                                     <Textarea
                                                         placeholder="Billing To"
                                                         className="resize-none"
-                                                        row="1"
+                                                        rows="4"
                                                         value={projectFields.billingToAddress}
+                                                        onChange={(e) => setProjectFields((prev) => {
+                                                            return {
+                                                                ...prev,
+                                                                billingToAddress: e.target.value,
+                                                            }
+                                                        })}
                                                     />
                                                 </FormControl>
                                             </FormItem>
@@ -655,7 +661,7 @@ const CreateProject = ({ type }) => {
                                                     options={billingFrom}
                                                     selectedVal={projectFields.billingFrom}
                                                     handleChange={(val) => {
-                                                        let billingFromAddress = `${val.designation},\n${val.address}\n${val.city}, ${val.state}, ${val.country}`
+                                                        let billingFromAddress = `${val.designation},\n${val.address}\n${val.city}, ${val.state}, ${val.country}, ${val.pinCode}`
                                                         billingFromAddress = val.contactPerson != 'No Data found' ? billingFromAddress : ''
                                                         console.log(billingFromAddress)
                                                         setProjectFields((prev) => {
@@ -675,8 +681,14 @@ const CreateProject = ({ type }) => {
                                                     <Textarea
                                                         placeholder="Billing From"
                                                         className="resize-none"
-                                                        row="1"
+                                                        rows="4"
                                                         value={projectFields.billingFromAddress}
+                                                        onChange={(e) => setProjectFields((prev) => {
+                                                            return {
+                                                                ...prev,
+                                                                billingFromAddress: e.target.value,
+                                                            }
+                                                        })}
                                                     />
                                                 </FormControl>
                                             </FormItem>
@@ -735,7 +747,7 @@ const CreateProject = ({ type }) => {
                                         )}
                                     />
 
-                                    <div>
+                                    <div className='grid grid-cols-1 gap-x-[3rem] gap-y-[1.75rem]'>
                                         <FormField
                                             control={form.control}
                                             name="rate"
@@ -821,7 +833,7 @@ const CreateProject = ({ type }) => {
                                                         placeholder="Note Description"
                                                         value={projectFields.noteDescription}
                                                         className="resize-none"
-                                                        row="1"
+                                                        rows="4"
                                                     />
                                                 </FormControl>
                                             </FormItem>

@@ -13,7 +13,7 @@ const ShowInvoiece = () => {
         const invoice = await InvoiceService.getInvoice(invoiceId)
         if (invoice.data.success) {
             if (!invoice.data.data) {
-                navigate('/invoices')
+                navigate('/invoice')
                 return
             }
             setInvoice(invoice.data.data)
@@ -42,7 +42,7 @@ const ShowInvoiece = () => {
     return invoice !== null ? (
         <div className="w-screen h-screen flex justify-start items-center flex-col">
             <div className="flex w-[95vw] gap-2 justify-end items-end">
-                <Link to={`/invoices/${invoiceId}`} style={styles.btn} className="">
+                <Link to={`/invoice/${invoiceId}`} style={styles.btn} className="">
                     <ArrowLeft size={18} /> <span className='ms-1'>Back</span>
                 </Link>
                 <div>

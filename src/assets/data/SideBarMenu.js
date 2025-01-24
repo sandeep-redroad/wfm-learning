@@ -6,8 +6,8 @@ const SidebarMenu = {
             items: [],
         },
         {
-            title: 'Projects',
-            url: '/projects',
+            title: 'Red Road Services',
+            url: '/redroad-service',
             items: [],
         },
         // {
@@ -16,32 +16,37 @@ const SidebarMenu = {
         //     items: [],
         // },
         {
-            title: 'Invoices',
-            url: '/invoices',
+            title: 'Invoice',
+            url: '/invoice',
             items: [],
         },
       
+        // {
+        //     title: 'Bulk Upload',
+        //     url: '/bulk-upload',
+        //     items: [],
+        // },
         {
-            title: 'Bulk Upload',
-            url: '/bulk-upload',
-            items: [],
-        },
-        {
-            title: 'Clients',
-            url: 'clients',
+            title: 'Client',
+            url: '/client',
             items: [],
         },
         {
             title: 'Master Settings',
             url: '/master-settings',
             items: [
+                // {
+                //     title: 'Client Address',
+                //     url: '/master-settings/client-address',
+                //     items: [],
+                // },
                 {
-                    title: 'Client Address',
-                    url: '/master-settings/client-address',
+                    title: 'Company',
+                    url: '/master-settings/company',
                     items: [],
                 },
                 {
-                    title: 'Notes',
+                    title: 'Note',
                     url: '/master-settings/notes',
                     items: [],
                 },
@@ -51,18 +56,18 @@ const SidebarMenu = {
                     items: [],
                 },
                 {
-                    title: 'LOF Business',
-                    url: '/master-settings/lof-business',
+                    title: 'Vertical',
+                    url: '/master-settings/vertical',
                     items: [],
                 },
                 {
-                    title: 'Departments',
-                    url: '/master-settings/departments',
+                    title: 'Department',
+                    url: '/master-settings/department',
                     items: [],
                 },
                 {
                     title: 'Billing Types',
-                    url: '/master-settings/billing',
+                    url: '/master-settings/billing-type',
                     items: [],
                 },
                 // {
@@ -70,11 +75,11 @@ const SidebarMenu = {
                 //     url: '/master-settings/employee-mapped',
                 //     items: [],
                 // },
-                {
-                    title: 'Billing Entity',
-                    url: '/master-settings/billing-entity',
-                    items: [],
-                },
+                // {
+                //     title: 'Billing Entity',
+                //     url: '/master-settings/billing-entity',
+                //     items: [],
+                // },
             ],
         },
     ],

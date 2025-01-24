@@ -103,7 +103,7 @@ const EditProject = ({ type }) => {
             if (resp.data.success) {
                 if (!resp.data.data) {
                     toast.error('Project Not Found')
-                    navigate('/projects')
+                    navigate('/redroad-service')
                     return
                 }
                 setProject(resp.data.data)
@@ -254,10 +254,10 @@ const EditProject = ({ type }) => {
                 }
             }
             projectFields['customFields'] = rows
-            projectFields['descriptions'] = desc;
+            projectFields['descriptions'] = desc
             const resp = await ProjectService.updateProject(projectId, projectFields)
             if (resp.data.success) {
-                navigate('/projects')
+                navigate('/redroad-service')
             }
         } catch (err) {
             console.log('err : ', err)
@@ -482,7 +482,7 @@ const EditProject = ({ type }) => {
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
-                            <Link className="button" to="/projects">
+                            <Link className="button" to="/redroad-service">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                             </Link>
                             <Button className="bg-primary-purpal hover:bg-primary-purpal" onClick={handleSaveClick}>
@@ -685,7 +685,7 @@ const EditProject = ({ type }) => {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Billing To</FormLabel>
-                                                {console.log("billingTo L ", billingTo)}
+                                                {console.log('billingTo L ', billingTo)}
                                                 <SearchableDropdown
                                                     options={billingTo}
                                                     selectedVal={projectFields.billingTo}
@@ -702,15 +702,14 @@ const EditProject = ({ type }) => {
                                                     placeholder="Billing To"
                                                     label="contactPerson"
                                                     className="mb-5"
-                                                     type="CREATE_PROJECT_BILLINGTO"
+                                                    type="CREATE_PROJECT_BILLINGTO"
                                                 />
                                                 <FormControl>
                                                     <Textarea
                                                         placeholder="Billing To"
                                                         className="resize-none"
-                                                        row="1"
+                                                        rows="4"
                                                         value={projectFields.billingToAddress}
-                                                       
                                                     />
                                                 </FormControl>
                                             </FormItem>
@@ -727,7 +726,7 @@ const EditProject = ({ type }) => {
                                                     selectedVal={projectFields.billingFrom}
                                                     handleChange={(val) => {
                                                         let billingFromAddress = `${val.designation}\n${val.address}\n${val.city},${val.state},${val.country}`
-                                                        console.log("billing to details",val)
+                                                        console.log('billing to details', val)
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
@@ -745,7 +744,7 @@ const EditProject = ({ type }) => {
                                                     <Textarea
                                                         placeholder="Billing From"
                                                         className="resize-none"
-                                                        row="1"
+                                                        rows="4"
                                                         value={projectFields.billingFromAddress}
                                                     />
                                                 </FormControl>
@@ -806,7 +805,7 @@ const EditProject = ({ type }) => {
                                         )}
                                     />
 
-                                    <div>
+                                    <div className="grid grid-cols-1 gap-x-[3rem] gap-y-[1.75rem]">
                                         <FormField
                                             control={form.control}
                                             name="rate"
@@ -830,31 +829,32 @@ const EditProject = ({ type }) => {
                                                 </FormItem>
                                             )}
                                         />
-                                        {projectFields.billingType == 'Hourly transactional' && (
-                                            <FormField
-                                                control={form.control}
-                                                name="timePerWorkItem"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel>Time taken per Chart (in minutes)</FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                placeholder="minutes"
-                                                                value={projectFields.timePerWorkItem}
-                                                                onChange={(e) => {
-                                                                    setProjectFields((prev) => {
-                                                                        return {
-                                                                            ...prev,
-                                                                            timePerWorkItem: e.target.value,
-                                                                        }
-                                                                    })
-                                                                }}
-                                                            />
-                                                        </FormControl>
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        )}
+                                        {projectFields.billingType == 'Hourly transactional' ||
+                                            (projectFields.billingType == 'Hourly Transactional' && (
+                                                <FormField
+                                                    control={form.control}
+                                                    name="timePerWorkItem"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Time taken per Chart (in minutes)</FormLabel>
+                                                            <FormControl>
+                                                                <Input
+                                                                    placeholder="minutes"
+                                                                    value={projectFields.timePerWorkItem}
+                                                                    onChange={(e) => {
+                                                                        setProjectFields((prev) => {
+                                                                            return {
+                                                                                ...prev,
+                                                                                timePerWorkItem: e.target.value,
+                                                                            }
+                                                                        })
+                                                                    }}
+                                                                />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            ))}
                                     </div>
 
                                     <FormField
@@ -867,7 +867,6 @@ const EditProject = ({ type }) => {
                                                     options={notes}
                                                     selectedVal={projectFields.note}
                                                     handleChange={(val) => {
-                                                        // console.log("notes",val)
                                                         setProjectFields((prev) => {
                                                             return {
                                                                 ...prev,
@@ -886,15 +885,116 @@ const EditProject = ({ type }) => {
                                                         placeholder="Note Description"
                                                         value={projectFields.noteDescription}
                                                         className="resize-none"
-                                                        row="1"
+                                                        rows="4"
                                                     />
                                                 </FormControl>
                                             </FormItem>
                                         )}
                                     />
                                 </div>
-                                <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
-                                    <Table>
+                                <div className="mt-2">
+                                    <FormLabel>Services</FormLabel>
+                                    <Table className="mt-2">
+                                        <TableHeader>
+                                            <TableRow className="border">
+                                                <TableHead className="w-[35px] border">
+                                                    <Checkbox onClick={changedescAll} value={checkdescAll} checked={checkdescAll} />
+                                                </TableHead>
+                                                <TableHead className="w-[50px] border">Sr.No</TableHead>
+
+                                                <TableHead className="w-[300px] border">Description</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {desc.length == 0 ? (
+                                                <tr>
+                                                    <td colSpan="6">
+                                                        <h6 className="text-center" style={{ margin: 0 }}>
+                                                            No Data
+                                                        </h6>
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                desc.map((row, i) => (
+                                                    <TableRow key={row.id} name="customfields" className="border">
+                                                        <TableCell className="border">
+                                                            <Checkbox
+                                                                onClick={() => changedescOne(row, i)}
+                                                                checked={row.checkbox}
+                                                                value={row.checkbox}
+                                                            />
+                                                        </TableCell>
+                                                        <TableCell className="border">{row.id}</TableCell>
+
+                                                        <TableCell className="border">
+                                                            <Input
+                                                                placeholder="Description"
+                                                                name="description"
+                                                                value={row.description}
+                                                                className="border-none shadow-none"
+                                                                onChange={(event) => {
+                                                                    console.log(event.target.value)
+                                                                    setDesc((prev) => {
+                                                                        let updatedData = []
+                                                                        prev.map((item, i) => {
+                                                                            if (item.id == row.id) {
+                                                                                prev[i]['description'] = event.target.value
+                                                                            }
+                                                                            updatedData.push(item)
+                                                                        })
+                                                                        return updatedData
+                                                                    })
+                                                                }}
+                                                            />
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                    <Button
+                                        type="button"
+                                        className=""
+                                        onClick={adddescRow}
+                                        style={{
+                                            padding: '0px 10px',
+                                            height: '28px',
+                                            backgroundColor: '#808080d6',
+                                        }}
+                                    >
+                                        Add Row
+                                    </Button>
+
+                                    {!checkdescAll &&
+                                    desc.filter((row) => {
+                                        return row.checkbox
+                                    }).length > 0 ? (
+                                        <Button
+                                            type="button"
+                                            className="bg-primary-red ml-1"
+                                            onClick={() => deletedescone()}
+                                            style={{ padding: '0px 10px', height: '28px' }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    ) : (
+                                        ''
+                                    )}
+
+                                    {checkdescAll && desc.length > 0 && (
+                                        <Button
+                                            type="button"
+                                            className="bg-primary-red ml-1"
+                                            onClick={deletedescAll}
+                                            style={{ padding: '0px 10px', height: '28px' }}
+                                        >
+                                            Delete All
+                                        </Button>
+                                    )}
+                                </div>
+                                <div className="mt-5">
+                                    <FormLabel>Custom Fields</FormLabel>
+                                    <Table className="mt-2">
                                         <TableHeader>
                                             <TableRow className="border">
                                                 <TableHead className="w-[35px] border">
@@ -1044,106 +1144,8 @@ const EditProject = ({ type }) => {
                                         </Button>
                                     )}
                                 </div>
-                                <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow className="border">
-                                                <TableHead className="w-[35px] border">
-                                                    <Checkbox onClick={changedescAll} value={checkdescAll} checked={checkdescAll} />
-                                                </TableHead>
-                                                <TableHead className="w-[50px] border">Sr.No</TableHead>
 
-                                                <TableHead className="w-[300px] border">Description</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {desc.length == 0 ? (
-                                                <tr>
-                                                    <td colSpan="6">
-                                                        <h6 className="text-center" style={{ margin: 0 }}>
-                                                            No Data
-                                                        </h6>
-                                                    </td>
-                                                </tr>
-                                            ) : (
-                                                desc.map((row, i) => (
-                                                    <TableRow key={row.id} name="customfields" className="border">
-                                                        <TableCell className="border">
-                                                            <Checkbox
-                                                                onClick={() => changedescOne(row, i)}
-                                                                checked={row.checkbox}
-                                                                value={row.checkbox}
-                                                            />
-                                                        </TableCell>
-                                                        <TableCell className="border">{row.id}</TableCell>
-
-                                                        <TableCell className="border">
-                                                            <Input
-                                                                placeholder="Description"
-                                                                name="description"
-                                                                value={row.description}
-                                                                className="border-none shadow-none"
-                                                                onChange={(event) =>
-                                                                {console.log(event.target.value);
-                                                                    setDesc((prev) => {
-                                                                        let updatedData = []
-                                                                        prev.map((item, i) => {
-                                                                            if (item.id == row.id) {
-                                                                                prev[i]['description'] = event.target.value
-                                                                            }
-                                                                            updatedData.push(item)
-                                                                        })
-                                                                        return updatedData
-                                                                    })}
-                                                                }
-                                                            />
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))
-                                            )}
-                                        </TableBody>
-                                    </Table>
-                                    <Button
-                                        type="button"
-                                        className=""
-                                        onClick={adddescRow}
-                                        style={{
-                                            padding: '0px 10px',
-                                            height: '28px',
-                                            backgroundColor: '#808080d6',
-                                        }}
-                                    >
-                                        Add Row
-                                    </Button>
-
-                                    {!checkdescAll &&
-                                    desc.filter((row) => {
-                                        return row.checkbox
-                                    }).length > 0 ? (
-                                        <Button
-                                            type="button"
-                                            className="bg-primary-red ml-1"
-                                            onClick={() => deletedescone()}
-                                            style={{ padding: '0px 10px', height: '28px' }}
-                                        >
-                                            Delete
-                                        </Button>
-                                    ) : (
-                                        ''
-                                    )}
-
-                                    {checkdescAll && desc.length > 0 && (
-                                        <Button
-                                            type="button"
-                                            className="bg-primary-red ml-1"
-                                            onClick={deletedescAll}
-                                            style={{ padding: '0px 10px', height: '28px' }}
-                                        >
-                                            Delete All
-                                        </Button>
-                                    )}
-                                </div>
-                                <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
+                                {/* <div className="mt-[1.75rem] mb-[1.75rem] gap-y-[1.75rem] ">
                                     <h3 className="font-medium mb-6">History</h3>
                                     <Table>
                                         <TableHeader>
@@ -1349,9 +1351,7 @@ const EditProject = ({ type }) => {
                                             Delete All
                                         </Button>
                                     )}
-                                </div>
-
-                                <div className="grid  gap-x-[3rem] gap-y-[1.75rem]"></div>
+                                </div> */}
                             </form>
                         </Form>
                     </CardContent>

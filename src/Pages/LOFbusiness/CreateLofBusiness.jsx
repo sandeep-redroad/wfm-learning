@@ -29,7 +29,7 @@ const CreateLofBusiness = ({ getLofBusiness, setIsOpen }) => {
                 const searchParams = new URLSearchParams(location.search)
                 const page = searchParams.get('page')
                 if (page) {
-                    navigate('/master-settings/lof-business')
+                    navigate('/master-settings/vertical')
                 } else {
                     getLofBusiness()
                 }

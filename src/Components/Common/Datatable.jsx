@@ -40,10 +40,10 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
 
     const handleRedirect = (row) => {
         if (DataTableEnumType.PROJECT == type) {
-            navigate(`/projects/${row.id}`)
+            navigate(`/redroad-service/${row.id}`)
         }
         if (DataTableEnumType.CLIENT == type) {
-            navigate(`/clients/${row.client}`)
+            navigate(`/client/${row.client}`)
         }
         if (DataTableEnumType.DAILY_WORK_LOG == type) {
             navigate(`/daily-work-log/${row.id}`)
@@ -58,7 +58,12 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
             navigate(`/master-settings/notes/${row.title}`)
         }
         if (DataTableEnumType.INVOICE == type) {
-            navigate(`/invoices/${row.id}`)
+            navigate(`/invoice/${row.id}`)
+        }
+        if (DataTableEnumType.INVOICE_GENERATE == type) {
+            navigate(`/invoice/generate`, {state : {
+                project : row
+            }})
         }
     }
 

@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
-const Billing = () => {
+const BillingType = () => {
     const [billingTypes, setBillingTypes] = useState([])
     const [totalCount, setTotalCount] = useState(0)
     const [isOpen, setIsOpen] = useState(false)
@@ -124,4 +124,4 @@ const Billing = () => {
     )
 }
 
-export default Billing
+export default BillingType

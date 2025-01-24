@@ -155,7 +155,6 @@ const CreateInvoice = () => {
         }
     }, [projectSerchParams.search.client, projectSerchParams.search.process])
 
-
     async function onSubmit(data) {
         try {
             delete data['customFields']
@@ -230,10 +229,10 @@ const CreateInvoice = () => {
                 }
             })
             console.log('final Data : ', data)
-            const resp = await InvoiceService.createInvoice(data)
-            if (resp.data.success) {
-                navigate('/invoices')
-            }
+            // const resp = await InvoiceService.createInvoice(data)
+            // if (resp.data.success) {
+            //     navigate('/invoice')
+            // }
         } catch (err) {}
     }
 
@@ -309,7 +308,7 @@ const CreateInvoice = () => {
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
-                            <Link className="button" to="/invoices">
+                            <Link className="button" to="/invoice">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                             </Link>
                             <Button className="bg-primary-purpal hover:bg-primary-purpal" onClick={handleSaveClick}>
@@ -422,7 +421,7 @@ const CreateInvoice = () => {
                                         name="lofBusiness"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>LOF Business</FormLabel>
+                                                <FormLabel>Vertical</FormLabel>
                                                 <div className="w-full">
                                                     <Input {...field} placeholder="LOF Business" readOnly={true} />
                                                 </div>
@@ -539,7 +538,6 @@ const CreateInvoice = () => {
                                                         value={form.getValues('billingToAddress')}
                                                         className="resize-none"
                                                         rows="4"
-                                                        
                                                         readOnly={true}
                                                     />
                                                 </div>
@@ -840,18 +838,13 @@ const CreateInvoice = () => {
                                 <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                     <FormField
                                         control={form.control}
-                                        name="note"
+                                        name="noteDescription"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Note Descripction</FormLabel>
 
                                                 <div className="w-full">
-                                                    <Textarea
-                                                        value={project?.noteDescription ?? ''}
-                                                        placeholder="Note Descriptions"
-                                                        className="resize-none"
-                                                        row="1"
-                                                    />
+                                                    <Textarea {...field} placeholder="Note Descriptions" className="resize-none" rows="4" />
                                                 </div>
                                             </FormItem>
                                         )}
@@ -902,7 +895,7 @@ const CreateInvoice = () => {
                                         )}
                                     />
 
-                                    <FormField
+                                    {/* <FormField
                                         control={form.control}
                                         name="paidAmount"
                                         render={({ field }) => (
@@ -913,7 +906,7 @@ const CreateInvoice = () => {
                                                 </FormControl>
                                             </FormItem>
                                         )}
-                                    />
+                                    /> */}
                                 </div>
                             </form>
                         </Form>

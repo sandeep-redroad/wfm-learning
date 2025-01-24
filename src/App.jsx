@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { AuthProvider } from '@/Context/AuthContext'
 import { ToastContainer } from 'react-toastify'
 
-import Billing from '@/Pages/Billing/Listing/BillingType'
+import BillingType from '@/Pages/Billing/Listing/BillingType'
 import Login from '@/Pages/Login'
 import Login1 from '@/Pages/Login1'
 import Login2 from '@/Pages/Login2'
@@ -41,6 +41,8 @@ import ShowInvoiece from './Pages/Invoice/ShowInvoice'
 import EditClientAddress from './Pages/ClientAddress/EditClientAddress'
 import EditNotes from './Pages/Notes/EditNotes'
 import EditInvoice from './Pages/Invoice/EditInvoice'
+import CreateAndUpdateCompanyMaster from './Pages/CompanyMaster/CreateAndUpdateCompanyMaster'
+import GenerateInvoice from './Pages/Invoice/Listing/GenerateInvoice'
 
 let router = createBrowserRouter([
     {
@@ -70,11 +72,11 @@ let router = createBrowserRouter([
                 Component: Dashboard,
             },
             {
-                path: '/invoices',
+                path: '/invoice',
                 Component: Invoice,
             },
             {
-                path: '/projects',
+                path: '/redroad-service',
                 Component: Project,
             },
             {
@@ -82,15 +84,19 @@ let router = createBrowserRouter([
                 Component: CreateInoice,
             },
             {
-                path: '/invoices/:invoiceId',
+                path: '/invoice/:invoiceId',
                 Component: EditInvoice,
             },
             {
-                path: '/projects/new',
+                path: '/invoice/generate',
+                Component: GenerateInvoice,
+            },
+            {
+                path: '/redroad-service/new',
                 element: <CreateProject type="new" />,
             },
             {
-                path: '/projects/:projectId',
+                path: '/redroad-service/:projectId',
                 element: <EditProject type="edit" />,
             },
             {
@@ -114,15 +120,15 @@ let router = createBrowserRouter([
                 Component: CreateBulkUpload,
             },
             {
-                path: '/clients',
+                path: '/client',
                 Component: Clients,
             },
             {
-                path: '/clients/:clientId',
+                path: '/client/:clientId',
                 Component: EditClient,
             },
             {
-                path: '/clients/new',
+                path: '/client/new',
                 Component: CreateClient,
             },
             {
@@ -138,6 +144,10 @@ let router = createBrowserRouter([
                 Component: EditClientAddress,
             },
             {
+                path: '/master-settings/company',
+                Component: CreateAndUpdateCompanyMaster,
+            },
+            {
                 path: '/master-settings/notes',
                 Component: Notes,
             },
@@ -150,15 +160,15 @@ let router = createBrowserRouter([
                 Component: EditNotes,
             },
             {
-                path: '/master-settings/billing',
-                Component: Billing,
+                path: '/master-settings/billing-type',
+                Component: BillingType,
             },
             {
-                path: '/master-settings/departments',
+                path: '/master-settings/department',
                 Component: Departments,
             },
             {
-                path: '/master-settings/lof-business',
+                path: '/master-settings/vertical',
                 Component: LofBusiness,
             },
             {
