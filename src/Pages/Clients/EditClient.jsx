@@ -16,34 +16,35 @@ import ClientAddressService from '@/Service/ClientAddressService'
 
 const EditClient = () => {
     const { clientId } = useParams()
-    const [poc,setPoc]=useState([]);
+    const [poc, setPoc] = useState([])
     const formRef = useRef(null)
     const formSchema = z.object({
-        client: z.string().min(1, {
-            message: 'Client is required',
-        }),
+        client: z
+            .string({
+                message: 'Client is required',
+            })
+            .min(1, {
+                message: 'Client is required',
+            }),
+        abbreviation: z
+            .string({
+                message: 'abbreviation is required',
+            })
+            .min(1, {
+                message: 'abbreviation is required',
+            }),
         address: z.string().optional(),
-        city: z.string().optional(),
-        state: z.string().optional(),
-        country: z.string().optional(),
-        pinCode: z
-            .string()
-            .optional()
     })
+
     const navigate = useNavigate()
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             client: '',
+            abbreviation: '',
             address: '',
-            city: '',
-            state: '',
-            country: '',
-            pinCode: '',
         },
     })
-
-   
 
     const getClient = async () => {
         const resp = await ClientService.getClient(clientId)
@@ -54,9 +55,8 @@ const EditClient = () => {
                 return
             }
             setPoc(resp.data.data.pocs)
-            console.log("resp",resp.data.data)
+            console.log('resp', resp.data.data)
             form.reset({ ...resp.data.data })
-            
         }
     }
 
@@ -89,8 +89,8 @@ const EditClient = () => {
         }
     }
     return (
-        <div>
-            <Card className="p-0 mb-[72px] mx-0 rounded-none sticky top-16 w-full z-10">
+        <>
+            <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
@@ -104,82 +104,29 @@ const EditClient = () => {
                     </div>
                 </CardContent>
             </Card>
-           <div className="p-3" style={{ height: 'calc(100vh - 125px)' }}>
-                           <Card className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
-                               <CardContent className="h-full overflow-card-scroll w-full p-3 m-0 overflow-auto">
-                    <Form {...form}>
-                        <form ref={formRef} onSubmit={form.handleSubmit(onSubmit, onError)} className="p-4 lg:ps-5">
-                            <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
-                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                    <FormField
-                                        control={form.control}
-                                        name="client"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-1">
-                                                <FormLabel>Client</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="client"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="pinCode"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-1">
-                                                <FormLabel>Pin Code</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Pin Code"
-                                                        {...field}
-                                                        value={field.value || ''}
-                                                        onChange={(e) => {
-                                                            let value = e.target.value ? Number(e.target.value) : '';
-                                                            value = isNaN(value) ? '' : String(value)
-                                                            field.onChange(value)
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem] my-[1.75rem">
-                                    <FormField
-                                        control={form.control}
-                                        name="address"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-1">
-                                                <FormLabel>Address</FormLabel>
-                                                <FormControl>
-                                                    <Textarea
-                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Address"
-                                                        {...field}
-                                                        rows="6"
-                                                    ></Textarea>
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
+            <div className="p-3" style={{ height: 'calc(100vh - 125px)' }}>
+                <Card className="h-full overflow-card-scroll w-full m-0 overflow-auto">
+                    <CardContent className="m-0 p-2 max-h-full">
+                        <Form {...form}>
+                            <form ref={formRef} onSubmit={form.handleSubmit(onSubmit, onError)} className="p-4 lg:ps-5">
+                                <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
+                                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
                                         <FormField
                                             control={form.control}
-                                            name="city"
+                                            name="client"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-1">
-                                                    <FormLabel>City</FormLabel>
+                                                    <FormLabel>Client</FormLabel>
                                                     <FormControl>
                                                         <Input
-                                                            className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                            placeholder="City"
                                                             {...field}
+                                                            className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                            placeholder="client"
+                                                            onChange={(e) => {
+                                                                field.onChange(e.target.value)
+                                                                // console.log("e.target.value : ", e.target.value , getAbbrWord(e.target.value))
+                                                                form.setValue('abbreviation', getAbbrWord(e.target.value))
+                                                            }}
                                                         />
                                                     </FormControl>
                                                 </FormItem>
@@ -187,96 +134,89 @@ const EditClient = () => {
                                         />
                                         <FormField
                                             control={form.control}
-                                            name="state"
+                                            name="abbreviation"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-1">
-                                                    <FormLabel>State</FormLabel>
+                                                    <FormLabel>Abbreviation</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                            placeholder="State"
+                                                            placeholder="Abbreviation"
                                                             {...field}
+                                                            value={field.value}
+                                                            onChange={(e) => {
+                                                                console.log('e.target.value : ', e.target.value)
+                                                                if (e.target.value !== null) {
+                                                                    field.onChange(e.target.value.toUpperCase())
+                                                                }
+                                                            }}
                                                         />
                                                     </FormControl>
                                                 </FormItem>
                                             )}
                                         />
                                     </div>
+                                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem] my-[1.75rem">
+                                        <FormField
+                                            control={form.control}
+                                            name="address"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-1">
+                                                    <FormLabel>Address</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                                            placeholder="Address"
+                                                            {...field}
+                                                            rows="6"
+                                                        ></Textarea>
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                    <FormField
-                                        control={form.control}
-                                        name="country"
-                                        render={({ field }) => (
-                                            <FormItem className="space-y-1">
-                                                <FormLabel>Country</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                        placeholder="Country"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                            </div>
-                        </form>
-                    </Form>
-                    <div className="mt-2">
-                        {/* <FormLabel>Point of Contact</FormLabel> */}
-                        <h5 className='font-bold'>Point of Contact</h5>
-                        <Table className="mt-2">
-                            <TableHeader>
-                                <TableRow className="border">
-                                    
-                                    <TableHead className="w-[50px] border">Sr.No</TableHead>
-                                    <TableHead className="w-[300px] border">Name</TableHead>
-                                    <TableHead className="w-[300px] border">Designation</TableHead>
-                                    <TableHead className="w-[300px] border">Address</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {poc?.length == 0 ? (
-                                    <tr>
-                                        <td colSpan="6">
-                                            <h6 className="text-center" style={{ margin: 0 }}>
-                                                No Data
-                                            </h6>
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    poc?.map((row, index) => (
-                                        <TableRow key={row.index} name="poc" className="border">
-                                            
-                                            <TableCell className="border">{row.id}</TableCell>
-                                            <TableCell className="border">
-                                               {row.contactPerson}
-                                            </TableCell>
+                            </form>
+                        </Form>
+                        <div className="mt-2">
+                            {/* <FormLabel>Point of Contact</FormLabel> */}
+                            <h5 className="font-bold">Point of Contact</h5>
+                            <Table className="mt-2">
+                                <TableHeader>
+                                    <TableRow className="border">
+                                        <TableHead className="w-[50px] border">Sr.No</TableHead>
+                                        <TableHead className="w-[300px] border">Name</TableHead>
+                                        <TableHead className="w-[300px] border">Designation</TableHead>
+                                        <TableHead className="w-[300px] border">Address</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {poc?.length == 0 ? (
+                                        <tr>
+                                            <td colSpan="6">
+                                                <h6 className="text-center" style={{ margin: 0 }}>
+                                                    No Data
+                                                </h6>
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        poc?.map((row, index) => (
+                                            <TableRow key={row.index} name="poc" className="border">
+                                                <TableCell className="border">{row.id}</TableCell>
+                                                <TableCell className="border">{row.contactPerson}</TableCell>
 
-                                            <TableCell className="border">
-                                               {row.designation}
-                                            </TableCell>
-                                            <TableCell className="border">
-                                               {row.address}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                        
-                       
-
-                       
-
-                      
-                    </div>
-                </CardContent>
-            </Card>
+                                                <TableCell className="border">{row.designation}</TableCell>
+                                                <TableCell className="border">{row.address}</TableCell>
+                                            </TableRow>
+                                        ))
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
-        </div>
+        </>
     )
 }
 

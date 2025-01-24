@@ -12,6 +12,10 @@ const ClientColumns = () => {
         {
             accessorKey: 'client',
             header: 'Client',
+        },
+        {
+            accessorKey: 'abbreviation',
+            header: 'Abbreviation',
         }
     ]
     return memoizedColumns

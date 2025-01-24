@@ -7,19 +7,31 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/Components/ui/input'
 import { Button } from '@/Components/ui/button'
 import ProcessService from '@/Service/ProcessService'
+import { getAbbrWord } from '@/utils/helper'
 
 const CreateProcess = ({ getProcess, setIsOpen }) => {
-
     const formSchema = z.object({
-        process: z.string().min(1, {
-            message: 'Process is required.',
-        }),
+        process: z
+            .string({
+                message: 'Process is required.',
+            })
+            .min(1, {
+                message: 'Process is required.',
+            }),
+        abbreviation: z
+            .string({
+                message: 'Abbreviation is required.',
+            })
+            .min(1, {
+                message: 'Abbreviation is required.',
+            }),
     })
 
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             process: '',
+            abbreviation : ''
         },
     })
 
@@ -58,7 +70,31 @@ const CreateProcess = ({ getProcess, setIsOpen }) => {
                                 <FormItem className="space-y-1">
                                     <FormLabel>Process</FormLabel>
                                     <FormControl>
-                                        <Input className="shadow-none focus-visible:ring-transparent space-0 mt-0" placeholder="Process" {...field} />
+                                        <Input
+                                            {...field}
+                                            className="shadow-none focus-visible:ring-transparent space-0 mt-0"
+                                            placeholder="Process"
+                                            onChange={(e) => {
+                                                field.onChange(e.target.value)
+                                                form.setValue('abbreviation', getAbbrWord(e.target.value))
+                                            }}
+                                        />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="abbreviation"
+                            render={({ field }) => (
+                                <FormItem className="space-y-1">
+                                    <FormLabel>Abbreviation</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            className="shadow-none focus-visible:ring-transparent space-0 mt-0 uppercase placeholder:capitalize"
+                                            placeholder="Abbreviation"
+                                        />
                                     </FormControl>
                                 </FormItem>
                             )}
