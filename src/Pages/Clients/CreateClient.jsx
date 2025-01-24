@@ -47,19 +47,17 @@ const CreateClient = () => {
         try {
             const resp = await ClientService.createClient(values)
             if (resp.data.success) {
-                console.log()
                 contact.map((con, index) => {
                     let updatedObj = { ...con, client: values.client }
                     async function addpoc() {
                         try {
                             const cresp = await ClientAddressService.createClientAddress(updatedObj)
                             if (cresp.data.success) {
-                                navigate('/clients')
+                                navigate('/client')
                             }
                         } catch (err) {}
                     }
                     addpoc()
-                    console.log('contact person', updatedObj)
                 })
             }
         } catch (err) {}
@@ -85,7 +83,7 @@ const CreateClient = () => {
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-end items-center">
                         <div className="flex items-center justify-end gap-2">
-                            <Link className="button" to="/clients">
+                            <Link className="button" to="/client">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                             </Link>
                             <Dialog open={isOpen} onOpenChange={() => setIsOpen((prev) => !prev)}>

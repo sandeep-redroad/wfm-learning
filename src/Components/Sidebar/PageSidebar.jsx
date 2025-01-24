@@ -30,7 +30,7 @@ const PageSidebar = (props) => {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-            <SidebarContent className="section-grad-sidebar">
+            <SidebarContent className="section-grad-sidebar overflow-card-scroll-sidebar">
                 <SidebarItems items={SidebarMenuData.navMain} />
             </SidebarContent>
         </Sidebar>

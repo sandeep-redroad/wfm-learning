@@ -1,5 +1,5 @@
 let memoizedColumns = []
-const ProjectColumns = () => {
+const GenerateInvoiceColumn = () => {
     if (memoizedColumns.length > 0) {
         return memoizedColumns
     }
@@ -17,19 +17,15 @@ const ProjectColumns = () => {
             header: 'Client',
         },
         {
-            accessorKey: 'lofBusiness',
-            header: 'Vertical',
+            accessorKey: 'process',
+            header: 'Process',
         },
         {
-            accessorKey: 'status',
-            header: 'Status',
-        },
-        {
-            accessorKey: 'department',
-            header: 'Department',
-        },
+            accessorKey: 'billingType',
+            header: 'Billing Type',
+        }
     ]
     return memoizedColumns
 }
 
-export default ProjectColumns;
+export default GenerateInvoiceColumn;

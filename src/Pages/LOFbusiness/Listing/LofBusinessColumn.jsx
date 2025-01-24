@@ -13,7 +13,7 @@ memoizedColumns = [
     },
     {
         accessorKey: 'lofBusiness',
-        header: 'LOF Business',
+        header: 'Vertical',
     }
 ]
 return memoizedColumns

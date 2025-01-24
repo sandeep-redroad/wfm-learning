@@ -34,7 +34,7 @@ const CreateBillingType = ({ getBillingTypes, setIsOpen }) => {
                 const searchParams = new URLSearchParams(location.search)
                 const page = searchParams.get('page')
                 if (page) {
-                    navigate('/master-settings/billing')
+                    navigate('/master-settings/billing-type')
                 } else {
                     getBillingTypes()
                 }

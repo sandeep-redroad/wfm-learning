@@ -13,17 +13,19 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import SearchableDropdown from '../../Components/Common/SearchableDropdown'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Constent from '@/utils/constent'
 import ClientService from '@/Service/ClientService'
 import ProjectService from '@/Service/ProjectService'
 import InvoiceService from '@/Service/InvoiceService'
 import ProcessService from '@/Service/ProcessService'
 
-const CreateInvoice = () => {
+const GenerateInvoice = () => {
     const navigate = useNavigate()
+    const { state } = useLocation()
+    console.log("state L ", state)
     const [checkAll, setcheckAll] = useState(false)
+
     const [rows, setRows] = useState([])
     const [projectSerchParams, setProjectSearchParams] = useState({
         search: {
@@ -32,9 +34,6 @@ const CreateInvoice = () => {
         },
     })
     const formRef = useRef(null)
-    const [projects, setProjects] = useState([])
-    const [clients, setClient] = useState([])
-    const [process, setProcess] = useState([])
     const [invoice_date, setInvoiceDate] = useState(format(new Date(), Constent.DATE_FORMAT))
     const [start_date, setStartDate] = useState(format(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1), Constent.DATE_FORMAT))
     const [end_date, setEndDate] = useState(format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), Constent.DATE_FORMAT))
@@ -87,14 +86,6 @@ const CreateInvoice = () => {
         }
     }
 
-    const getProjects = async () => {
-        try {
-            const resp = await ProjectService.getProjects(projectSerchParams)
-            if (resp.data.success) {
-                setProjects(resp.data.data)
-            }
-        } catch (err) {}
-    }
 
     const getProject = async (projectId) => {
         try {
@@ -106,8 +97,8 @@ const CreateInvoice = () => {
                 let descriptions = resp.data.data.descriptions ?? []
                 setRows((prev) => {
                     let newRows = []
-                    const newId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1
                     descriptions.map((desc) => {
+                        const newId = newRows.length > 0 ? newRows[newRows.length - 1].id + 1 : 1
                         newRows.push({
                             id: newId,
                             checkbox: false,
@@ -126,34 +117,10 @@ const CreateInvoice = () => {
     }
 
     useEffect(() => {
-        getProcess()
-        getClient()
-    }, [])
-
-    const getClient = async () => {
-        try {
-            const resp = await ClientService.getClients()
-            if (resp.data.success) {
-                setClient(resp.data.data)
-            }
-        } catch (err) {}
-    }
-
-    const getProcess = async () => {
-        try {
-            const resp = await ProcessService.getProcess()
-            
-            if (resp.data.success) {
-                setProcess(resp.data.data)
-            }
-        } catch (err) {}
-    }
-
-    useEffect(() => {
-        if (projectSerchParams.search.client !== '' && projectSerchParams.search.process !== '') {
-            getProjects()
+        if(state.project !== undefined){
+            getProject(state.project.id)
         }
-    }, [projectSerchParams.search.client, projectSerchParams.search.process])
+    }, [state.project])
 
     async function onSubmit(data) {
         try {
@@ -229,10 +196,10 @@ const CreateInvoice = () => {
                 }
             })
             console.log('final Data : ', data)
-            // const resp = await InvoiceService.createInvoice(data)
-            // if (resp.data.success) {
-            //     navigate('/invoice')
-            // }
+            const resp = await InvoiceService.createInvoice(data)
+            if (resp.data.success) {
+                navigate('/invoice')
+            }
         } catch (err) {}
     }
 
@@ -330,25 +297,8 @@ const CreateInvoice = () => {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Client</FormLabel>
-                                                <div className="full">
-                                                    <SearchableDropdown
-                                                        options={clients}
-                                                        selectedVal={field.value}
-                                                        handleChange={(val) => {
-                                                            setProjectSearchParams((prev) => {
-                                                                return {
-                                                                    ...prev,
-                                                                    search: {
-                                                                        ...prev.search,
-                                                                        client: val,
-                                                                    },
-                                                                }
-                                                            })
-                                                            field.onChange(val)
-                                                        }}
-                                                        placeholder="Client"
-                                                        label="client"
-                                                    />
+                                                <div className="w-full">
+                                                    <Input {...field} placeholder="Client" readOnly={true} />
                                                 </div>
                                             </FormItem>
                                         )}
@@ -392,25 +342,8 @@ const CreateInvoice = () => {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Process</FormLabel>
-                                                <div className="full">
-                                                    <SearchableDropdown
-                                                        options={process}
-                                                        selectedVal={field.value}
-                                                        handleChange={(val) => {
-                                                            setProjectSearchParams((prev) => {
-                                                                return {
-                                                                    ...prev,
-                                                                    search: {
-                                                                        ...prev.search,
-                                                                        process: val,
-                                                                    },
-                                                                }
-                                                            })
-                                                            field.onChange(val)
-                                                        }}
-                                                        placeholder="Process"
-                                                        label="process"
-                                                    />
+                                                <div className="w-full">
+                                                    <Input {...field} placeholder="Process" readOnly={true} />
                                                 </div>
                                             </FormItem>
                                         )}
@@ -421,7 +354,7 @@ const CreateInvoice = () => {
                                         name="lofBusiness"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Vertical</FormLabel>
+                                                <FormLabel>LOF Business</FormLabel>
                                                 <div className="w-full">
                                                     <Input {...field} placeholder="LOF Business" readOnly={true} />
                                                 </div>
@@ -434,19 +367,9 @@ const CreateInvoice = () => {
                                         name="projectId"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Project</FormLabel>
-                                                <div className="full">
-                                                    <SearchableDropdown
-                                                        options={projects}
-                                                        selectedVal={field.value}
-                                                        handleChange={(val) => {
-                                                            getProject(val)
-                                                            field.onChange(val)
-                                                        }}
-                                                        placeholder="Project"
-                                                        label="id"
-                                                        type="projectFromInvoice"
-                                                    />
+                                                <FormLabel>Project Id</FormLabel>
+                                                <div className="w-full">
+                                                    <Input {...field} placeholder="Project Id" readOnly={true} />
                                                 </div>
                                             </FormItem>
                                         )}
@@ -713,7 +636,7 @@ const CreateInvoice = () => {
                                                                             let updatedData = []
                                                                             prev.map((item, i) => {
                                                                                 if (item.id == row.id) {
-                                                                                    prev[i]['description'] = e.target.value
+                                                                                    item['description'] = e.target.value
                                                                                 }
                                                                                 updatedData.push(item)
                                                                             })
@@ -738,8 +661,8 @@ const CreateInvoice = () => {
 
                                                                             prev.map((item, i) => {
                                                                                 if (item.id == row.id) {
-                                                                                    prev[i]['hours'] = hours
-                                                                                    prev[i]['amount'] = amount
+                                                                                    item['hours'] = hours
+                                                                                    item['amount'] = amount
                                                                                 }
                                                                                 updatedData.push(item)
                                                                             })
@@ -766,8 +689,8 @@ const CreateInvoice = () => {
                                                                         let amount = Number(row.hours) * Number(rate)
                                                                         prev.map((item, i) => {
                                                                             if (item.id == row.id) {
-                                                                                prev[i]['rate'] = rate
-                                                                                prev[i]['amount'] = amount
+                                                                                item['rate'] = rate
+                                                                                item['amount'] = amount
                                                                             }
                                                                             updatedData.push(item)
                                                                         })
@@ -917,4 +840,4 @@ const CreateInvoice = () => {
     )
 }
 
-export default CreateInvoice
+export default GenerateInvoice

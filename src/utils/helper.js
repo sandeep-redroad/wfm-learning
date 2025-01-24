@@ -4,7 +4,8 @@ import * as XLSX from 'xlsx'
 
 export function capitalizeFirstChar(str) {
     if (!str) return str
-    return str.charAt(0).toUpperCase() + str.slice(1)
+    str = str.split(" ").map((val) =>val.charAt(0).toUpperCase() + val.slice(1)).join(' ')
+    return str
 }
 export function lowerFirstChar(str) {
     if (!str) return str

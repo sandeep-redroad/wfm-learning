@@ -12,6 +12,7 @@ import ProjectData from './data/ProjectData';
 import UploadData from './data/UploadData';
 import ProjectStatusData from './data/ProjectStatusData';
 import DataTypes from './data/DataTypes';
+import InvoiceFilterData from './data/InvoiceFilterData';
 
 const assets = {
     redroadicon,
@@ -23,7 +24,8 @@ const assets = {
     ProjectData,
     UploadData,
     ProjectStatusData,
-    DataTypes
+    DataTypes,
+    InvoiceFilterData
 }
 
 

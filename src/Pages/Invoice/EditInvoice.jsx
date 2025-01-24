@@ -181,7 +181,7 @@ const EditInvoice = () => {
             if (resp.data.success) {
                 if (!resp.data.data) {
                     toast.error('Invoice Not Found')
-                    navigate('/invoices')
+                    navigate('/invoice')
                     return
                 }
 
@@ -292,7 +292,7 @@ const EditInvoice = () => {
         console.log('final Data : ', invoiceField)
         const resp = await InvoiceService.updateInvoice(invoiceId, invoiceField)
         if (resp.data.success) {
-            navigate('/invoices')
+            navigate('/invoice')
         }
     }
     const addRow = () => {
@@ -375,7 +375,7 @@ const EditInvoice = () => {
                                     <Printer /> Print Invoice
                                 </Button>
                             </Link>
-                            <Link className="button" to="/invoices">
+                            <Link className="button" to="/invoice">
                                 <Button className="bg-transparent hover:bg-transparent text-black border border-gray-400">Back</Button>
                             </Link>
                             <Button className="bg-primary-purpal hover:bg-primary-purpal" onClick={handleSaveClick}>
@@ -1013,7 +1013,7 @@ const EditInvoice = () => {
                                         )}
                                     />
 
-                                    <FormField
+                                    {/* <FormField
                                         control={form.control}
                                         name="paidAmount"
                                         render={({ field }) => (
@@ -1032,7 +1032,7 @@ const EditInvoice = () => {
                                                 </FormControl>
                                             </FormItem>
                                         )}
-                                    />
+                                    /> */}
                                 </div>
                             </form>
                         </Form>
