@@ -13,9 +13,12 @@ import { toast } from 'react-toastify'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import DataTableEnumType from '@/Enums/DataTableTypeEnum'
 import NoteService from '@/Service/NoteService'
+import { Dialog, DialogTrigger } from '@/Components/ui/dialog'
+import CreateNotes from '../CreateNotes'
 
 const Notes = () => {
     const [notes, setNotes] = useState([])
+    const [isOpen, setIsOpen] = useState(false)
     const [totalCount, setTotalCount] = useState(0)
     const [search, setSearch] = useState('')
     const [debouncedValue] = useDebounce(search, Constent.DEBOUNCE_DELAY)
@@ -26,7 +29,7 @@ const Notes = () => {
         search: '',
     })
     const location = useLocation()
-    
+
     const getNotes = async (page = 1) => {
         try {
             const resp = await NoteService.getNotes(queryParam)
@@ -60,18 +63,14 @@ const Notes = () => {
         getNotes()
     }, [queryParam.page, queryParam.search])
 
-    const deleteClients = async () => {
-        const updatedArray = clients.filter((value, index) => {
-            console.log('in filter', index, !deleteId.includes(value._id))
-            return !deleteId.includes(value._id)
-        })
-        try {
-            // const resp = await ClientService.deleteClients(deleteId)
-            // console.log('response', resp)
-            // if (resp.data.success) {
-            //     toast.success(resp.data.message)
-            //     // getClient()
-            // }
+    const deleteNotes = async () => {
+       try {
+            const resp = await NoteService.deleteNotes(deleteId)
+            console.log('response', resp)
+            if (resp.data.success) {
+                toast.success(resp.data.message)
+                 getNotes()
+            }
         } catch (err) {
             console.log('error', err)
         }
@@ -82,9 +81,12 @@ const Notes = () => {
             <Card className="p-0 mx-0 rounded-none shadow-none mt-[63px] w-full">
                 <CardContent className="m-0 flex justify-end items-center p-3">
                     <div className="flex justify-between items-center">
-                        <Link to="/master-settings/notes/new">
-                            <Button className="bg-primary-purpal hover:bg-primary-purpal">Add Note</Button>
-                        </Link>
+                        <Dialog open={isOpen} onOpenChange={() => setIsOpen((prev) => !prev)}>
+                            <DialogTrigger>
+                                <Button className="bg-primary-purpal hover:bg-primary-purpal">Add Note</Button>
+                            </DialogTrigger>
+                            <CreateNotes setIsOpen={setIsOpen} getNotes={getNotes} />
+                        </Dialog>
 
                         <DropdownMenu className="ml-[10px] ">
                             <DropdownMenuTrigger asChild>
@@ -94,7 +96,7 @@ const Notes = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={deleteClients}>Delete</DropdownMenuItem>
+                                <DropdownMenuItem onClick={deleteNotes}>Delete</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>

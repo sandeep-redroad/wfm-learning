@@ -148,6 +148,7 @@ const CreateProject = ({ type }) => {
         billingToAddress: '',
         billingFrom: '',
         billingFromAddress: '',
+        billingFrequency: ''
     })
 
     async function onSubmit(data) {
@@ -180,6 +181,10 @@ const CreateProject = ({ type }) => {
             }
             if (key == 'rate') {
                 toast.error('Please enter rate')
+                return
+            }
+            if(key== 'billingFrequency'){
+                toast.error('Please select billing frequency')
                 return
             }
             if (data.billingType == 'Per WorkItem Transactional') {
@@ -765,6 +770,8 @@ const CreateProject = ({ type }) => {
                                                 </FormItem>
                                             )}
                                         />
+
+                                        
                                         {projectFields.billingType == 'Hourly transactional' ||
                                             (projectFields.billingType == 'Hourly Transactional' && (
                                                 <FormField
@@ -791,6 +798,38 @@ const CreateProject = ({ type }) => {
                                                     )}
                                                 />
                                             ))}
+
+                                            <FormField
+                                            control={form.control}
+                                            name="billingFrequency"
+                                            className="mt-[20px]"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Billing Frequency</FormLabel>
+                                                    <Select onValueChange={(e) => {
+                                                                        setProjectFields((prev) => {
+                                                                            return {
+                                                                                ...prev,
+                                                                                billingFrequency: e,
+                                                                            }
+                                                                        })
+                                                                    }} defaultValue={projectFields.billingFrequency}>
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Select billing frequency" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="Quarterly">Quarterly</SelectItem>
+                                                            <SelectItem value="Monthly">Monthly</SelectItem>
+                                                           
+                                                        </SelectContent>
+                                                    </Select>
+                                                   
+                                                
+                                                </FormItem>
+                                            )}
+                                        />
                                     </div>
                                     <FormField
                                         control={form.control}
