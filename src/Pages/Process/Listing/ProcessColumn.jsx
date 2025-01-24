@@ -11,6 +11,10 @@ const ProcessColumns = () => {
         {
             accessorKey: 'process',
             header: 'Process',
+        },
+        {
+            accessorKey: 'abbreviation',
+            header: 'Abbreviation',
         }
     ]
     return memoizedColumns

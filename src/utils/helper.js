@@ -4,7 +4,10 @@ import * as XLSX from 'xlsx'
 
 export function capitalizeFirstChar(str) {
     if (!str) return str
-    str = str.split(" ").map((val) =>val.charAt(0).toUpperCase() + val.slice(1)).join(' ')
+    str = str
+        .split(' ')
+        .map((val) => val.charAt(0).toUpperCase() + val.slice(1))
+        .join(' ')
     return str
 }
 export function lowerFirstChar(str) {
@@ -58,11 +61,36 @@ export function getFirstTwoChars(str) {
             .slice(0, 2)
             .map((word) => word.charAt(0).toUpperCase())
             .join('')
-    }else{
-      return str
-        .split('')
-        .slice(0, 2)
-        .map((word) => word.charAt(0).toUpperCase()) 
-        .join('') // Join the characters into a single string
+    } else {
+        return str
+            .split('')
+            .slice(0, 2)
+            .map((word) => word.charAt(0).toUpperCase())
+            .join('')
     }
+}
+
+export function getAbbrWord(str) {
+    if (str === undefined || str === '') {
+        return ''
+    }
+    str = str.replaceAll(/[!@#$%\^&\*\-_\+]/g, ' ')
+    if (str.split(' ').length > 1) {
+        str = str
+            .split(' ')
+            .filter((word) => word)
+            .map((word) => word.charAt(0).toUpperCase())
+            .join('')
+    } else {
+        if (str.length > 4) {
+            str = str
+                .split('')
+                .slice(0, 3)
+                .map((char) => char.toUpperCase())
+                .join('')
+        } else {
+            str = str.toUpperCase()
+        }
+    }
+    return str
 }

@@ -13,33 +13,45 @@ import ClientService from '@/Service/ClientService'
 import { Dialog, DialogTrigger } from '@/Components/ui/dialog'
 import CreatePointofContact from './CreatePointofContact'
 import ClientAddressService from '@/Service/ClientAddressService'
+import { getAbbrWord } from '@/utils/helper'
 
 const CreateClient = () => {
     const [isOpen, setIsOpen] = useState(false)
     const formRef = useRef(null)
     const [contact, setContact] = useState([])
     const formSchema = z.object({
-        client: z.string().min(1, {
-            message: 'Client is required',
-        }),
+        client: z
+            .string({
+                message: 'Client is required',
+            })
+            .min(1, {
+                message: 'Client is required',
+            }),
+        abbreviation: z
+            .string({
+                message: 'abbreviation is required',
+            })
+            .min(1, {
+                message: 'abbreviation is required',
+            }),
         address: z.string().optional(),
-        city: z.string().optional(),
-        state: z.string().optional(),
-        country: z.string().optional(),
-        pinCode: z.string().optional(),
     })
     const navigate = useNavigate()
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             client: '',
+            abbreviation: '',
             address: '',
-            city: '',
-            state: '',
-            country: '',
-            pinCode: '',
         },
     })
+
+    async function addPointOfContact() {
+        try {
+            return await ClientAddressService.createClientAddress(updatedObj)
+        } catch (err) {}
+        return null
+    }
 
     async function onSubmit(values) {
         console.log(values.client)
@@ -49,15 +61,10 @@ const CreateClient = () => {
             if (resp.data.success) {
                 contact.map((con, index) => {
                     let updatedObj = { ...con, client: values.client }
-                    async function addpoc() {
-                        try {
-                            const cresp = await ClientAddressService.createClientAddress(updatedObj)
-                            if (cresp.data.success) {
-                                navigate('/client')
-                            }
-                        } catch (err) {}
+                    let pointOfContactResponse = addPointOfContact(updatedObj)
+                    if(pointOfContactResponse !== null){
+                        
                     }
-                    addpoc()
                 })
             }
         } catch (err) {}
@@ -114,9 +121,14 @@ const CreateClient = () => {
                                                     <FormLabel>Client</FormLabel>
                                                     <FormControl>
                                                         <Input
+                                                            {...field}
                                                             className="shadow-none focus-visible:ring-transparent space-0 mt-0"
                                                             placeholder="client"
-                                                            {...field}
+                                                            onChange={(e) => {
+                                                                field.onChange(e.target.value)
+                                                                // console.log("e.target.value : ", e.target.value , getAbbrWord(e.target.value))
+                                                                form.setValue('abbreviation', getAbbrWord(e.target.value))
+                                                            }}
                                                         />
                                                     </FormControl>
                                                 </FormItem>
@@ -124,20 +136,21 @@ const CreateClient = () => {
                                         />
                                         <FormField
                                             control={form.control}
-                                            name="pinCode"
+                                            name="abbreviation"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-1">
-                                                    <FormLabel>Pin Code</FormLabel>
+                                                    <FormLabel>Abbreviation</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                            placeholder="Pin Code"
+                                                            placeholder="Abbreviation"
                                                             {...field}
-                                                            value={field.value || ''}
+                                                            value={field.value}
                                                             onChange={(e) => {
-                                                                let value = e.target.value ? Number(e.target.value) : ''
-                                                                value = isNaN(value) ? '' : String(value)
-                                                                field.onChange(value)
+                                                                console.log('e.target.value : ', e.target.value)
+                                                                if (e.target.value !== null) {
+                                                                    field.onChange(e.target.value.toUpperCase())
+                                                                }
                                                             }}
                                                         />
                                                     </FormControl>
@@ -159,58 +172,6 @@ const CreateClient = () => {
                                                             {...field}
                                                             rows="6"
                                                         ></Textarea>
-                                                    </FormControl>
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <div className="grid gap-x-[3rem] gap-y-[1.75rem]">
-                                            <FormField
-                                                control={form.control}
-                                                name="city"
-                                                render={({ field }) => (
-                                                    <FormItem className="space-y-1">
-                                                        <FormLabel>City</FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                                placeholder="City"
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                    </FormItem>
-                                                )}
-                                            />
-                                            <FormField
-                                                control={form.control}
-                                                name="state"
-                                                render={({ field }) => (
-                                                    <FormItem className="space-y-1">
-                                                        <FormLabel>State</FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                                placeholder="State"
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-x-[3rem] gap-y-[1.75rem]">
-                                        <FormField
-                                            control={form.control}
-                                            name="country"
-                                            render={({ field }) => (
-                                                <FormItem className="space-y-1">
-                                                    <FormLabel>Country</FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            className="shadow-none focus-visible:ring-transparent space-0 mt-0"
-                                                            placeholder="Country"
-                                                            {...field}
-                                                        />
                                                     </FormControl>
                                                 </FormItem>
                                             )}

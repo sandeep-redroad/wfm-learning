@@ -35,11 +35,11 @@ const SidebarMenu = {
             title: 'Master Settings',
             url: '/master-settings',
             items: [
-                // {
-                //     title: 'Client Address',
-                //     url: '/master-settings/client-address',
-                //     items: [],
-                // },
+                {
+                    title: 'Client POC',
+                    url: '/master-settings/client-address',
+                    items: [],
+                },
                 {
                     title: 'Company',
                     url: '/master-settings/company',
