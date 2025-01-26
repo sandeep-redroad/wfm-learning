@@ -50,147 +50,15 @@ let router = createBrowserRouter([
         Component: Login2,
     },
     {
-        path: '*',
-        Component: ErrorPage,
-    },
-
-    {
-        path: '/login1',
-        Component: Login1,
-    },
-    {
-        path: '/login2',
-        Component: Login,
-    },
-    {
         path: '/',
         Component: AuthLayout,
         children: [
             {
                 index: true,
                 path: '/',
-                Component: Dashboard,
-            },
-            {
-                path: '/invoice',
-                Component: Invoice,
-            },
-            {
-                path: '/redroad-service',
                 Component: Project,
             },
-            {
-                path: 'invoices/new',
-                Component: CreateInoice,
-            },
-            {
-                path: '/invoice/:invoiceId',
-                Component: EditInvoice,
-            },
-            {
-                path: '/invoice/generate',
-                Component: GenerateInvoice,
-            },
-            {
-                path: '/redroad-service/new',
-                element: <CreateProject type="new" />,
-            },
-            {
-                path: '/redroad-service/:projectId',
-                element: <EditProject type="edit" />,
-            },
-            {
-                path: '/daily-work-log',
-                Component: DailyWorkLog,
-            },
-            {
-                path: '/daily-work-log/new',
-                Component: CreateDailyWorkLog,
-            },
-            {
-                path: '/daily-work-log/:dailyWorkLogId',
-                Component: EditDailyWorkLog,
-            },
-            {
-                path: '/bulk-upload',
-                Component: BulkUpload,
-            },
-            {
-                path: '/bulk-upload/new',
-                Component: CreateBulkUpload,
-            },
-            {
-                path: '/client',
-                Component: Clients,
-            },
-            {
-                path: '/client/:clientId',
-                Component: EditClient,
-            },
-            {
-                path: '/client/new',
-                Component: CreateClient,
-            },
-            {
-                path: '/master-settings/client-address',
-                Component: ClientAddress,
-            },
-            {
-                path: '/master-settings/client-address/new',
-                Component: CreateClientAddress,
-            },
-            {
-                path: '/master-settings/client-address/:contactPerson',
-                Component: EditClientAddress,
-            },
-            {
-                path: '/master-settings/company',
-                Component: CreateAndUpdateCompanyMaster,
-            },
-            {
-                path: '/master-settings/notes',
-                Component: Notes,
-            },
-            {
-                path: '/master-settings/notes/new',
-                Component: CreateNotes,
-            },
-            {
-                path: '/master-settings/notes/:noteTitle',
-                Component: EditNotes,
-            },
-            {
-                path: '/master-settings/billing-type',
-                Component: BillingType,
-            },
-            {
-                path: '/master-settings/department',
-                Component: Departments,
-            },
-            {
-                path: '/master-settings/vertical',
-                Component: LofBusiness,
-            },
-            {
-                path: '/master-settings/process',
-                Component: Process,
-            },
-            {
-                path: '/master-settings/billing-entity',
-                Component: BillingEntity,
-            },
-            {
-                path: '/master-settings/billing-entity/new',
-                Component: CreateBillingEntiy,
-            },
-            {
-                path: '/master-settings/billing-entity/:billingEntityId',
-                Component: EditBillingEntiy,
-            },
-            {
-                path: '/master-settings/employee-mapped',
-                Component: EmployeeMapped,
-            },
+    
             
             {
                 path: '*',
@@ -199,12 +67,8 @@ let router = createBrowserRouter([
         ],
     },
     {
-        path: '/printInvoice/:invoiceId',
-        Component: ShowInvoiece,
-    },
-    {
         path: '*',
-        Component: NotFound404,
+        Component: ErrorPage,
     },
 ])
 

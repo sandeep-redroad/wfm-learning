@@ -50,6 +50,7 @@ const Login2 = () => {
             setIsLoading(true)
             setIsError(false)
             const resp = await AuthService.login(data)
+            console.log("resp L ", resp)
             if (resp.data.success) {
                 setUserInfo(resp.data.data)
                 login()
