@@ -16,7 +16,7 @@ const MainBreadcrumb = () => {
     return (
         <Breadcrumb>
             {/* <BreadcrumbList className="text-white">{breadCrumb}</BreadcrumbList> */}
-            <BreadcrumbList className="text-white">
+            <BreadcrumbList className="">
                 {bradcrumb.length > 1 ? (
                     bradcrumb.map((val, i) => {
                         if (i < bradcrumb.length - 1) {
@@ -47,7 +47,7 @@ const MainBreadcrumb = () => {
                         } else {
                             return (
                                 <BreadcrumbItem key={bradcrumb.length - 1}>
-                                    <BreadcrumbPage className="text-white font-bold">
+                                    <BreadcrumbPage className=" font-bold">
                                         {projectId !== undefined || invoiceId !== undefined
                                             ? bradcrumb[bradcrumb.length - 1]
                                             : capitalizeFirstChar(bradcrumb[bradcrumb.length - 1].replaceAll('-', ' '))}
@@ -58,13 +58,13 @@ const MainBreadcrumb = () => {
                     })
                 ) : bradcrumb.length === 1 ? (
                     <BreadcrumbItem key={0}>
-                        <BreadcrumbPage className="text-white font-bold">
+                        <BreadcrumbPage className="font-bold">
                             {capitalizeFirstChar(bradcrumb[bradcrumb.length - 1].replaceAll('-', ' '))}
                         </BreadcrumbPage>
                     </BreadcrumbItem>
                 ) : (
                     <BreadcrumbItem key={0}>
-                        <BreadcrumbPage className="text-white font-bold">Dashboard</BreadcrumbPage>
+                        <BreadcrumbPage className=" font-bold">Dashboard</BreadcrumbPage>
                     </BreadcrumbItem>
                 )}
             </BreadcrumbList>

@@ -2,6 +2,7 @@
 //Logo
 import redroadicon from './images/logo/redroadicon.svg'
 import redroadwhitelogo from './images/logo/redroadwhitelogo.svg'
+import redroadlogo from './images/logo/redroadlogo.png'
 
 //Data
 import BillingData from './data/BillingData';
@@ -17,6 +18,7 @@ import InvoiceFilterData from './data/InvoiceFilterData';
 const assets = {
     redroadicon,
     redroadwhitelogo,
+    redroadlogo,
     BillingData,
     SidebarMenu,
     DepartmentData,

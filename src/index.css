@@ -99,23 +99,26 @@ thead{
 }
 
 .section-grad {
-  background-image: linear-gradient(113deg, var(--primary-purpal) 30%, #cf2738e3);
+  /* background-image: linear-gradient(113deg, var(--primary-purpal) 30%, #cf2738e3); */
   background-position: 100% 100%, 0 100%, 0 0;
   background-repeat: no-repeat, no-repeat, repeat;
   background-size: cover;
+  background-color: #f8fafc;
 }
 
 .section-grad-header {
-  background-image: linear-gradient(113deg, var(--primary-purpal) 30%, #cf2738e3);
+  /* background-image: linear-gradient(113deg, var(--primary-purpal) 30%, #cf2738e3); */
   background-position: 100% 100%, 0 100%, 0 0;
   background-repeat: no-repeat, no-repeat, repeat;
   background-size: cover;
+  background-color: #f8fafc;
 }
 .section-grad-sidebar {
-  background-image: linear-gradient(180deg, var(--primary-purpal) 30%, #cf2738e3);
+  /* background-image: linear-gradient(180deg, var(--primary-purpal) 30%, #cf2738e3); */
   background-position: 100% 100%, 0 100%, 0 0;
   background-repeat: no-repeat, no-repeat, repeat;
   background-size: cover;
+  background-color: #f8fafc;
 }
 
 

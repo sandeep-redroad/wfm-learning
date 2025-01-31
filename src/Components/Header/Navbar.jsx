@@ -19,7 +19,7 @@ const Navbar = () => {
     const { open } = useSidebar()
     return (
         <header
-            className={`fixed top-0  right-0  flex h-16 shrink-0 items-center gap-2 border-b z-10 text-white px-4 section-grad-header justify-between ${
+            className={`fixed top-0  right-0  flex h-16 shrink-0 items-center gap-2  z-10  px-4 section-grad-header justify-between ${
                 open
                     ? ' transition-all left-[16rem] duration-[350ms]'
                     : 'left-0'

@@ -67,17 +67,18 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
         }
     }
 
+    console.log("data in table : ", data)
     const handleCheckboxChange = (event, row) => {
         if (event) {
             console.log('in event', event)
-            if (!deleteId?.includes(row._id)) {
-                setDeleteId((prevDeleteId) => [...prevDeleteId, row._id])
+            if (!deleteId?.includes(row.name)) {
+                setDeleteId((prevDeleteId) => [...prevDeleteId, row.name])
             }
         } else {
             console.log('in else', event)
-            if (deleteId?.includes(row._id)) {
+            if (deleteId?.includes(row.name)) {
                 // If the ID is already in the deleteId array, pop it
-                setDeleteId((prevDeleteId) => prevDeleteId.filter((item) => item !== row._id))
+                setDeleteId((prevDeleteId) => prevDeleteId.filter((item) => item !== row.name))
             }
         }
         console.log('in one check', deleteId)
@@ -90,8 +91,8 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
         console.log('in handleAll change', rows)
         if (event) {
             rows.map((row, index) => {
-                if (!deleteId.includes(row.original._id)) {
-                    setDeleteId((prevDeleteId) => [...prevDeleteId, row.original._id])
+                if (!deleteId.includes(row.original.name)) {
+                    setDeleteId((prevDeleteId) => [...prevDeleteId, row.original.name])
                 }
             })
         } else {
@@ -170,7 +171,7 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
                                                             className="mx-3 my-1"
                                                                 onClick={(event) => handleCheckboxClick(event)}
                                                                 onCheckedChange={(event) => handleCheckboxChange(event, row.original)}
-                                                                checked={deleteId?.includes(row.original._id)}
+                                                                checked={deleteId?.includes(row.original.name)}
                                                             />
                                                         )
                                                     ) : cell.column.id === 'status' ? (
@@ -191,8 +192,8 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
                                                         <Checkbox
                                                         className="mx-3 my-1"
                                                             onClick={(event) => handleCheckboxClick(event)}
-                                                            onCheckedChange={(event) => handleCheckboxChange(event, row.original)}
-                                                            checked={deleteId?.includes(row.original._id)}
+                                                            onCheckedChange={(event) => {console.log("row.original",row.original);handleCheckboxChange(event, row.original)}}
+                                                            checked={deleteId?.includes(row.original.name)}
                                                         />
                                                     )
                                                 ) : cell.column.id === 'date' || cell.column.id === 'created_at' || cell.column.id === 'invoiceDate' ? (

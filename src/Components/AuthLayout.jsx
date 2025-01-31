@@ -12,7 +12,7 @@ const AuthLayout = () => {
             <SidebarInset className="h-screen">
                 <Navbar />
                 <ProtectedRoute>
-                    <div className="flex flex-1 flex-col bg-gray-200 m-0 p-0 max-h-full">
+                    <div className="flex flex-1 flex-col m-0 p-0 max-h-full">
                         <Outlet />
                     </div>
                 </ProtectedRoute>

@@ -43,12 +43,15 @@ import EditNotes from './Pages/Notes/EditNotes'
 import EditInvoice from './Pages/Invoice/EditInvoice'
 import CreateAndUpdateCompanyMaster from './Pages/CompanyMaster/CreateAndUpdateCompanyMaster'
 import GenerateInvoice from './Pages/Invoice/Listing/GenerateInvoice'
+import ShiftRequest from './Pages/ShiftRequest/ShiftRequest'
+import Listing from './Pages/ShiftRequest/Listing'
 
 let router = createBrowserRouter([
     {
         path: '/login',
         Component: Login2,
     },
+
     {
         path: '/',
         Component: AuthLayout,
@@ -57,6 +60,16 @@ let router = createBrowserRouter([
                 index: true,
                 path: '/',
                 Component: Project,
+            },
+            {
+               
+                path: '/shiftRequest',
+                Component: Listing,
+            },
+            {
+               
+                path: '/newshiftRequest',
+                Component: ShiftRequest,
             },
     
             

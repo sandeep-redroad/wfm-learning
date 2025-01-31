@@ -1,6 +1,7 @@
 
 const DataTableEnumType = {
     PROJECT : 'PROJECT',
+    SHIFT_REQUEST : 'SHIFT REQUEST',
     UPLOAD : 'UPLOAD',
     BILLING_ENTITY : 'BILLING_ENTITY',
     CLIENT : 'CLIENT',

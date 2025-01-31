@@ -11,7 +11,7 @@ const ParentLabel = ({ item }) => {
             className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
         >
             <CollapsibleTrigger
-                className={`hover:bg-transparent active:bg-transparent flex font-bold justify-between w-full text-white hover:text-white`}
+                className={`hover:bg-transparent active:bg-transparent flex font-bold justify-between w-full `}
             >
                 <span>{item.title}</span>
                 <span>
@@ -35,7 +35,7 @@ const ParentLabel = ({ item }) => {
                 className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             >
                 <CollapsibleTrigger
-                    className={`hover:bg-transparent flex justify-between w-full font-bold text-white hover:text-white`}
+                    className={`hover:bg-transparent flex justify-between w-full font-bold active:text-white `}
                 >
                     <span>{item.title}</span>
                     <span>
