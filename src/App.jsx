@@ -45,6 +45,7 @@ import CreateAndUpdateCompanyMaster from './Pages/CompanyMaster/CreateAndUpdateC
 import GenerateInvoice from './Pages/Invoice/Listing/GenerateInvoice'
 import ShiftRequest from './Pages/ShiftRequest/ShiftRequest'
 import Listing from './Pages/ShiftRequest/Listing'
+import EditShiftRequest from './Pages/ShiftRequest/EditShiftRequest'
 
 let router = createBrowserRouter([
     {
@@ -70,6 +71,11 @@ let router = createBrowserRouter([
                
                 path: '/newshiftRequest',
                 Component: ShiftRequest,
+            },
+            {
+               
+                path: '/editshiftRequest/:name',
+                Component: EditShiftRequest,
             },
     
             

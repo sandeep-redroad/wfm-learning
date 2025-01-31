@@ -10,6 +10,7 @@ const DataTableEnumType = {
     NOTE : 'NOTE',
     INVOICE : 'INVOICE',
     INVOICE_GENERATE : 'INVOICE_GENERATE'
+    
 }
 
 Object.freeze(DataTableEnumType);

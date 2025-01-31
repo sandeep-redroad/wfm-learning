@@ -51,6 +51,9 @@ const Datatable = ({ columns, data, totalDataCount, type, allcheck, setDeleteId,
         if (DataTableEnumType.BILLING_ENTITY == type) {
             navigate(`/master-settings/billing-entity/${row.contactPerson}`)
         }
+        if (DataTableEnumType.SHIFT_REQUEST == type) {
+            navigate(`/editshiftRequest/${row.name}`)
+        }
         if (DataTableEnumType.CLIENT_ADDRESS == type) {
             navigate(`/master-settings/client-address/${row.contactPerson}`)
         }

@@ -30,11 +30,7 @@ const SidebarMenu = {
             url: '/shiftRequest',
             items: [],
         },
-        {
-            title: 'Shift Request',
-            url: '/editshiftRequest',
-            items: [],
-        },
+       
         // {
         //     title: 'Shift Request',
         //     url: '/newshiftRequest',

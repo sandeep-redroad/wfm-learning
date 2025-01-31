@@ -30,12 +30,16 @@ class AuthService {
         return await Axios.get("api/auth/get_shift_request")
     }
 
+    async getShiftRequest1(shiftRequestName) {
+        return await Axios.get("api/auth/get_shift_request/"+shiftRequestName)
+    }
+
     async deleteRequest(data){
         return await Axios.delete("api/auth/delete_shift_request",{data})
     }
     
-    async updateShiftRequest() {
-
+    async updateShiftRequest(data){
+        return await Axios.put(`api/auth/update_shift_request`, data)
     }
 }
 
