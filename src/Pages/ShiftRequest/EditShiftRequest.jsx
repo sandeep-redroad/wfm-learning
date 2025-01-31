@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/Components/ui/button'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -23,6 +23,7 @@ const EditShiftRequest = () => {
     const [shift, setShift] = useState()
     const { name } = useParams()
     const [shiftrequest, setShiftRequest] = useState()
+    const navigate = useNavigate()
 
     const formSchema = z.object({
         shift_type: z.string().min(1, {
@@ -51,7 +52,7 @@ const EditShiftRequest = () => {
     })
 
     const form = useForm({
-        resolver: zodResolver(formSchema),
+        // resolver: zodResolver(formSchema),
         defaultValues: {
             shift_type: '',
             employee: '',
@@ -95,6 +96,7 @@ const EditShiftRequest = () => {
     const getShift = async () => {
         let shiftdata = await AuthService.getShift()
         setShift(shiftdata.data.data)
+        getShiftRequest(name)
         console.log('shiftdata', shiftdata.data.data)
     }
     const getShiftRequest = async () => {
@@ -109,16 +111,20 @@ const EditShiftRequest = () => {
     useEffect(() => {
         getEmp()
         getShift()
-        getShiftRequest(name)
     }, [])
     async function onSubmit(data) {
-        console.log(data)
+        console.log("data",data)
         data['from_date'] = format(data['from_date'], Constent.DATE_FORMAT_HRMS)
         data['to_date'] = format(data['to_date'], Constent.DATE_FORMAT_HRMS)
+        
+        data['name'] = name
         try {
-            const resp = await AuthService.createShiftRequest(data)
+            const resp = await AuthService.updateShiftRequest(data)
+            console.log("resp",resp.data.success)
             if (resp.data.success) {
+                toast.success("Shift Request updated successfully")
                 navigate('/shiftRequest')
+                
             }
         } catch (err) {
             console.log('err : ', err)
@@ -192,7 +198,7 @@ const EditShiftRequest = () => {
                                             </FormItem>
                                         )}
                                     />
-
+{console.log("form", form)}
                                     <>
                                         <FormField
                                             control={form.control}
@@ -283,7 +289,7 @@ const EditShiftRequest = () => {
                                         render={({ field }) => (
                                             <FormItem className="flex flex-col">
                                                 <FormLabel>From Date</FormLabel>
-                                                {console.log('field.value : ', field.value)}
+                                               
                                                 <Popover>
                                                     <PopoverTrigger asChild>
                                                         <FormControl>
@@ -306,9 +312,9 @@ const EditShiftRequest = () => {
                                                 </Popover>
                                             </FormItem>
                                         )}
-                                    />
+                                    /> 
 
-                                    <FormField
+                                     <FormField
                                         control={form.control}
                                         name="to_date"
                                         render={({ field }) => (

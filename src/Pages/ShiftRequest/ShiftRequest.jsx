@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/Components/ui/button'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -21,6 +21,7 @@ import AuthService from '@/Service/AuthService'
 const ShiftRequest = () => {
     const [emp, setEmp] = useState()
     const [shift, setShift] = useState()
+    const navigate = useNavigate()
 
     const formSchema = z.object({
         shift_type: z.string().min(1, {
@@ -107,6 +108,7 @@ const ShiftRequest = () => {
         try {
             const resp = await AuthService.createShiftRequest(data)
             if (resp.data.success) {
+                toast.success("shift request created successfully")
                 navigate('/shiftRequest')
             }
         } catch (err) {
